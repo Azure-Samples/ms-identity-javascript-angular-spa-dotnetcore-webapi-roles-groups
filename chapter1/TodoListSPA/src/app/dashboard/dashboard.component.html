@@ -1,0 +1,6 @@
+<mat-card *ngFor="let tb of table" class='card-section'>
+    <mat-card-title>{{tb.owner}}</mat-card-title>
+    <mat-card-content *ngFor="let task of tb.tasks">
+        <p>{{task.description}}</p>
+    </mat-card-content>
+</mat-card>

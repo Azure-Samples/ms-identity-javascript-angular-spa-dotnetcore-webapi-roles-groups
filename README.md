@@ -1,11 +1,16 @@
 ---
 page_type: sample
+author: derisen
 languages:
+- javascript
+- typescript
 - csharp
 products:
 - dotnet
+- angular
+- azure-ad
 description: "Add 150 character max description"
-urlFragment: "update-this-to-unique-url-stub"
+urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups"
 ---
 
 # Official Microsoft Sample
