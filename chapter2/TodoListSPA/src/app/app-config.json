@@ -1,0 +1,22 @@
+{
+  "auth": {
+    "clientId": "d472f179-2d03-4ec0-b6a3-d32869ab55bf",
+    "authority": "https://login.microsoftonline.com/cbaf2168-de14-4c72-9d88-f5f05366dbef",
+    "validateAuthority": true,
+    "redirectUri": "http://localhost:4200",
+    "postLogoutRedirectUri": "http://localhost:4200",
+    "navigateToLoginRequestUrl": true
+  },
+    "cache": {
+        "cacheLocation": "localStorage"
+    },
+    "scopes": {
+        "loginRequest": ["openid", "profile"]
+    },
+    "resources": {
+      "todoListApi": {
+        "resourceUri": "https://localhost:44351/api/todolist/",
+        "resourceScope": "api://88e113e8-0959-4caa-a1cd-2de9ef91b716/access_as_user"
+      }
+    }     
+}

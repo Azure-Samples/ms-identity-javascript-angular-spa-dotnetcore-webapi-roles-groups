@@ -1,20 +1,23 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { BroadcastService, MsalService } from '@azure/msal-angular';
-import { TodoService } from './../todo.service';
 import { InteractionRequiredAuthError, AuthError } from 'msal';
+import { TodoService } from './../todo.service';
 import { Todo } from '../todo';
 import * as config from '../app-config.json';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  selector: 'app-todo-view',
+  templateUrl: './todo-view.component.html',
+  styleUrls: ['./todo-view.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class TodoViewComponent implements OnInit {
+  
+  todo: Todo;
 
-  users: string[] = [];
-  todos: Todo[] = [];
-  table: any = [];
+  todos: Todo[];
+
+  displayedColumns = ['status', 'description', 'edit', 'remove'];
 
   constructor(private authService: MsalService, private service: TodoService, private broadcastService: BroadcastService) { }
 
@@ -22,6 +25,7 @@ export class DashboardComponent implements OnInit {
     this.broadcastService.subscribe('msal:acquireTokenSuccess', (payload) => {
       console.log(payload);
       console.log('access token acquired: ' + new Date().toString());
+      
     });
  
     this.broadcastService.subscribe('msal:acquireTokenFailure', (payload) => {
@@ -29,15 +33,13 @@ export class DashboardComponent implements OnInit {
       console.log('access token acquisition fails');
     });
 
-    this.getAll()
+    this.getTodos();
   }
 
-  getAll(): void {
-    this.service.getAll().subscribe({
-      next: (response: any[]) => {
-        console.log(response);
+  getTodos(): void {
+    this.service.getTodos().subscribe({
+      next: (response: Todo[]) => {
         this.todos = response;
-        this.tabulateTodos(this.todos);
       },
       error: (err: AuthError) => {
         // If there is an interaction required error,
@@ -49,10 +51,8 @@ export class DashboardComponent implements OnInit {
           .then(() => {
             this.service.getTodos()
               .toPromise()
-              .then((response: any[])  => {
-                console.log(response);
+              .then((response: Todo[])  => {
                 this.todos = response;
-                this.tabulateTodos(this.todos);
               });
           });
         }
@@ -60,14 +60,21 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-    tabulateTodos(todos): void {
-      todos.map((todo) => {
-        if (!this.users.includes(todo.owner)) {
-          this.users.push(todo.owner)
-          this.table.push({"owner": todo.owner, "tasks": todos.filter(t => t.owner === todo.owner && !t.status)})
-          console.log(this.table)
-        }
-      })  
-    }
+  addTodo(add: NgForm): void {
+    this.service.postTodo(add.value).subscribe(() => {
+      this.getTodos();
+    })
+    add.resetForm();
+  }
+
+  checkTodo(todo): void {
+    this.service.editTodo(todo).subscribe();
+  }
+
+  removeTodo(id): void {
+    this.service.deleteTodo(id).subscribe(() => {
+      this.getTodos();
+    })
+  }
 
 }

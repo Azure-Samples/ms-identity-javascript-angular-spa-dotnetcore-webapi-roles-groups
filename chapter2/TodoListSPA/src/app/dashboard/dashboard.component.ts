@@ -64,7 +64,7 @@ export class DashboardComponent implements OnInit {
       todos.map((todo) => {
         if (!this.users.includes(todo.owner)) {
           this.users.push(todo.owner)
-          this.table.push({"owner": todo.owner, "tasks": todos.filter(t => t.owner === todo.owner && !t.status)})
+          this.table.push({"owner": todo.owner, "tasks": todos.filter(t => t.owner === todo.owner)})
           console.log(this.table)
         }
       })  
