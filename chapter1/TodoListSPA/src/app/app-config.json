@@ -17,10 +17,6 @@
       "todoListApi": {
         "resourceUri": "https://localhost:44351/api/todolist/",
         "resourceScope": "api://88e113e8-0959-4caa-a1cd-2de9ef91b716/access_as_user"
-      },
-      "graphApi": {
-        "resourceUri": "https://graph.microsoft.com/v1.0/users",
-        "resourceScope": "User.Read.All"
       }
     }     
 }

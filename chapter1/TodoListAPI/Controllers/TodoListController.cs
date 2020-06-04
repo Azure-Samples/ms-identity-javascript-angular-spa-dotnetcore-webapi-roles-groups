@@ -29,7 +29,7 @@ namespace TodoListAPI.Controllers
             _context = context;
         }
 
-        // GET: api/controller/getAll
+        // GET: api/todolist/getAll
         [HttpGet]
         [Route("getAll")]
         [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantAdminRoleRequired)]
@@ -39,7 +39,7 @@ namespace TodoListAPI.Controllers
             return await _context.TodoItems.ToListAsync();
         }
 
-        // GET: api/TodoItems
+        // GET: api/todolist
         [HttpGet]
         [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantUserRoleRequired)]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
@@ -49,7 +49,7 @@ namespace TodoListAPI.Controllers
             return await _context.TodoItems.Where(item => item.Owner == owner).ToListAsync();
         }
 
-        // GET: api/TodoItems/5
+        // GET: api/todolist/5
         [HttpGet("{id}")]
         [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantUserRoleRequired)]
         public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
@@ -66,7 +66,7 @@ namespace TodoListAPI.Controllers
             return todoItem;
         }
 
-        // PUT: api/TodoItems/5
+        // PUT: api/todolist/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
@@ -101,7 +101,7 @@ namespace TodoListAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/TodoItems
+        // POST: api/todolist
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
@@ -126,7 +126,7 @@ namespace TodoListAPI.Controllers
             return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
         }
 
-        // DELETE: api/TodoItems/5
+        // DELETE: api/todolist/5
         [HttpDelete("{id}")]
         [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantUserRoleRequired)]
         public async Task<ActionResult<TodoItem>> DeleteTodoItem(int id)
