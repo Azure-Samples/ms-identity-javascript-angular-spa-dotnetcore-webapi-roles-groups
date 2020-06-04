@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using TodoListAPI.Models;
 using TodoListAPI.Utils;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace TodoListAPI
 {
@@ -24,10 +23,6 @@ namespace TodoListAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // By default, the claims mapping will map claim names in the old format to accommodate older SAML applications.
-            // 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role' instead of 'roles'
-            // JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
-
             // Setting configuration for protected web api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddProtectedWebApi(Configuration);
@@ -37,8 +32,7 @@ namespace TodoListAPI
             services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 // The claim in the Jwt token where App roles are available.
-                options.TokenValidationParameters.RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-                // options.TokenValidationParameters.RoleClaimType = "roles";
+                options.TokenValidationParameters.RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"; // this schema stands for "roles"
             });
 
             // Adding authorization policies that enforce authorization using Azure AD roles.
@@ -47,8 +41,6 @@ namespace TodoListAPI
                options.AddPolicy(AuthorizationPolicies.AssignmentToTenantUserRoleRequired, policy => policy.RequireRole(AppRole.TenantUser));
                options.AddPolicy(AuthorizationPolicies.AssignmentToTenantAdminRoleRequired, policy => policy.RequireRole(AppRole.TenantAdmin));
            });
-
-            //services.AddAuthorization();
 
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
 

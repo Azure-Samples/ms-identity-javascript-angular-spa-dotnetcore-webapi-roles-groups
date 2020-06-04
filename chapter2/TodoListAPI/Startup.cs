@@ -23,31 +23,23 @@ namespace TodoListAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // By default, the claims mapping will map claim names in the old format to accommodate older SAML applications.
-            // 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role' instead of 'roles'
-            // JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
-
             // Setting configuration for protected web api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddProtectedWebApi(Configuration);
 
-            // The following lines code instruct the asp.net core middleware to use the data in the "roles" claim in the Authorize attribute and User.IsInrole()
-            // See https://docs.microsoft.com/aspnet/core/security/authorization/roles?view=aspnetcore-2.2 for more info.
+            // The following lines code instruct the asp.net core middleware to use the data in the "groups" claim in the Authorize attribute
             services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
             {
-                // The claim in the Jwt token where App roles are available.
-                // options.TokenValidationParameters.RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/group";
+                // The claim in the Jwt token where groups are available.
                 options.TokenValidationParameters.RoleClaimType = "groups";
             });
 
-           // Adding authorization policies that enforce authorization using Azure AD roles.
-           //services.AddAuthorization(options =>
-           //{
-           //    options.AddPolicy(AuthorizationPolicies.AssignmentToGroupMemberRoleRequired, policy => policy.RequireRole(AppRoles.GroupAdmin));
-           //    options.AddPolicy(AuthorizationPolicies.AssignmentToGroupAdminRoleRequired, policy => policy.RequireRole(AppRoles.GroupMember));
-           //});
-
-            services.AddAuthorization();
+            // Adding authorization policies that enforce authorization using Azure AD roles.
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AuthorizationPolicies.AssignmentToGroupAdminGroupRequired, policy => policy.RequireRole(SecurityGroups.GroupAdmin));
+                options.AddPolicy(AuthorizationPolicies.AssignmentToGroupMemberGroupRequired, policy => policy.RequireRole(SecurityGroups.GroupMember));
+            });
 
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
 

@@ -28,19 +28,19 @@ namespace TodoListAPI.Controllers
             _context = context;
         }
 
-        // GET: api/controller/getAll
+        // GET: api/todolist/getAll
         [HttpGet]
         [Route("getAll")]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupAdminRoleRequired)]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> GetAll(string command)
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupAdminGroupRequired)]
+        public async Task<ActionResult<IEnumerable<TodoItem>>> GetAll()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
             return await _context.TodoItems.ToListAsync();
         }
 
-        // GET: api/TodoItems
+        // GET: api/todolist
         [HttpGet]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberGroupRequired)]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
@@ -49,9 +49,9 @@ namespace TodoListAPI.Controllers
             return await _context.TodoItems.Where(item => item.Owner == owner).ToListAsync();
         }
 
-        // GET: api/TodoItems/5
+        // GET: api/todolist/5
         [HttpGet("{id}")]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberGroupRequired)]
         public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
@@ -66,11 +66,11 @@ namespace TodoListAPI.Controllers
             return todoItem;
         }
 
-        // PUT: api/TodoItems/5
+        // PUT: api/todolist/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberGroupRequired)]
         public async Task<IActionResult> PutTodoItem(int id, TodoItem todoItem)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
@@ -101,16 +101,15 @@ namespace TodoListAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/TodoItems
+        // POST: api/todolist
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberGroupRequired)]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
-            var user = User;
             string owner = User.FindFirst("preferred_username")?.Value;
             todoItem.Owner = owner;
 
@@ -126,9 +125,9 @@ namespace TodoListAPI.Controllers
             return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
         }
 
-        // DELETE: api/TodoItems/5
+        // DELETE: api/todolist/5
         [HttpDelete("{id}")]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberGroupRequired)]
         public async Task<ActionResult<TodoItem>> DeleteTodoItem(int id)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
