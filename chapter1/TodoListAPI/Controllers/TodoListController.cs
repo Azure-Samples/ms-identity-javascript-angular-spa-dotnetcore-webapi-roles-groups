@@ -110,12 +110,8 @@ namespace TodoListAPI.Controllers
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
-            var user = User;
             string owner = User.FindFirst("preferred_username")?.Value;
             todoItem.Owner = owner;
-
-            var random = new Random();
-            todoItem.Id = random.Next();
 
             todoItem.Status = false;
 

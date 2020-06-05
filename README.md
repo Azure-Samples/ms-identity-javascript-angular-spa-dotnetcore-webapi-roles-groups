@@ -23,9 +23,9 @@ We recommend you to follow each chapter in a successive fashion, as the concepts
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-| `Chapter 1`       | Angular SPA calling .NET Core Web API using App Roles. |
-| `Chapter 2`       | Angular SPA calling .NET Core Web API using Security Groups. |
-| `Chapter 3`       | Conditional Access scenarios and dealing with authentication issues. |
+| `Chapter1`        | Angular SPA calling .NET Core Web API using App Roles. |
+| `Chapter2`        | Angular SPA calling .NET Core Web API using Security Groups. |
+| `Chapter3`        | Conditional Access scenarios and dealing with authentication issues. |
 | `Misc`            | Contains screenshots and illustrations.    |
 | `CHANGELOG.md`    | List of changes to the sample.             |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |

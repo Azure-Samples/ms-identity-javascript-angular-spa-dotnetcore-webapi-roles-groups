@@ -44,7 +44,6 @@ namespace TodoListAPI.Controllers
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-            var user = User;
             string owner = User.FindFirst("preferred_username")?.Value;
             return await _context.TodoItems.Where(item => item.Owner == owner).ToListAsync();
         }
@@ -112,9 +111,6 @@ namespace TodoListAPI.Controllers
 
             string owner = User.FindFirst("preferred_username")?.Value;
             todoItem.Owner = owner;
-
-            var random = new Random();
-            todoItem.Id = random.Next();
 
             todoItem.Status = false;
 
