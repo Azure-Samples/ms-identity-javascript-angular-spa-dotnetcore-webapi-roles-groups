@@ -7,11 +7,13 @@ languages:
 products:
 - angular
 - dotnet
-description: "This sample demonstrates an Angular single-page application calling a .NET Core Web API secured with Azure Active Directory"
-urlFragment: "ms-identity-javascript-angular-spa-aspnetcore-webapi"
+- azure-ad
+- ms-graph
+description: "This sample demonstrates an Angular single-page application calling a .NET Core Web API with role-based access control"
+urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups/Chapter2"
 ---
 
-# An Angular single-page application that authenticates users with Azure AD and calls a protected ASP.NET Core Web API
+# An Angular Single-page Application (SPA) that Authenticates Users with Azure AD and Calls a Protected ASP.NET Core Web API using Azure AD Security Groups
 
 ## Overview
 
@@ -48,7 +50,7 @@ This sample demonstrates a cross-platform application suite involving an Angular
 - [Dotnet Core SDK](https://dotnet.microsoft.com/download) must be installed to run this sample.
 - An Azure Active Directory (Azure AD) tenant.
 - At least **two** user accounts in your Azure AD tenant.
-- A modern Browser. This sample uses ES6 conventions and will not run on Internet Explorer.
+- A modern Browser. This sample uses **ES6** conventions and will not run on **Internet Explorer**.
 - We recommend [VS Code](https://code.visualstudio.com/download) for running and debugging this cross-platform application.
 
 ## Setup
@@ -58,15 +60,15 @@ Using a command line interface such as VS Code integrated terminal, follow the s
 ### Step 1. Install .NET Core API dependencies
 
 ```console
-cd TodoListAPI
-dotnet restore
+   cd TodoListAPI
+   dotnet restore
 ```
 
 ### Step 2. Trust development certificates
 
 ```console
-dotnet dev-certs https --clean
-dotnet dev-certs https --trust
+   dotnet dev-certs https --clean
+   dotnet dev-certs https --trust
 ```
 
 Learn more about [HTTPS in .NET Core](https://docs.microsoft.com/aspnet/core/security/enforcing-ssl).
@@ -74,9 +76,9 @@ Learn more about [HTTPS in .NET Core](https://docs.microsoft.com/aspnet/core/sec
 ### Step 3. Install Angular SPA dependencies
 
 ```console
-cd ../
-cd TodoListSPA
-npm install
+   cd ../
+   cd TodoListSPA
+   npm install
 ```
 
 ## Registration
@@ -109,10 +111,7 @@ There are two projects in this sample. Each needs to be registered separately in
    > Other ways of running the scripts are described in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md)
    > The scripts also provide a guide to automated application registration, configuration and removal which can help in your CI/CD scenarios.
 
-5. Follow the section on "Running the sample" below.
-
 </details>
-
 
 ### Register the service app (TodoListAPI)
 
@@ -128,7 +127,7 @@ There are two projects in this sample. Each needs to be registered separately in
 The first thing that we need to do is to declare the unique [resource](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow) URI that the clients will be using to obtain access tokens for this Api. To declare an resource URI, follow the following steps:
    - Click `Set` next to the **Application ID URI** to generate a URI that is unique for this app.
    - For this sample, accept the proposed Application ID URI (api://{clientId}) by selecting **Save**.
-1. All Apis have to publish a minimum of one [scope](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code) for the client's to obtain an access token successfully. To publish a scope, follow the following steps:
+1. All APIs have to publish a minimum of one [scope](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code) for the client's to obtain an access token successfully. To publish a scope, follow the following steps:
    - Select **Add a scope** button open the **Add a scope** screen and Enter the values as indicated below:
         - For **Scope name**, use `access_as_user`.
         - Select **Admins and users** options for **Who can consent?**
@@ -142,7 +141,7 @@ The first thing that we need to do is to declare the unique [resource](https://d
 #### Configure the  service app (TodoListAPI) to use your app registration
 
 Open the project in your IDE (like Visual Studio) to configure the code.
->In the steps below, "ClientID" is the same as "Application ID" or "AppId".
+> In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListAPI\appsettings.json` file.
 1. Find the app key `Domain` and replace the existing value with your Azure AD tenant name.
@@ -172,10 +171,6 @@ Open the project in your IDE (like Visual Studio) to configure the code.
    - In the **Delegated permissions** section, select the **access_as_user** in the list. Use the search box if necessary.
    - Click on the **Add permissions** button at the bottom.
 
-1. Now you need to leave the registration for `TodoListSPA` and go back to your app registration for `TodoListAPI`.
-   - From the app's Overview page, select the Manifest section.
-   - Find the entry for `KnownClientApplications`, and add the Application (client) ID of the `TodoListSPA` application copied from the Azure portal. i.e. `KnownClientApplications: [ "your-client-id-for-TodoListSPA" ]`
-
 #### Configure the client app (TodoListSPA) to use your app registration
 
 Open the project in your IDE (like Visual Studio) to configure the code.
@@ -183,10 +178,55 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 
 1. Open the `TodoListSPA\src\app\app-config.json` file
 1. Find the app key `clientId` and replace the existing value with the application ID (clientId) of the `TodoListSPA` application copied from the Azure portal.
-1. Find the app key `redirectUri` and replace the existing value with the base address of the TodoListSPA project (by default `http://localhost:4200`).
-1. Find the app key `postLogoutRedirectUri` and replace the existing value with the base address of the TodoListSPA project (by default `http://localhost:4200`).
-1. Find the app key `webApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
-1. Find the app key `webApi.resourceScope` and replace the existing value with *Scope* you created earlier `api://{clientId}/access_as_user`.
+2. Find the app key `webApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
+3. Find the app key `webApi.resourceScope` and replace the existing value with *Scope* you created earlier `api://{clientId}/access_as_user`.
+
+## Define Security Groups
+
+Now you have two different options available to you on how you can further configure your application to receive the `groups` claim.
+
+1. [Receive **all the groups** that the signed-in user is assigned to in an Azure AD tenant, included nested groups](#configure-your-application-to-receive-all-the-groups-the-signed-in-user-is-assigned-to-included-nested-groups).
+2. [Receive the **groups** claim values from a **filtered set of groups** that your application is programmed to work with](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to). (Not available in the [Azure AD Free edition](https://azure.microsoft.com/pricing/details/active-directory/)).
+
+> To get the on-premise group's `samAccountName` or `On Premises Group Security Identifier` instead of Group id, please refer to the document [Configure group claims for applications with Azure Active Directory](https://docs.microsoft.com/azure/active-directory/hybrid/how-to-connect-fed-group-claims#prerequisites-for-using-group-attributes-synchronized-from-active-directory).
+
+### Configure your application to receive **all the groups** the signed-in user is assigned to, included nested groups
+
+1. In the app's registration screen, click on the **Token Configuration** blade in the left to open the page where you can configure the claims provided tokens issued to your application.
+1. Click on the **Add groups claim** button on top to open the **Edit Groups Claim** screen.
+1. Select `Security groups` **or** the `All groups (includes distribution lists but not groups assigned to the application)` option. Choosing both negates the effect of `Security Groups` option.
+1. Under the **ID** section, select `Group ID`. This will result in Azure AD sending the [object id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the **groups** claim of the [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) that your app receives after signing-in a user.
+1. If you are exposing a Web API using the **Expose an API** option, then you can also choose the `Group ID` option under the **Access** section. This will result in Azure AD sending the [object id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [Access Token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) issued to the client applications of your API.
+
+### Configure your application to receive the `groups` claim values from a **filtered set of groups** a user may be assigned to
+
+#### Prerequisites, benefits and limitations of using this option
+
+1. This option is useful when your application is interested in a selected set of groups that a signing-in user may be assigned to and not every security group this user is assigned to in the tenant.  This option also saves your application from running into the [overage](#groups-overage-claim) issue.
+1. This feature is not available in the [Azure AD Free edition](https://azure.microsoft.com/pricing/details/active-directory/).
+1. **Nested group assignments** are not available when this option is utilized.
+
+#### Steps to enable this option in your app
+
+1. In the app's registration screen, click on the **Token Configuration** blade in the left to open the page where you can configure the claims provided tokens issued to your application.
+1. Click on the **Add groups claim** button on top to open the **Edit Groups Claim** screen.
+1. Select `Groups assigned to the application`.
+    1. Choosing additional options like `Security Groups` or `All groups (includes distribution lists but not groups assigned to the application)` will negate the benefits your app derives from choosing to use this option.
+1. Under the **ID** section, select `Group ID`. This will result in Azure AD sending the object [id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) that your app receives after signing-in a user.
+1. If you are exposing a Web API using the **Expose an API** option, then you can also choose the `Group ID` option under the **Access** section. This will result in Azure AD sending the object [id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [Access Token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) issued to the client applications of your API.
+1. In the app's registration screen, click on the **Overview** blade in the left to open the Application overview screen. Select the hyperlink with the name of your application in **Managed application in local directory** (note this field title can be truncated for instance `Managed application in ...`). When you select this link you will navigate to the **Enterprise Application Overview** page associated with the service principal for your application in the tenant where you created it. You can navigate back to the app registration page by using the back button of your browser.
+1. Select the **Users and groups** blade in the left to open the page where you can assign users and groups to your application.
+    1. Click on the **Add user** button on the top row.
+    1. Select **User and Groups** from the resultant screen.
+    1. Choose the groups that you want to assign to this application.
+    1. Click **Select** in the bottom to finish selecting the groups.
+    1. Click **Assign** to finish the group assignment process.  
+    1. Your application will now receive these selected groups in the `groups` claim when a user signing in to your app is a member of  one or more these **assigned** groups.
+1. Select the **Properties** blade in the left to open the page that lists the basic properties of your application.Set the **User assignment required?** flag to **Yes**.
+
+   > **Important security tip**
+   >
+   > When you set **User assignment required?** to **Yes**, Azure AD will check that only users assigned to your application in the **Users and groups** blade are able to sign-in to your app. You can assign users directly or by assigning security groups they belong to.
 
 ## Run the sample
 
@@ -205,12 +245,6 @@ cd TodoListAPI
 dotnet run
 ```
 
-## Debugging the sample
-
-To debug the .NET Core Web API that comes with this sample, install the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) for Visual Studio Code.
-
-Learn more about using [.NET Core with Visual Studio Code](https://docs.microsoft.com/dotnet/core/tutorials/with-visual-studio-code).
-
 ## Explore the sample
 
 1. Open your browser and navigate to `http://localhost:4200`.
@@ -224,9 +258,21 @@ Discussion goes here...
 > [!NOTE]
 > Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
 
+## Debugging the sample
+
+To debug the .NET Core Web API that comes with this sample, install the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) for Visual Studio Code.
+
+Learn more about using [.NET Core with Visual Studio Code](https://docs.microsoft.com/dotnet/core/tutorials/with-visual-studio-code).
+
 ## Contributing
 
-If you'd like to contribute to this sample, see [CONTRIBUTING.MD](./CONTRIBUTING.md).
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
 
 ## Code of Conduct
 

@@ -9,15 +9,16 @@ products:
 - dotnet
 - angular
 - azure-ad
+- ms-graph
 description: "Angular Single-Page Application calling .NET Core Web API using App Roles and Security Groups for implementing Role-Based Access Control"
 urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups"
 ---
 
-# Angular Single-Page Application calling .NET Core Web API using App Roles and Security Groups for implementing Role-Based Access Control
+# Angular Single-Page Application (SPA) calling .NET Core Web API using App Roles and Security Groups for implementing Role-Based Access Control
 
 This chapter-wise tutorial demonstrates how to use Azure AD App Roles and Security Groups features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in id and access tokens, how to protect restricted routes in your front-end, and how to accept only authorized calls in your web API.
 
-We recommend you to follow each chapter in a successive fashion, as the concepts involved are built on top of each other and explanations may not be repeated. Before proceeding to **chapter 1**, please review the [Prerequisites](#prerequisites) below.
+We recommend you to follow each chapter in a successive fashion, as the concepts involved are built on top of each other and explanations may not be repeated. Before proceeding to **Chapter 1**, please review the [Prerequisites](#prerequisites) below.
 
 ## Contents
 
@@ -25,7 +26,6 @@ We recommend you to follow each chapter in a successive fashion, as the concepts
 |-------------------|--------------------------------------------|
 | `Chapter1`        | Angular SPA calling .NET Core Web API using App Roles. |
 | `Chapter2`        | Angular SPA calling .NET Core Web API using Security Groups. |
-| `Chapter3`        | Conditional Access scenarios and dealing with authentication issues. |
 | `Misc`            | Contains screenshots and illustrations.    |
 | `CHANGELOG.md`    | List of changes to the sample.             |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
@@ -39,7 +39,7 @@ We recommend you to follow each chapter in a successive fashion, as the concepts
   - [Angular Single-page Application calling custom .NET Core Web API](https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-aspnetcore-webapi)
 - Please take a moment to review [Azure RBAC docementation](https://docs.microsoft.com/azure/role-based-access-control/) in order to become familiar with App Roles and Security Groups. More specific documentation pointers can be found below under [More information](#more-information).
 
-Please refer to each chapter's sub-folder for sample prerequisites.
+Please refer to each chapter's sub-folder for sample-specific prerequisites.
 
 ## Setup
 
@@ -70,7 +70,6 @@ For more information, visit the following links:
   - [How to: Provide optional claims to your Azure AD app](https://docs.microsoft.com/azure/active-directory/develop/active-directory-optional-claims)
   - [How to: Restrict your Azure AD app to a set of users in an Azure AD tenant](https://docs.microsoft.com/azure/active-directory/develop/howto-restrict-your-app-to-a-set-of-users)
   - [How to: Add app roles in your application and receive them in the token](https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps)
-  - 
 
 - To lean more about the application registration, visit:
   - [Quickstart: Set up a tenant](https://docs.microsoft.com/azure/active-directory/develop/quickstart-create-new-tenant)

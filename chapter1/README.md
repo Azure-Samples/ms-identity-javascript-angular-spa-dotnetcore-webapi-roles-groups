@@ -7,11 +7,13 @@ languages:
 products:
 - angular
 - dotnet
-description: "This sample demonstrates an Angular single-page application calling a .NET Core Web API secured with Azure Active Directory"
-urlFragment: "ms-identity-javascript-angular-spa-aspnetcore-webapi"
+- azure-ad
+- ms-graph
+description: "This sample demonstrates an Angular single-page application calling a .NET Core Web API with role-based access control"
+urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups/Chapter1"
 ---
 
-# An Angular single-page application that authenticates users with Azure AD and calls a protected ASP.NET Core Web API
+# An Angular Single-page Application (SPA) that Authenticates Users with Azure AD and Calls a Protected ASP.NET Core Web API using Azure AD App Roles
 
 ## Overview
 
@@ -48,7 +50,7 @@ This sample demonstrates a cross-platform application suite involving an Angular
 - [Dotnet Core SDK](https://dotnet.microsoft.com/download) must be installed to run this sample.
 - An Azure Active Directory (Azure AD) tenant.
 - At least **two** user accounts in your Azure AD tenant.
-- A modern Browser. This sample uses ES6 conventions and will not run on Internet Explorer.
+- A modern Browser. This sample uses **ES6** conventions and will not run on **Internet Explorer**.
 - We recommend [VS Code](https://code.visualstudio.com/download) for running and debugging this cross-platform application.
 
 ## Setup
@@ -58,15 +60,15 @@ Using a command line interface such as VS Code integrated terminal, follow the s
 ### Step 1. Install .NET Core API dependencies
 
 ```console
-cd TodoListAPI
-dotnet restore
+   cd TodoListAPI
+   dotnet restore
 ```
 
 ### Step 2. Trust development certificates
 
 ```console
-dotnet dev-certs https --clean
-dotnet dev-certs https --trust
+   dotnet dev-certs https --clean
+   dotnet dev-certs https --trust
 ```
 
 Learn more about [HTTPS in .NET Core](https://docs.microsoft.com/aspnet/core/security/enforcing-ssl).
@@ -74,9 +76,9 @@ Learn more about [HTTPS in .NET Core](https://docs.microsoft.com/aspnet/core/sec
 ### Step 3. Install Angular SPA dependencies
 
 ```console
-cd ../
-cd TodoListSPA
-npm install
+   cd ../
+   cd TodoListSPA
+   npm install
 ```
 
 ## Registration
@@ -109,10 +111,7 @@ There are two projects in this sample. Each needs to be registered separately in
    > Other ways of running the scripts are described in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md)
    > The scripts also provide a guide to automated application registration, configuration and removal which can help in your CI/CD scenarios.
 
-5. Follow the section on "Running the sample" below.
-
 </details>
-
 
 ### Register the service app (TodoListAPI)
 
@@ -128,7 +127,7 @@ There are two projects in this sample. Each needs to be registered separately in
 The first thing that we need to do is to declare the unique [resource](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow) URI that the clients will be using to obtain access tokens for this Api. To declare an resource URI, follow the following steps:
    - Click `Set` next to the **Application ID URI** to generate a URI that is unique for this app.
    - For this sample, accept the proposed Application ID URI (api://{clientId}) by selecting **Save**.
-1. All Apis have to publish a minimum of one [scope](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code) for the client's to obtain an access token successfully. To publish a scope, follow the following steps:
+1. All APIs have to publish a minimum of one [scope](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code) for the client's to obtain an access token successfully. To publish a scope, follow the following steps:
    - Select **Add a scope** button open the **Add a scope** screen and Enter the values as indicated below:
         - For **Scope name**, use `access_as_user`.
         - Select **Admins and users** options for **Who can consent?**
@@ -142,7 +141,7 @@ The first thing that we need to do is to declare the unique [resource](https://d
 #### Configure the  service app (TodoListAPI) to use your app registration
 
 Open the project in your IDE (like Visual Studio) to configure the code.
->In the steps below, "ClientID" is the same as "Application ID" or "AppId".
+> In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListAPI\appsettings.json` file.
 1. Find the app key `Domain` and replace the existing value with your Azure AD tenant name.
@@ -172,10 +171,6 @@ Open the project in your IDE (like Visual Studio) to configure the code.
    - In the **Delegated permissions** section, select the **access_as_user** in the list. Use the search box if necessary.
    - Click on the **Add permissions** button at the bottom.
 
-1. Now you need to leave the registration for `TodoListSPA` and go back to your app registration for `TodoListAPI`.
-   - From the app's Overview page, select the Manifest section.
-   - Find the entry for `KnownClientApplications`, and add the Application (client) ID of the `TodoListSPA` application copied from the Azure portal. i.e. `KnownClientApplications: [ "your-client-id-for-TodoListSPA" ]`
-
 #### Configure the client app (TodoListSPA) to use your app registration
 
 Open the project in your IDE (like Visual Studio) to configure the code.
@@ -183,27 +178,80 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 
 1. Open the `TodoListSPA\src\app\app-config.json` file
 1. Find the app key `clientId` and replace the existing value with the application ID (clientId) of the `TodoListSPA` application copied from the Azure portal.
-1. Find the app key `redirectUri` and replace the existing value with the base address of the TodoListSPA project (by default `http://localhost:4200`).
-1. Find the app key `postLogoutRedirectUri` and replace the existing value with the base address of the TodoListSPA project (by default `http://localhost:4200`).
-1. Find the app key `webApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
-1. Find the app key `webApi.resourceScope` and replace the existing value with *Scope* you created earlier `api://{clientId}/access_as_user`.
+2. Find the app key `webApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
+3. Find the app key `webApi.resourceScope` and replace the existing value with *Scope* you created earlier `api://{clientId}/access_as_user`.
+
+## Define Application Roles
+
+1. In the blade for your  application in Azure Portal, click **Manifest**.
+1. Edit the manifest by locating the `appRoles` setting and adding the two Application Roles.  The role definitions are provided in the JSON code block below.  Leave the `allowedMemberTypes` to **User** only.  Each role definition in this manifest must have a different valid **Guid** for the "id" property. Note that the `"value"` property of each role is set to the exact strings **TenantAdmin** and **TenantUser** (as these strings are used in the code in the application).
+1. Save the manifest.
+
+The content of `appRoles` should be the following (the `id` should be a unique Guid)
+
+```json
+   "appRoles": [
+      {
+         "allowedMemberTypes": [
+            "User"
+         ],
+         "description": "Admins can read others' todolists",
+         "displayName": "TenantAdmin",
+         "id": "72ff9f52-8011-49e0-a4f4-cc1bb26206fa",
+         "isEnabled": true,
+         "lang": null,
+         "origin": "Application",
+         "value": "TenantAdmin"
+      },
+      {
+         "allowedMemberTypes": [
+            "User"
+         ],
+         "description": "Users can read and modify their todolist",
+         "displayName": "TenantUser",
+         "id": "a816142a-2e8e-46c4-9997-f984faccb625",
+         "isEnabled": true,
+         "lang": null,
+         "origin": "Application",
+         "value": "TenantUser"
+      }
+   ],
+```
+
+> Note:  To receive the `roles` claim in Id and Access tokens with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this app. The guide, [Assign a user or group to an enterprise app in Azure Active Directory](https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal) provides step by step instructions.
 
 ## Run the sample
 
 Using a command line interface such as VS Code integrated terminal, locate the application directory. Then:  
 
 ```console
-cd ../
-cd TodoListSPA
-npm start
+   cd ../
+   cd TodoListSPA
+   npm start
 ```
 
 In a separate console window, execute the following commands
 
 ```console
-cd TodoListAPI
-dotnet run
+   cd TodoListAPI
+   dotnet run
 ```
+
+## Explore the sample
+
+1. Open your browser and navigate to `http://localhost:4200`.
+2. Sign-in using the button on top-right.
+3. Click on the "Get my tasks" button to access your todo list.
+4. If you have the right privileges, click on the "See all tasks" button to access every users' todo list.
+
+## Discussion
+
+Discussion goes here...
+
+### Angular RoleGuard and Protected Routes for Role-Based Access Control
+
+> [!NOTE]
+> Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
 
 ## Debugging the sample
 
@@ -211,22 +259,15 @@ To debug the .NET Core Web API that comes with this sample, install the [C# exte
 
 Learn more about using [.NET Core with Visual Studio Code](https://docs.microsoft.com/dotnet/core/tutorials/with-visual-studio-code).
 
-## Explore the sample
-
-1. Open your browser and navigate to `http://localhost:4200`.
-2. Sign-in using the button on top-right.
-3. Click on the "Get my tasks" button to access your todo list.
-
-## Discussion
-
-Discussion goes here...
-
-> [!NOTE]
-> Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
-
 ## Contributing
 
-If you'd like to contribute to this sample, see [CONTRIBUTING.MD](./CONTRIBUTING.md).
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
 
 ## Code of Conduct
 
