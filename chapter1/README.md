@@ -172,7 +172,8 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 #### Configure the client app (TodoListSPA) to use your app registration
 
 Open the project in your IDE (like Visual Studio) to configure the code.
->In the steps below, "ClientID" is the same as "Application ID" or "AppId".
+
+> In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListSPA\src\app\app-config.json` file
 1. Find the app key `clientId` and replace the existing value with the application ID (clientId) of the `TodoListSPA` application copied from the Azure portal.
@@ -181,11 +182,13 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 
 ## Define Application Roles
 
+> [NOTE!] You need to perform the steps below for both **TodoListAPI** and **TodoListSPA**
+
 1. In the blade for your application on Azure Portal, click **Manifest**.
 1. Edit the manifest by locating the `appRoles` setting and adding the two Application Roles.  The role definitions are provided in the JSON code block below.  Leave the `allowedMemberTypes` to **User** only.  Each role definition in this manifest must have a different valid **Guid** for the "id" property. Note that the `"value"` property of each role is set to the exact strings **TenantAdmin** and **TenantUser** (as these strings are used in the code in the application).
 1. Save the manifest.
 
-The content of `appRoles` should be the following (the `id` should be a unique Guid -you may use a GUID Generator tool for this)
+The content of `appRoles` should be the following (the `id` should be a unique Guid -*you may use a GUID Generator tool for this*)
 
 ```json
    "appRoles": [

@@ -12,7 +12,7 @@ export class TodoService {
   constructor(private http: HttpClient) { }
 
   getAll() {
-    return this.http.get<string[]>(this.apiUri + 'getAll');
+    return this.http.get<string[]>(this.apiUri + '/' + 'getAll');
   }
 
   getTodos() { 
@@ -20,7 +20,7 @@ export class TodoService {
   }
 
   getTodo(id) { 
-    return this.http.get<Todo>(this.apiUri + id);
+    return this.http.get<Todo>(this.apiUri + '/' +  id);
   }
   
   postTodo(todo) { 
@@ -28,10 +28,10 @@ export class TodoService {
   }
 
   deleteTodo(id) {
-    return this.http.delete(this.apiUri + id);
+    return this.http.delete(this.apiUri + '/' +  id);
   }
 
   editTodo(todo) { 
-    return this.http.put<Todo>(this.apiUri + todo.id, todo);
+    return this.http.put<Todo>(this.apiUri + '/' +  todo.id, todo);
   }
 }
