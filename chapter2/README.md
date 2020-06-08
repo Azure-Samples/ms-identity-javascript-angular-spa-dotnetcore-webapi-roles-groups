@@ -264,7 +264,9 @@ In a separate console window, execute the following commands
 
 ## Discussion
 
-### The groups overage claim
+Much of the specifics of implementing **RBAC** with **Security Groups** is the same with implementing **RBAC** with **App Roles** discussed in [Chapter1](../Chapter1/). In order to avoid redundancy, here we discuss particular issues that might arise with using **groups** claim.
+
+### The Groups Overage Claim
 
 To ensure that the token size doesn’t exceed HTTP header size limits, the Microsoft Identity Platform limits the number of object Ids that it includes in the **groups** claim.
 
@@ -286,7 +288,7 @@ If a user is member of more groups than the overage limit (**150 for SAML tokens
 }
 ```
 
-#### Create the overage scenario in this sample for testing
+#### Create the Overage Scenario in this Sample for Testing
 
 1. You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. Remember to change the user's objectId provided in the `BulkCreateGroups.ps1` script.
 2. We strongly advise you use the [group filtering feature](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to) (if possible) to avoid running into group overages.
