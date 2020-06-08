@@ -10,13 +10,13 @@ products:
 - angular
 - azure-ad
 - ms-graph
-description: "Angular Single-Page Application calling .NET Core Web API using App Roles and Security Groups for implementing Role-Based Access Control"
+description: "Angular Single-Page Application (SPA) calling .NET Core Web API using App Roles and Security Groups for Implementing Role-Based Access Control (RBAC)"
 urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups"
 ---
 
-# Angular Single-Page Application (SPA) calling .NET Core Web API using App Roles and Security Groups for implementing Role-Based Access Control
+# Angular Single-Page Application (SPA) calling .NET Core Web API using App Roles and Security Groups for Implementing Role-Based Access Control (RBAC)
 
-This chapter-wise tutorial demonstrates how to use Azure AD App Roles and Security Groups features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in id and access tokens, how to protect restricted routes in your front-end, and how to accept only authorized calls in your web API.
+This chapter-wise tutorial demonstrates how to use Azure AD App Roles and Security Groups features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in **Id** and **Access** tokens, how to protect restricted routes in your client app, and how to accept only authorized calls in your web API.
 
 We recommend you to follow each chapter in a successive fashion, as the concepts involved are built on top of each other and explanations may not be repeated. Before proceeding to **Chapter 1**, please review the [Prerequisites](#prerequisites) below.
 

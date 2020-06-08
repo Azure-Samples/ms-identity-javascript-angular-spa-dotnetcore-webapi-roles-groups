@@ -28,9 +28,6 @@ This sample demonstrates a cross-platform application suite involving an Angular
 
 ![Topology](../Misc/topology.png)
 
-> [!NOTE]
-> This sample uses Angular 9 with .NET Core 3.1 and is configured to support sign-in with **personal Microsoft accounts**.
-
 ## Contents
 
 | File/folder       | Description                                |
@@ -119,7 +116,7 @@ There are two projects in this sample. Each needs to be registered separately in
 1. Select **New registration**.
 1. In the **Register an application page** that appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `TodoListAPI`.
-   - Under **Supported account types**, select **Accounts in any organizational directory and personal Microsoft accounts**.
+   - Under **Supported account types**, select **Accounts in this organizational directory**.
 1. Select **Register** to create the application.
 1. In the app's registration screen, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
 1. Select **Save** to save your changes.
@@ -146,6 +143,7 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 1. Open the `TodoListAPI\appsettings.json` file.
 1. Find the app key `Domain` and replace the existing value with your Azure AD tenant name.
 1. Find the app key `ClientId` and replace the existing value with the application ID (clientId) of the `TodoListAPI` application copied from the Azure portal.
+1. Find the app key `TenantId` and replace the existing value with the tenant ID of the `TodoListAPI` application copied from the Azure portal.
 
 ### Register the client app (TodoListSPA)
 
@@ -153,7 +151,7 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 1. Select **New registration**.
 1. In the **Register an application page** that appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `TodoListSPA`.
-   - Under **Supported account types**, select **Accounts in any organizational directory and personal Microsoft accounts**.
+   - Under **Supported account types**, select **Accounts in this organizational directory**.
    - In the **Redirect URI** section, select **Single-page application** in the combo-box and enter the following redirect URI: `http://localhost:4200/`.
 1. Select **Register** to create the application.
 1. In the app's registration screen, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
@@ -178,8 +176,8 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 
 1. Open the `TodoListSPA\src\app\app-config.json` file
 1. Find the app key `clientId` and replace the existing value with the application ID (clientId) of the `TodoListSPA` application copied from the Azure portal.
-2. Find the app key `webApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
-3. Find the app key `webApi.resourceScope` and replace the existing value with *Scope* you created earlier `api://{clientId}/access_as_user`.
+1. Find the app key `webApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
+1. Find the app key `webApi.resourceScope` and replace the existing value with *Scope* you created earlier `api://{clientId}/access_as_user`.
 
 ## Define Security Groups
 
@@ -190,7 +188,7 @@ Now you have two different options available to you on how you can further confi
 
 > To get the on-premise group's `samAccountName` or `On Premises Group Security Identifier` instead of Group id, please refer to the document [Configure group claims for applications with Azure Active Directory](https://docs.microsoft.com/azure/active-directory/hybrid/how-to-connect-fed-group-claims#prerequisites-for-using-group-attributes-synchronized-from-active-directory).
 
-### Configure your application to receive **all the groups** the signed-in user is assigned to, included nested groups
+### Configure your application to receive **all the groups** the signed-in user is assigned to, including nested groups
 
 1. In the app's registration screen, click on the **Token Configuration** blade in the left to open the page where you can configure the claims provided tokens issued to your application.
 1. Click on the **Add groups claim** button on top to open the **Edit Groups Claim** screen.
@@ -233,27 +231,80 @@ Now you have two different options available to you on how you can further confi
 Using a command line interface such as VS Code integrated terminal, locate the application directory. Then:  
 
 ```console
-cd ../
-cd TodoListSPA
-npm start
+   cd ../
+   cd TodoListSPA
+   npm start
 ```
 
 In a separate console window, execute the following commands
 
 ```console
-cd TodoListAPI
-dotnet run
+   cd TodoListAPI
+   dotnet run
 ```
 
 ## Explore the sample
 
 1. Open your browser and navigate to `http://localhost:4200`.
-2. Sign-in using the button on top-right.
-3. Click on the "Get my tasks" button to access your todo list.
+2. Sign-in using the button on top-right:
+
+![login](../Misc/ch1_login.png)
+
+1. Click on the **Get My Tasks** button to access your (the signed-in user's) todo list:
+
+![todolist](../Misc/ch1_todolist.png)
+
+1. If the signed-in user has the right privileges (i.e. in the right "group"), click on the **See All Tasks** button to access every users' todo list:
+
+![dashboard](../Misc/ch1_dashboard.png)
+
+1. If the signed-in user does not have the right privileges, clicking on the **See All Tasks** will give an error:
+
+![error](../Misc/ch1_error.png)
 
 ## Discussion
 
-Discussion goes here...
+### The groups overage claim
+
+To ensure that the token size doesn’t exceed HTTP header size limits, the Microsoft Identity Platform limits the number of object Ids that it includes in the **groups** claim.
+
+If a user is member of more groups than the overage limit (**150 for SAML tokens, 200 for JWT tokens, 6 for Single Page applications**, ), then the Microsoft Identity Platform does not emit the group ids in the `groups` claim in the token. Instead, it includes an **overage** claim in the token that indicates to the application to query the [Graph API](https://graph.microsoft.com) to retrieve the user’s group membership.
+
+```JSON
+{
+  ...
+  "_claim_names": {
+    "groups": "src1"
+    },
+    {
+   "_claim_sources": {
+    "src1": {
+        "endpoint":"[Graph Url to get this user's group membership from]"
+        }
+    }
+  ...
+}
+```
+
+#### Create the overage scenario in this sample for testing
+
+1. You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. Remember to change the user's objectId provided in the `BulkCreateGroups.ps1` script.
+2. We strongly advise you use the [group filtering feature](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to) (if possible) to avoid running into group overages.
+3. In case you cannot avoid running into group overage, we suggest you use the following logic to process groups claim in your token.  
+    1. Check for the claim `_claim_names` with one of the values being `groups`. This indicates overage.
+    2. If found, make a call to the endpoint specified in `_claim_sources` to fetch user’s groups.
+    3. If none found, look into the `groups`  claim for user’s groups.
+
+> When attending to overage scenarios, which requires a call to [Microsoft Graph](https://graph.microsoft.com) to read the signed-in user's group memberships, your app will need to have the [GroupMember.Read.All](https://docs.microsoft.com/graph/permissions-reference#group-permissions) for the [getMemberObjects](https://docs.microsoft.com/graph/api/user-getmemberobjects?view=graph-rest-1.0) function to execute successfully.
+
+> Developers who wish to gain good familiarity of programming for Microsoft Graph are advised to go through the [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A) recorded session.
+
+##### When you are a single page application and using the implicit grant flow to authenticate
+
+In case, you are authenticating using the [implicit grant flow](https://docs.microsoft.com/azure/active-directory/develop/v1-oauth2-implicit-grant-flow), the **overage** indication and limits are different than the apps using other flows.
+
+1. A claim named `hasgroups` with a value of true will be present in the token instead of the `groups` claim .
+1. The maximum number of groups provided in the `groups` claim is limited to 6. This is done to prevent  the URI fragment beyond the URL length limits.
 
 > [!NOTE]
 > Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
