@@ -61,8 +61,8 @@
             "value": "client.AppId"
           },
           {
-            "key": "Enter the Redirect Uri that you set on Azure Portal, like http://localhost:4200",
-            "value": "client.HomePage"
+            "key": "Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist/'",
+            "value": "service.HomePage"
           },
           {
             "key": "Enter the API scopes as declared in the app registration 'Expose an Api' blade in the form of 'api://{clientId}/access_as_user'",
