@@ -258,7 +258,7 @@ In a separate console window, execute the following commands
 
 ### Angular RoleGuard and Protected Routes for Role-Based Access Control
 
-Our client application, TodoListSPA, has a **RoleGuard** (`role-guard.service.ts`) component that checks whether a user has the right privileges to access a protected route. It does this by checking `roles` claim the ID token of the sign-in user:
+Our client application, TodoListSPA, has a **RoleGuard** (`role-guard.service.ts`) component that checks whether a user has the right privileges to access a protected route. It does this by checking `roles` claim the ID token of the signed-in user:
 
 ```typescript
 export class RoleGuardService implements CanActivate {
