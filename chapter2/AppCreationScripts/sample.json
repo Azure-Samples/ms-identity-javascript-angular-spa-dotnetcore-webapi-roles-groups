@@ -13,7 +13,8 @@
         "Name": "TodoListAPI",
         "Kind": "WebApi",
         "Audience": "AzureADMyOrg",
-        "HomePage": "https://localhost:44351/api/todolist"      
+        "HomePage": "https://localhost:44351/api/todolist",
+        "GroupMembershipClaims": "SecurityGroup"      
       },
       {
         "Id": "client",
@@ -22,6 +23,7 @@
         "Audience": "AzureADMyOrg",
         "HomePage": "http://localhost:4200/",
         "ReplyUrls": "http://localhost:4200/",
+        "GroupMembershipClaims": "SecurityGroup",
         "RequiredResourcesAccess": [
           {
             "Resource": "service",
@@ -41,7 +43,7 @@
             "value": "$tenantName"
           },
           {
-            "key": "Enter the id of your Azure AD tenant, e.g. 'contoso.onmicrosoft.com'",
+            "key": "Enter the Id of your Azure AD tenant copied from the Azure porta",
             "value": "$tenantId"
           },
           {
@@ -61,7 +63,11 @@
             "value": "client.AppId"
           },
           {
-            "key": "Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist/'",
+            "key": "https://login.microsoftonline.com/Enter_the_Tenant_Id_Here",
+            "value": "\"https://login.microsoftonline.com/\"+$tenantId"
+          },
+          {
+            "key": "Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist'",
             "value": "service.HomePage"
           },
           {

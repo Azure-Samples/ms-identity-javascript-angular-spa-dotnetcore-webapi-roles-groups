@@ -3,6 +3,7 @@ page_type: sample
 author: derisen
 languages:
 - javascript
+- typescript
 - csharp
 products:
 - angular
@@ -17,13 +18,13 @@ urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups/
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with Azure Active Directory.
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with Azure Active Directory. It also implements role-based access control by using Azure AD App Roles: in the sample, a dashboard component allowing to see the tasks assigned to any user is only accessible by users under the **TenantAdmin** role.
 
 ### Scenario
 
 - TodoListSPA uses [MSAL.js](https://github.com/AzureAD/microsoft-authentication-library-for-js) and [MSAL-Angular](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user.
-- The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure Active Directory (Azure AD) on behalf of the authenticated user.
-- The access token is then used to authorize the call to the TodoListAPI.
+- The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure Active Directory (Azure AD) on behalf of the authenticated user for the TodoListAPI.
+- The access token is then used by the TodoListAPI to authorize the user.
 - TodoListAPI uses [MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) and [Microsoft.Identity.Web](https://github.com/AzureAD/microsoft-identity-web) to protect its endpoint and accept authorized calls.
 
 ![Topology](../Misc/topology.png)
@@ -221,6 +222,10 @@ The content of `appRoles` should be the following (the `id` should be a unique G
 
 > Note:  To receive the `roles` claim in Id and Access tokens with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this app. The guide, [Assign a user or group to an enterprise app in Azure Active Directory](https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal) provides step by step instructions.
 
+> **Important security tip**
+>
+> When you set **User assignment required?** to **Yes**, Azure AD will check that only users assigned to your application in the **Users and groups** blade are able to sign-in to your app. You can assign users directly or by assigning security groups they belong to.
+
 ## Run the sample
 
 Using a command line interface such as VS Code integrated terminal, locate the application directory. Then:  
@@ -313,14 +318,14 @@ const routes: Routes = [
 ];
 ```
 
-However, it is important to be aware of that no content on the front-end application can be **truly** secure. That is, our **RoleGuard** component is primarily responsible for rendering the correct UI elements for a user in a particular role; in the example above, we allow only users in the `TenantAdmin` role to see the `Dashboard` component. In order to **truly** protect data and expose REST operations to a selected set of users, we need to enable **RBAC** on the back-end as well.
+However, it is important to be aware of that no content on the front-end application can be **truly** secure. That is, our **RoleGuard** component is primarily responsible for rendering the correct pages and other UI elements for a user in a particular role; in the example above, we allow only users in the `TenantAdmin` role to see the `Dashboard` component. In order to **truly** protect data and expose certain REST operations to a selected set of users, we need to enable **RBAC** on the back-end/web API as well.
 
 ### Policy based Authorization for .NET Core Web API
 
-As mentioned before, in order to **truly** implement RBAC and secure data, we need to allow only authorized calls to our web API. We do this by defining access policies and decorating our REST methods with them. To do so, we first add `roles` claim as a validation parameter in `Startup.cs`, and then create authorization policies that depends on this claim: 
+As mentioned before, in order to **truly** implement RBAC and secure data, we need to allow only authorized calls to our web API. We do this by defining access policies and decorating our REST methods with them. To do so, we first add `roles` claim as a validation parameter in `Startup.cs`, and then create authorization policies that depends on this claim:
 
 ```csharp
-   // The following lines code instruct the asp.net core middleware to use the data in the "roles" claim in the Authorize attribute and User.IsInrole()
+   // The following lines code instruct the asp.net core middleware to use the data in the "roles" claim in the Authorize attribute and User.
    // See https://docs.microsoft.com/aspnet/core/security/authorization/roles?view=aspnetcore-2.2 for more info.
    services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
    {

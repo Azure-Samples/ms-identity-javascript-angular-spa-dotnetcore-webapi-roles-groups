@@ -14,11 +14,22 @@
         "Kind": "WebApi",
         "Audience": "AzureADMyOrg",
         "HomePage": "https://localhost:44351/api/todolist",
+        "AppRoles": [
+          {
+            "Types" :  ["User"],
+            "Name" : "TenantAdmin",
+            "Description" : "Admins can read any user's todolist"
+          },
+          {
+            "Types" :  ["User"],
+            "Name" : "TenantUser",
+            "Description" : "Users can read and modify their todolists"
+          }
+        ],
         "ManualSteps": [
-            {
-                "Comment":  "Navigate to the portal and set the AppRoles property in the application manifest"
-            }
-        ]        
+          { "Comment": "You can run the ..\\CreateUsersAndAssignRoles.ps1 command to automatically create a number of users, and assign users to these roles or assign users to this application app roles using the portal.To receive the `roles` claim with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this app. The guide, https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal provides step by step instructions." }
+  
+        ]      
       },
       {
         "Id": "client",
@@ -33,11 +44,22 @@
             "DelegatedPermissions": [ "access_as_user" ]
           }
         ],
-        "ManualSteps": [
+        "AppRoles": [
           {
-            "Comment":  "Navigate to the portal and set the AppRoles property in the application manifest"
+            "Types" :  ["User"],
+            "Name" : "TenantAdmin",
+            "Description" : "Admins can read any user's todolist"
+          },
+          {
+            "Types" :  ["User"],
+            "Name" : "TenantUser",
+            "Description" : "Users can read and modify their todolists"
           }
-        ]
+        ],
+        "ManualSteps": [
+          { "Comment": "You can run the ..\\CreateUsersAndAssignRoles.ps1 command to automatically create a number of users, and assign users to these roles or assign users to this application app roles using the portal.To receive the `roles` claim with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this app. The guide, https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal provides step by step instructions." }
+  
+        ]         
       }
     ],
     "CodeConfiguration": [
@@ -51,7 +73,7 @@
             "value": "$tenantName"
           },
           {
-            "key": "Enter the id of your Azure AD tenant, e.g. 'contoso.onmicrosoft.com'",
+            "key": "Enter the Id of your Azure AD tenant copied from the Azure portal",
             "value": "$tenantId"
           },
           {
@@ -71,7 +93,11 @@
             "value": "client.AppId"
           },
           {
-            "key": "Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist/'",
+            "key": "https://login.microsoftonline.com/Enter_the_Tenant_Id_Here",
+            "value": "\"https://login.microsoftonline.com/\"+$tenantId"
+          },
+          {
+            "key": "Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist'",
             "value": "service.HomePage"
           },
           {
