@@ -17,7 +17,10 @@ export class GroupGuardService implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const expectedRole = route.data.expectedRole;
     
-    if (!this.authService.getAccount().idTokenClaims.groups.includes(expectedRole)) {
+    if (!this.authService.getAccount().idTokenClaims.groups) {
+      window.alert('Token does not have groups claim');
+      return false;
+    } else if (!this.authService.getAccount().idTokenClaims.groups.includes(expectedRole)) {
         window.alert('You do not have access for this');
         return false;
     }

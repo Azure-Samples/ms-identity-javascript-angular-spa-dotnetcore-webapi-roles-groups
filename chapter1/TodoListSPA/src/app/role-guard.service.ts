@@ -16,7 +16,10 @@ export class RoleGuardService implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const expectedRole = route.data.expectedRole;
     
-    if (!this.authService.getAccount().idTokenClaims.roles.includes(expectedRole)) {
+    if (!this.authService.getAccount().idTokenClaims.roles) {
+      window.alert('Token does not have roles claim');
+      return false;
+    } else if (!this.authService.getAccount().idTokenClaims.roles.includes(expectedRole)) {
         window.alert('You do not have access for this');
         return false;
     }
