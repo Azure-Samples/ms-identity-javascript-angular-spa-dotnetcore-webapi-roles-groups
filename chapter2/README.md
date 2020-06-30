@@ -14,11 +14,11 @@ description: "This sample demonstrates an Angular single-page application callin
 urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups/Chapter2"
 ---
 
-# An Angular Single-page Application (SPA) that Authenticates Users with Azure AD and Calls a Protected ASP.NET Core Web API using Azure AD Security Groups
+# An Angular Single-page Application (SPA) that authenticates users with Azure AD and calls a protected ASP.NET Core Web API using Azure AD Security Groups
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with Azure Active Directory. It also implements role-based access control by using Azure AD Security Groups: in the sample, a dashboard component allowing to see the tasks assigned to any user is only accessible by users in the **TenantAdmin** group.
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with Azure Active Directory. It also implements **role-based access control** by using Azure AD Security Groups: in the sample, a dashboard component allowing to see the tasks assigned to any user is only accessible by users in the **TenantAdmin** group.
 
 ### Scenario
 
@@ -27,19 +27,17 @@ This sample demonstrates a cross-platform application suite involving an Angular
 - The access token is then used by the TodoListAPI to authorize the user.
 - TodoListAPI uses [MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) and [Microsoft.Identity.Web](https://github.com/AzureAD/microsoft-identity-web) to protect its endpoint and accept authorized calls.
 
-![Topology](../Misc/topology.png)
+![Topology](../ReadmeFiles/topology.png)
 
 ## Contents
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
 | `AppCreationScripts` | Contains Powershell scripts to automate app registrations. |
-| `ReadmeFiles`     | Sample readme files.                       |
 | `TodoListAPI`     | Source code of the TodoList API.           |
 | `TodoListSPA`     | Source code of the TodoList client SPA.    |
 | `CHANGELOG.md`    | List of changes to the sample.             |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
-| `README.md`       | This README file.                          |
 | `LICENSE`         | The license for the sample.                |
 
 ## Prerequisites
@@ -184,8 +182,8 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 
 Now you have two different options available to you on how you can further configure your application to receive the `groups` claim.
 
-1. [Receive **all the groups** that the signed-in user is assigned to in an Azure AD tenant, included nested groups](#configure-your-application-to-receive-all-the-groups-the-signed-in-user-is-assigned-to-included-nested-groups).
-2. [Receive the **groups** claim values from a **filtered set of groups** that your application is programmed to work with](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to). (Not available in the [Azure AD Free edition](https://azure.microsoft.com/pricing/details/active-directory/)).
+1. [Receive **all the groups** that the signed-in user is assigned to in an Azure AD tenant, included nested groups](#configure-your-application-to-receive-all-the-groups-the-signed-in-user-is-assigned-to-including-nested-groups).
+2. [Receive the **groups** claim values from a **filtered set of groups** that your application is programmed to work with](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to) (Not available in the [Azure AD Free edition](https://azure.microsoft.com/pricing/details/active-directory/)).
 
 > To get the on-premise group's `samAccountName` or `On Premises Group Security Identifier` instead of Group id, please refer to the document [Configure group claims for applications with Azure Active Directory](https://docs.microsoft.com/azure/active-directory/hybrid/how-to-connect-fed-group-claims#prerequisites-for-using-group-attributes-synchronized-from-active-directory).
 
@@ -223,7 +221,7 @@ Now you have two different options available to you on how you can further confi
     1. Your application will now receive these selected groups in the `groups` claim when a user signing in to your app is a member of  one or more these **assigned** groups.
 1. Select the **Properties** blade in the left to open the page that lists the basic properties of your application.Set the **User assignment required?** flag to **Yes**.
 
-> **Important security tip**
+> :bulb: **Important security tip**
 >
 > When you set **User assignment required?** to **Yes**, Azure AD will check that only users assigned to your application in the **Users and groups** blade are able to sign-in to your app. You can assign users directly or by assigning security groups they belong to.
 
@@ -249,19 +247,19 @@ In a separate console window, execute the following commands
 1. Open your browser and navigate to `http://localhost:4200`.
 2. Sign-in using the button on top-right:
 
-![login](../Misc/ch1_login.png)
+![login](../ReadmeFiles/ch1_login.png)
 
 1. Click on the **Get My Tasks** button to access your (the signed-in user's) todo list:
 
-![todolist](../Misc/ch1_todolist.png)
+![todolist](../ReadmeFiles/ch1_todolist.png)
 
 1. If the signed-in user has the right privileges (i.e. in the right "group"), click on the **See All Tasks** button to access every users' todo list:
 
-![dashboard](../Misc/ch1_dashboard.png)
+![dashboard](../ReadmeFiles/ch1_dashboard.png)
 
 1. If the signed-in user does not have the right privileges, clicking on the **See All Tasks** will give an error:
 
-![error](../Misc/ch1_error.png)
+![error](../ReadmeFiles/ch1_error.png)
 
 ## Discussion
 
@@ -289,9 +287,9 @@ If a user is member of more groups than the overage limit (**150 for SAML tokens
 }
 ```
 
-#### Create the Overage Scenario in this Sample for Testing
+#### Create the Overage Scenario in this sample for testing
 
-1. You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. Remember to change the user's objectId provided in the `BulkCreateGroups.ps1` script.
+1. You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. Remember to change the user's **objectId** provided in the `BulkCreateGroups.ps1` script.
 2. We strongly advise you use the [group filtering feature](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to) (if possible) to avoid running into group overages.
 3. In case you cannot avoid running into group overage, we suggest you use the following logic to process groups claim in your token.  
     1. Check for the claim `_claim_names` with one of the values being `groups`. This indicates overage.
@@ -304,13 +302,12 @@ If a user is member of more groups than the overage limit (**150 for SAML tokens
 
 ##### Single-page Application and using the Implicit Grant flow to authenticate
 
-In case, you are authenticating using the [implicit grant flow](https://docs.microsoft.com/azure/active-directory/develop/v1-oauth2-implicit-grant-flow), the **overage** indication and limits are different than the apps using other flows.
+When authenticating using the [implicit grant flow](https://docs.microsoft.com/azure/active-directory/develop/v1-oauth2-implicit-grant-flow), the **overage** indication and limits are different than the apps using other flows.
 
-1. A claim named `hasgroups` with a value of true will be present in the token instead of the `groups` claim .
-1. The maximum number of groups provided in the `groups` claim is limited to 6. This is done to prevent  the URI fragment beyond the URL length limits.
+1. A claim named `hasgroups` with a value of true will be present in the token instead of the `groups` claim.
+1. The maximum number of groups provided in the `groups` claim is limited to 6. This is done to prevent the URI fragment beyond the URL length limits.
 
-> [!NOTE]
-> Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
+> :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
 
 ## Debugging the sample
 
@@ -323,10 +320,6 @@ Learn more about using [.NET Core with Visual Studio Code](https://docs.microsof
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
-
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
 
 ## Code of Conduct
 
