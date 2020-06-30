@@ -10,22 +10,22 @@ products:
 - angular
 - azure-ad
 - ms-graph
-description: "Angular Single-Page Application (SPA) calling .NET Core Web API using App Roles and Security Groups for Implementing Role-Based Access Control (RBAC)"
+description: "Angular Single-Page Application (SPA) calling .NET Core Web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)"
 urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups"
 ---
 
-# Angular Single-Page Application (SPA) calling .NET Core Web API using App Roles and Security Groups for Implementing Role-Based Access Control (RBAC)
+# Angular Single-Page Application (SPA) calling a .NET Core Web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)
 
 This chapter-wise tutorial demonstrates how to use Azure AD App Roles and Security Groups features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in **Id** and **Access** tokens, how to protect restricted routes in your client app, and how to accept only authorized calls in your web API.
 
-We recommend you to follow each chapter in a successive fashion, as the concepts involved are built on top of each other and explanations may not be repeated. Before proceeding to **Chapter 1**, please review the [Prerequisites](#prerequisites) below.
+We recommend you to follow each chapter in a successive fashion, as the concepts used in later chapters are built on top of previous ones and explanations may not be repeated. Before proceeding to **Chapter 1**, please review the [Prerequisites](#prerequisites) below.
 
 ## Contents
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-| `Chapter1`        | Angular SPA calling .NET Core Web API using App Roles. |
-| `Chapter2`        | Angular SPA calling .NET Core Web API using Security Groups. |
+| `Chapter1`        | Angular SPA calling .NET Core Web API and using App Roles. |
+| `Chapter2`        | Angular SPA calling .NET Core Web API and using Security Groups. |
 | `Misc`            | Contains screenshots and illustrations.    |
 | `CHANGELOG.md`    | List of changes to the sample.             |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
@@ -34,10 +34,12 @@ We recommend you to follow each chapter in a successive fashion, as the concepts
 
 ## Prerequisites
 
-- Please ensure that you are familiar with basic Azure AD samples, in particular with:
+- We highly recommend you first getting familiar with the following *basic sign-in* examples and documents. This will help you easily grasp the various aspects that are presented here.
   - [VanillaJS Single-page Application calling MS Graph API](https://github.com/Azure-Samples/active-directory-javascript-graphapi-v2)
-  - [Angular Single-page Application calling custom .NET Core Web API](https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-aspnetcore-webapi)
-- Please take a moment to review [Azure RBAC docementation](https://docs.microsoft.com/azure/role-based-access-control/) in order to become familiar with App Roles and Security Groups. More specific documentation pointers can be found below under [More information](#more-information).
+  - [Angular Single-page Application calling a custom .NET Core Web API](https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-aspnetcore-webapi)
+- Please take a moment to review [Azure RBAC documentation](https://docs.microsoft.com/azure/role-based-access-control/) in order to become familiar with App Roles and Security Groups. More specific documentation pointers can be found below under [More information](#more-information).
+
+> A Microsoft Identity Platform Office Hours session covered Azure AD App roles and security groups, featuring this scenario and this sample. A recording of the session is is provided in this video [Implement Authorization in your Applications with Microsoft identity platform](https://www.youtube.com/watch?v=LRoc-na27l0)
 
 Please refer to each chapter's sub-folder for sample-specific prerequisites.
 
@@ -55,21 +57,24 @@ git clone https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-do
 
 ### Step 2
 
-Please refer to each chapter's sub-folder for further setup instructions.
-
-## Running the sample
-
-Please refer to each chapter's sub-folder for instructions for running the sample.
+Now let's start with [Chapter 1](./Chapter1/README.md).
 
 ## More information
 
 For more information, visit the following links:
 
 - Articles about the Microsoft identity platform are at [http://aka.ms/aaddevv2](http://aka.ms/aaddevv2), with a focus on:
+  - [Configure group claims for applications with Azure Active Directory (Public Preview)](https://docs.microsoft.com/azure/active-directory/hybrid/how-to-connect-fed-group-claims#configure-the-azure-ad-application-registration-for-group-attributes)
   - [How to: Configure the role claim issued in the SAML token for enterprise applications](https://docs.microsoft.com/azure/active-directory/develop/active-directory-enterprise-app-role-management)
+  - [Azure Active Directory app manifest](https://docs.microsoft.com/azure/active-directory/develop/reference-app-manifest)
+  - [user: getMemberObjects function](https://docs.microsoft.com/graph/api/user-getmemberobjects?view=graph-rest-1.0)
   - [How to: Provide optional claims to your Azure AD app](https://docs.microsoft.com/azure/active-directory/develop/active-directory-optional-claims)
   - [How to: Restrict your Azure AD app to a set of users in an Azure AD tenant](https://docs.microsoft.com/azure/active-directory/develop/howto-restrict-your-app-to-a-set-of-users)
   - [How to: Add app roles in your application and receive them in the token](https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps)
+
+- Learn more about on-prem groups synchronization to Azure AD  
+  - [Azure AD Connect sync: Understanding Users, Groups, and Contacts](https://docs.microsoft.com/azure/active-directory/connect/active-directory-aadconnectsync-understanding-users-and-contacts)
+  - [Configure Office 365 Groups with on-premises Exchange hybrid](https://docs.microsoft.com/exchange/hybrid-deployment/set-up-office-365-groups)
 
 - To lean more about the application registration, visit:
   - [Quickstart: Set up a tenant](https://docs.microsoft.com/azure/active-directory/develop/quickstart-create-new-tenant)
