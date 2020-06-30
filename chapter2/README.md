@@ -119,7 +119,7 @@ There are two projects in this sample. Each needs to be registered separately in
 1. Select **Register** to create the application.
 1. In the app's registration screen, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
 1. Select **Save** to save your changes.
-1. In the app's registration screen, click on the **Expose an API** blade to the left to open the page where you can declare the parameters to expose this app as an Api for which client applications can obtain [access tokens](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) for.
+1. In the app's registration screen, click on the **Expose an API** blade to the left to open the page where you can declare the parameters to expose this app as an API for which client applications can obtain [access tokens](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) for.
 The first thing that we need to do is to declare the unique [resource](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow) URI that the clients will be using to obtain access tokens for this Api. To declare an resource URI, follow the following steps:
    - Click `Set` next to the **Application ID URI** to generate a URI that is unique for this app.
    - For this sample, accept the proposed Application ID URI (api://{clientId}) by selecting **Save**.
@@ -134,9 +134,10 @@ The first thing that we need to do is to declare the unique [resource](https://d
         - Keep **State** as **Enabled**
         - Click on the **Add scope** button on the bottom to save this scope.
 
-#### Configure the  service app (TodoListAPI) to use your app registration
+#### Configure the service app (TodoListAPI) to use your app registration
 
 Open the project in your IDE (like Visual Studio) to configure the code.
+
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListAPI\appsettings.json` file.
@@ -171,14 +172,17 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 #### Configure the client app (TodoListSPA) to use your app registration
 
 Open the project in your IDE (like Visual Studio) to configure the code.
->In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
-1. Open the `TodoListSPA\src\app\app-config.json` file
+> In the steps below, "ClientID" is the same as "Application ID" or "AppId".
+
+1. Open the `TodoListSPA\src\app\app-config.json` file.
 1. Find the app key `clientId` and replace the existing value with the application ID (clientId) of the `TodoListSPA` application copied from the Azure portal.
 1. Find the app key `webApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
 1. Find the app key `webApi.resourceScope` and replace the existing value with *Scope* you created earlier `api://{clientId}/access_as_user`.
 
 ## Define Security Groups
+
+> :warning: The **Token Configuration** steps below that you need to perform are the same for both **TodoListAPI** and **TodoListSPA**.
 
 Now you have two different options available to you on how you can further configure your application to receive the `groups` claim.
 
@@ -193,7 +197,10 @@ Now you have two different options available to you on how you can further confi
 1. Click on the **Add groups claim** button on top to open the **Edit Groups Claim** screen.
 1. Select `Security groups` **or** the `All groups (includes distribution lists but not groups assigned to the application)` option. Choosing both negates the effect of `Security Groups` option.
 1. Under the **ID** section, select `Group ID`. This will result in Azure AD sending the [object id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the **groups** claim of the [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) that your app receives after signing-in a user.
-1. If you are exposing a Web API using the **Expose an API** option, then you can also choose the `Group ID` option under the **Access** section. This will result in Azure AD sending the [object id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [Access Token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) issued to the client applications of your API.
+
+<!-- REVIEW THIS SECTION -->
+1. Under the **Access** section, if you have exposed a Web API previously and would like to , then you can also choose the `Group ID` option (click on "Groups assigned to the application" checkbox). This will result in Azure AD sending the [object id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [Access Token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) issued to the client applications of your API.
+<!-- REVIEW THIS SECTION -->
 
 ### Configure your application to receive the `groups` claim values from a **filtered set of groups** a user may be assigned to
 
@@ -225,6 +232,18 @@ Now you have two different options available to you on how you can further confi
 >
 > When you set **User assignment required?** to **Yes**, Azure AD will check that only users assigned to your application in the **Users and groups** blade are able to sign-in to your app. You can assign users directly or by assigning security groups they belong to.
 
+### Configure the client app (TodoListSPA) to recognize Group IDs
+
+1. Open the `TodoListSPA\src\app\app-config.json` file.
+1. Find the app key `groups.groupAdmin` and replace the existing value with the object ID of the **GroupAdmin** group copied from the Azure portal.
+1. Find the app key `groups.groupMember` and replace the existing value with the object ID of the **GroupMember** group copied from the Azure portal.
+
+### Configure the service app (TodoListAPI) to recognize Group IDs
+
+1. Open the `TodoListAPI\appsettings.json` file.
+2. Find the app key `Groups.GroupAdmin` and replace the existing value with the object ID of the **GroupAdmin** group copied from the Azure portal.
+3. Find the app key `Groups.GroupMember` and replace the existing value with the object ID of the **GroupMember** group copied from the Azure portal.
+
 ## Run the sample
 
 Using a command line interface such as VS Code integrated terminal, locate the application directory. Then:  
@@ -235,7 +254,7 @@ Using a command line interface such as VS Code integrated terminal, locate the a
    npm start
 ```
 
-In a separate console window, execute the following commands
+In a separate console window, execute the following commands:
 
 ```console
    cd TodoListAPI
@@ -261,7 +280,7 @@ In a separate console window, execute the following commands
 
 ![error](../ReadmeFiles/ch1_error.png)
 
-## Discussion
+## About the COde
 
 Much of the specifics of implementing **RBAC** with **Security Groups** is the same with implementing **RBAC** with **App Roles** discussed in [Chapter1](../Chapter1/). In order to avoid redundancy, here we discuss particular issues that might arise with using **groups** claim.
 
@@ -269,7 +288,7 @@ Much of the specifics of implementing **RBAC** with **Security Groups** is the s
 
 To ensure that the token size doesn’t exceed HTTP header size limits, the Microsoft Identity Platform limits the number of object Ids that it includes in the **groups** claim.
 
-If a user is member of more groups than the overage limit (**150 for SAML tokens, 200 for JWT tokens, 6 for Single Page applications**, ), then the Microsoft Identity Platform does not emit the group ids in the `groups` claim in the token. Instead, it includes an **overage** claim in the token that indicates to the application to query the [Graph API](https://graph.microsoft.com) to retrieve the user’s group membership.
+If a user is member of more groups than the overage limit (**150 for SAML tokens, 200 for JWT tokens, 6 for Single Page applications**, ), then the Microsoft Identity Platform does not emit the group ids in the `groups` claim in the token. Instead, it includes an **overage** claim in the token that indicates to the application to query the [MS Graph API](https://graph.microsoft.com) to retrieve the user’s group membership.
 
 ```JSON
 {

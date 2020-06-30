@@ -18,5 +18,9 @@
         "resourceUri": "Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist'",
         "resourceScope": "Enter the API scopes as declared in the app registration 'Expose an Api' blade in the form of 'api://{clientId}/access_as_user'"
       }
+    },
+    "groups": {
+      "groupAdmin": "2df638c0-8c92-4d52-b7a4-5bee2d9aa69e",
+      "groupMember": "831e0ef1-4786-4316-9ccb-dc1f1ed54282"
     }     
 }

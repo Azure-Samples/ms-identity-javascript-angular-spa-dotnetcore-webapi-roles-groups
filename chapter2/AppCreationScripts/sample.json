@@ -43,7 +43,7 @@
             "value": "$tenantName"
           },
           {
-            "key": "Enter the Id of your Azure AD tenant copied from the Azure porta",
+            "key": "Enter the Id of your Azure AD tenant copied from the Azure portal",
             "value": "$tenantId"
           },
           {

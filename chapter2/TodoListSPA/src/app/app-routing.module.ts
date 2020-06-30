@@ -6,21 +6,30 @@ import { TodoViewComponent } from './todo-view/todo-view.component';
 import { TodoEditComponent } from './todo-edit/todo-edit.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { GroupGuardService } from './group-guard.service';
+import * as config from './app-config.json';
 
 const routes: Routes = [
   {
     path: 'todo-edit/:id',
     component: TodoEditComponent,
     canActivate: [
-      MsalGuard
-    ]
+      MsalGuard,
+      GroupGuardService
+    ],
+    data: { 
+      expectedGroup: config.groups.groupMember
+    }
   },
   {
     path: 'todo-view',
     component: TodoViewComponent,
     canActivate: [
-      MsalGuard
-    ]
+      MsalGuard,
+      GroupGuardService
+    ],
+    data: { 
+      expectedGroup: config.groups.groupMember
+    }
   },
   {
     path: 'dashboard',
@@ -30,7 +39,7 @@ const routes: Routes = [
       GroupGuardService,
     ],
     data: { 
-      expectedRole: '2df638c0-8c92-4d52-b7a4-5bee2d9aa69e' // oid of 'GroupAdmin'
+      expectedGroup: config.groups.groupAdmin
     } 
   },
   {

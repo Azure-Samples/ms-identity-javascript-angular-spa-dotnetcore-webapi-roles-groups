@@ -12,15 +12,23 @@ const routes: Routes = [
     path: 'todo-edit/:id',
     component: TodoEditComponent,
     canActivate: [
-      MsalGuard
-    ]
+      MsalGuard,
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: 'TenantUser'
+    } 
   },
   {
     path: 'todo-view',
     component: TodoViewComponent,
     canActivate: [
-      MsalGuard
-    ]
+      MsalGuard,
+      RoleGuardService
+    ],
+    data: { 
+      expectedRole: 'TenantUser'
+    } 
   },
   {
     path: 'dashboard',
