@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
-
 import { 
-  Router,
   CanActivate,
   ActivatedRouteSnapshot
 } from '@angular/router';
@@ -12,15 +10,15 @@ import {
   })
 export class GroupGuardService implements CanActivate {
 
-  constructor(private authService: MsalService, private router: Router) {}
+  constructor(private authService: MsalService) {}
   
   canActivate(route: ActivatedRouteSnapshot): boolean {
-    const expectedRole = route.data.expectedRole;
+    const expectedGroup = route.data.expectedGroup;
     
     if (!this.authService.getAccount().idTokenClaims.groups) {
       window.alert('Token does not have groups claim');
       return false;
-    } else if (!this.authService.getAccount().idTokenClaims.groups.includes(expectedRole)) {
+    } else if (!this.authService.getAccount().idTokenClaims.groups.includes(expectedGroup)) {
         window.alert('You do not have access for this');
         return false;
     }

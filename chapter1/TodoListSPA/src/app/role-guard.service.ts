@@ -11,7 +11,7 @@ import { MsalService } from '@azure/msal-angular';
   })
 export class RoleGuardService implements CanActivate {
 
-  constructor(private authService: MsalService, private router: Router) {}
+  constructor(private authService: MsalService) {}
   
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const expectedRole = route.data.expectedRole;
