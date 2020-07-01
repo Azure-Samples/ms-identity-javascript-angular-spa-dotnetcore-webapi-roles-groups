@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using TodoListAPI.Models;
 using TodoListAPI.Utils;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace TodoListAPI
 {
@@ -23,23 +24,29 @@ namespace TodoListAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // This is required to be instantiated before the OpenIdConnectOptions starts getting configured.
+            // By default, the claims mapping will map claim names in the old format to accommodate older SAML applications.
+            // 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role' instead of 'roles'
+            // This flag ensures that the ClaimsIdentity claims collection will be built from the claims in the token
+            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
             // Setting configuration for protected web api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddProtectedWebApi(Configuration);
 
             // The following lines code instruct the asp.net core middleware to use the data in the "roles" claim in the Authorize attribute and User.IsInrole()
-            // See https://docs.microsoft.com/aspnet/core/security/authorization/roles?view=aspnetcore-2.2 for more info.
+            // See https://docs.microsoft.com/aspnet/core/security/authorization/roles for more info.
             services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 // The claim in the Jwt token where App roles are available.
-                options.TokenValidationParameters.RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"; // this schema stands for "roles"
+                options.TokenValidationParameters.RoleClaimType = "roles";
             });
 
                 // Adding authorization policies that enforce authorization using Azure AD roles.
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(AuthorizationPolicies.AssignmentToTenantUserRoleRequired, policy => policy.RequireRole(AppRole.TenantUser));
-                options.AddPolicy(AuthorizationPolicies.AssignmentToTenantAdminRoleRequired, policy => policy.RequireRole(AppRole.TenantAdmin));
+                options.AddPolicy(AuthorizationPolicies.AssignmentToTenantUserRoleRequired, policy => policy.RequireRole(AppRole.TaskUsers));
+                options.AddPolicy(AuthorizationPolicies.AssignmentToTaskAdminRoleRequired, policy => policy.RequireRole(AppRole.TaskAdmins));
             });
 
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));

@@ -56,7 +56,7 @@ git clone https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-do
 
 ### Step 2
 
-Now let's start with [Chapter 1](./Chapter1/README.md).
+Now let's start with [Chapter 1](./Chapter1/README.md) where we'd learn about using Approles first.
 
 ## More information
 

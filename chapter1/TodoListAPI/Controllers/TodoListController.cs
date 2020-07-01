@@ -32,7 +32,7 @@ namespace TodoListAPI.Controllers
         // GET: api/todolist/getAll
         [HttpGet]
         [Route("getAll")]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantAdminRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToTaskAdminRoleRequired)]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetAll()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);

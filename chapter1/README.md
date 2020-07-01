@@ -10,22 +10,22 @@ products:
 - dotnet
 - azure-ad
 - ms-graph
-description: "An Angular Single-page Application (SPA) that Authenticates Users with Azure AD and Calls a Protected ASP.NET Core Web API using Azure AD App Roles"
+description: "An Angular Single-page Application (SPA) that authenticates users with Azure AD and calls a protected ASP.NET Core Web API and uses Azure AD App Roles for authorization"
 urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups/Chapter1"
 ---
 
-# An Angular Single-page Application (SPA) that authenticates users with Azure AD and calls a protected ASP.NET Core Web API using Azure AD App Roles
+# An Angular Single-page Application (SPA) and a protected ASP.NET Core Web API use Azure AD App Roles for authorization
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with Azure Active Directory. It also implements **role-based access control** by using Azure AD App Roles: in the sample, a dashboard component allowing to see the tasks assigned to any user is only accessible by users under the **TenantAdmin** role.
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with the Microsoft Identity Platform. It implements **role-based access control** by using Azure AD App Roles: in the sample, a dashboard component allows signed-in users to see the tasks assigned to users is only accessible by users under a App rome named **TaskAdmin** role.
 
 ### Scenario
 
-- TodoListSPA uses [MSAL.js](https://github.com/AzureAD/microsoft-authentication-library-for-js) and [MSAL-Angular](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user.
-- The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure Active Directory (Azure AD) on behalf of the authenticated user for the TodoListAPI.
-- The access token is then used by the TodoListAPI to authorize the user.
-- TodoListAPI uses [MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) and [Microsoft.Identity.Web](https://github.com/AzureAD/microsoft-identity-web) to protect its endpoint and accept authorized calls.
+- The **TodoListSPA** uses [MSAL.js](https://github.com/AzureAD/microsoft-authentication-library-for-js) and [MSAL-Angular](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user with the Microsoft Identity Platform.
+- The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure Active Directory (Azure AD) on behalf of the authenticated user for the **TodoListAPI**.
+- The access token is then used by the **TodoListAPI** to authorize the user.
+- **TodoListAPI** uses [MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) and [Microsoft.Identity.Web](https://github.com/AzureAD/microsoft-identity-web) to protect its endpoint and accept only authorized calls.
 
 ![Topology](../ReadmeFiles/topology.png)
 
@@ -180,12 +180,12 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 1. Find the app key `webApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
 1. Find the app key `webApi.resourceScope` and replace the existing value with *Scope* you created earlier `api://{clientId}/access_as_user`.
 
-## Define Application Roles
+### Define Application Roles
 
-> :warning: You need to perform the steps below for both **TodoListAPI** and **TodoListSPA**. Keep in mind that App Roles definitions should be exactly the same for both the  **TodoListAPI** and the **TodoListSPA**.
+> :warning: You need to perform the steps below for both **TodoListAPI** and **TodoListSPA**. Keep in mind that App Roles definitions are exactly the same for both the  **TodoListAPI** and the **TodoListSPA** in this sample. But as a developer you can choose to implement app roles for just one of the apps or use different role names in your SPA app and the Api, if your authorization requirements demand so.
 
 1. In the blade for your application on Azure Portal, click **Manifest**.
-1. Edit the manifest by locating the `appRoles` setting and adding the two Application Roles.  The role definitions are provided in the JSON code block below.  Leave the `allowedMemberTypes` to **User** only.  Each role definition in this manifest must have a different valid **Guid** for the "id" property. Note that the `"value"` property of each role is set to the exact strings **TenantAdmin** and **TenantUser** (as these strings are used in the code in the application).
+1. Edit the manifest by locating the `appRoles` setting and adding the two Application Roles.  The role definitions are provided in the JSON code block below.  Leave the `allowedMemberTypes` to **User** only.  Each role definition in this manifest must have a different valid **Guid** for the "id" property. Note that the `"value"` property of each role is set to the exact strings **TaskAdmin** and **TaskUsers** (as these strings are used in the code in the application).
 1. Save the manifest.
 
    The content of `appRoles` should be the following (the `id` should be a unique Guid -*you may use a GUID Generator tool for this*)
@@ -197,33 +197,39 @@ Open the project in your IDE (like Visual Studio) to configure the code.
                "User"
             ],
             "description": "Admins can read others' todolists",
-            "displayName": "TenantAdmin",
+            "displayName": "TaskAdmin",
             "id": "72ff9f52-8011-49e0-a4f4-cc1bb26206fa",
             "isEnabled": true,
             "lang": null,
             "origin": "Application",
-            "value": "TenantAdmin"
+            "value": "TaskAdmin"
          },
          {
             "allowedMemberTypes": [
                "User"
             ],
             "description": "Users can read and modify their todolist",
-            "displayName": "TenantUser",
+            "displayName": "TaskUsers",
             "id": "a816142a-2e8e-46c4-9997-f984faccb625",
             "isEnabled": true,
             "lang": null,
             "origin": "Application",
-            "value": "TenantUser"
+            "value": "TaskUsers"
          }
       ],
    ```
 
-1. To receive the `roles` claim in Id and Access tokens with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this app. The guide, [Assign a user or group to an enterprise app in Azure Active Directory](https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal) provides step by step instructions.
+1. The number of Approles that can be created for an app are limited by the [App Manifest limits](https://docs.microsoft.com/azure/active-directory/develop/reference-app-manifest#manifest-limits).
+
+1. To receive the `roles` claim in **Id** and **Access** tokens with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this app. The guide, [Assign a user or group to an enterprise app in Azure Active Directory](https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal) provides step by step instructions.
+
+1. To be able to create and view tasks of their own, the signed-in user should be assigned the **TaskUsers** role.
+
+1. To be able to view all tasks  the signed-in user should be assigned the **TaskAdmin** role.
 
 > :bulb: **Important security tip**
 >
-> When you set **User assignment required?** to **Yes**, Azure AD will check that only users assigned to your application in the **Users and groups** blade are able to sign-in to your app. You can assign users directly or by assigning security groups they belong to.
+> When you set **User assignment required?** to **Yes**, Azure AD will check that only users assigned to your application in the **Users and groups** blade are able to sign-in to your app. This ensures that the `roles` claim will always be available to your app after the suers sign-in. You can assign users directly to roles or assign security groups to app roles (requires Azure AD Premium).
 
 ## Run the sample
 
@@ -276,10 +282,10 @@ export class RoleGuardService implements CanActivate {
     const expectedRole = route.data.expectedRole;
 
    if (!this.authService.getAccount().idTokenClaims.roles) {
-      window.alert('Token does not have roles claim');
+      window.alert('Token does not have roles claim. Please ensure that your account is assigned to an app role and then sign-out and sign-in again.');
       return false;
    } else if (!this.authService.getAccount().idTokenClaims.roles.includes(expectedRole)) {
-      window.alert('You do not have access for this');
+      window.alert('You do not have access as expected role is missing. Please ensure that your account is assigned to an app role and then sign-out and sign-in again.');
       return false;
    }
 
@@ -314,32 +320,32 @@ const routes: Routes = [
       RoleGuardService,
     ],
     data: {
-      expectedRole: 'TenantAdmin'
+      expectedRole: 'TaskAdmin'
     }
   }
 ];
 ```
 
-However, it is important to be aware of that no content on the front-end application can be **truly** secure. That is, our **RoleGuard** component is primarily responsible for rendering the correct pages and other UI elements for a user in a particular role; in the example above, we allow only users in the `TenantAdmin` role to see the `Dashboard` component. In order to **truly** protect data and expose certain REST operations to a selected set of users, we need to enable **RBAC** on the back-end/web API as well.
+However, it is important to be aware of that no content on the front-end application can be **truly** secure. That is, our **RoleGuard** component is primarily responsible for rendering the correct pages and other UI elements for a user in a particular role; in the example above, we allow only users in the `TaskAdmin` role to see the `Dashboard` component. In order to **truly** protect data and expose certain REST operations to a selected set of users, we enable **RBAC** on the back-end/web API as well in this sample.
 
 ### Policy based Authorization for .NET Core Web API
 
-As mentioned before, in order to **truly** implement **RBAC** and secure data, we need to allow only authorized calls to our web API. We do this by defining access policies and decorating our HTTP methods with them. To do so, we first add `roles` claim as a validation parameter in `Startup.cs`, and then we create authorization policies that depends on this claim:
+As mentioned before, in order to **truly** implement **RBAC** and secure data, this sample  allows only authorized calls to our web API. We do this by defining access policies and decorating our HTTP methods with them. To do so, we first add `roles` claim as a validation parameter in `Startup.cs`, and then we create authorization policies that depends on this claim:
 
 ```csharp
    // The following lines code instruct the asp.net core middleware to use the data in the "roles" claim in the Authorize attribute and User.
-   // See https://docs.microsoft.com/aspnet/core/security/authorization/roles?view=aspnetcore-2.2 for more info.
+   // See https://docs.microsoft.com/aspnet/core/security/authorization/roles for more info.
    services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
    {
          // The claim in the Jwt token where App roles are available.
-         options.TokenValidationParameters.RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"; // this schema stands for "roles"
+         options.TokenValidationParameters.RoleClaimType = "roles";
    });
 
          // Adding authorization policies that enforce authorization using Azure AD roles.
    services.AddAuthorization(options =>
    {
-         options.AddPolicy(AuthorizationPolicies.AssignmentToTenantUserRoleRequired, policy => policy.RequireRole(AppRole.TenantUser));
-         options.AddPolicy(AuthorizationPolicies.AssignmentToTenantAdminRoleRequired, policy => policy.RequireRole(AppRole.TenantAdmin));
+         options.AddPolicy(AuthorizationPolicies.AssignmentToTaskUsersRoleRequired, policy => policy.RequireRole(AppRole.TaskUsers));
+         options.AddPolicy(AuthorizationPolicies.AssignmentToTaskAdminRoleRequired, policy => policy.RequireRole(AppRole.TaskAdmin));
    });
 ```
 
@@ -348,13 +354,13 @@ We defined these roles in `AppRoles.cs` as follows:
 ```csharp
    public static class AppRole
    {
-      public const string TenantUser = "TenantUser";
-      public const string TenantAdmin = "TenantAdmin";
+      public const string TaskUsers = "TaskUsers";
+      public const string TaskAdmin = "TaskAdmin";
    }
    public static class AuthorizationPolicies
    {
-      public const string AssignmentToTenantUserRoleRequired = "AssignmentToTenantUserRoleRequired";
-      public const string AssignmentToTenantAdminRoleRequired = "AssignmentToTenantAdminRoleRequired";
+      public const string AssignmentToTaskUsersRoleRequired = "AssignmentToTaskUsersRoleRequired";
+      public const string AssignmentToTaskAdminRoleRequired = "AssignmentToTaskAdminRoleRequired";
    }
 ```
 
@@ -364,7 +370,7 @@ Finally, in `TodoListController.cs`, we decorate our routes with the appropriate
    // GET: api/todolist/getAll
    [HttpGet]
    [Route("getAll")]
-   [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantAdminRoleRequired)]
+   [Authorize(Policy = AuthorizationPolicies.AssignmentToTaskAdminRoleRequired)]
    public async Task<ActionResult<IEnumerable<TodoItem>>> GetAll()
    {
       HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
@@ -373,7 +379,7 @@ Finally, in `TodoListController.cs`, we decorate our routes with the appropriate
 
    // GET: api/todolist
    [HttpGet]
-   [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantUserRoleRequired)]
+   [Authorize(Policy = AuthorizationPolicies.AssignmentToTaskUsersRoleRequired)]
    public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
    {
       HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);

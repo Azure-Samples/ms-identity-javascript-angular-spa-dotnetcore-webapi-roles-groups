@@ -30,7 +30,7 @@ const routes: Routes = [
       RoleGuardService,
     ],
     data: { 
-      expectedRole: 'TenantAdmin'
+      expectedRole: 'TaskAdmin'
     } 
   },
   {

@@ -13,12 +13,12 @@ namespace TodoListAPI.Utils
         /// <summary>
         /// User readers can read basic profiles of all users in the directory.
         /// </summary>
-        public const string TenantUser = "TenantUser";
+        public const string TaskUsers = "TaskUsers";
 
         /// <summary>
         /// Directory viewers can view objects in the whole directory.
         /// </summary>
-        public const string TenantAdmin = "TenantAdmin";
+        public const string TaskAdmins = "TaskAdmin";
     }
 
     /// <summary>
@@ -27,6 +27,6 @@ namespace TodoListAPI.Utils
     public static class AuthorizationPolicies
     {
         public const string AssignmentToTenantUserRoleRequired = "AssignmentToTenantUserRoleRequired";
-        public const string AssignmentToTenantAdminRoleRequired = "AssignmentToTenantAdminRoleRequired";
+        public const string AssignmentToTaskAdminRoleRequired = "AssignmentToTaskAdminRoleRequired";
     }
 }

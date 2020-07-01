@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "angular9-todo-app": {
@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "angular9-todo-app"
+    }
+  },
+  "defaultProject": "angular9-todo-app",
+  "cli": {
+    "analytics": "b22a2853-12b3-455d-943a-855597aa9f8a"
+  }
 }

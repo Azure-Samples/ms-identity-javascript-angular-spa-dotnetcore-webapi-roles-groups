@@ -18,7 +18,7 @@ urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups/
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with Azure Active Directory. It also implements **role-based access control** by using Azure AD Security Groups: in the sample, a dashboard component allowing to see the tasks assigned to any user is only accessible by users in the **TenantAdmin** group.
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with Azure Active Directory. It also implements **role-based access control** by using Azure AD Security Groups: in the sample, a dashboard component allowing to see the tasks assigned to any user is only accessible by users in the **TaskAdmin** group.
 
 ### Scenario
 

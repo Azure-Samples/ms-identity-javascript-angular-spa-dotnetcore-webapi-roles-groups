@@ -7,6 +7,8 @@ param(
     [string] $azureEnvironmentName
 )
 
+#Requires -Modules AzureAD
+
 <#
  This script creates the Azure AD applications needed for this sample and updates the configuration files
  for the visual Studio projects from the data in the Azure AD applications.
@@ -200,6 +202,7 @@ Function ConfigureApplications
    $serviceAadApplication = New-AzureADApplication -DisplayName "TodoListAPI" `
                                                    -HomePage "https://localhost:44351/api/todolist" `
                                                    -PublicClient $False
+
    $serviceIdentifierUri = 'api://'+$serviceAadApplication.AppId
    Set-AzureADApplication -ObjectId $serviceAadApplication.ObjectId -IdentifierUris $serviceIdentifierUri
 
@@ -217,9 +220,9 @@ Function ConfigureApplications
 
    # Add application Roles
    $appRoles = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.AppRole]
-   $newRole = CreateAppRole -types "User" -name "TenantAdmin" -description "Admins can read any user's todolist"
+   $newRole = CreateAppRole -types "User" -name "TaskAdmin" -description "Admins can read any user's todo list"
    $appRoles.Add($newRole)
-   $newRole = CreateAppRole -types "User" -name "TenantUser" -description "Users can read and modify their todolists"
+   $newRole = CreateAppRole -types "User" -name "TaskUser" -description "Users can read and modify their todo lists"
    $appRoles.Add($newRole)
    Set-AzureADApplication -ObjectId $serviceAadApplication.ObjectId -AppRoles $appRoles
     # rename the user_impersonation scope if it exists to match the readme steps or add a new scope
@@ -284,9 +287,9 @@ Function ConfigureApplications
 
    # Add application Roles
    $appRoles = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.AppRole]
-   $newRole = CreateAppRole -types "User" -name "TenantAdmin" -description "Admins can read any user's todolist"
+   $newRole = CreateAppRole -types "User" -name "TaskAdmin" -description "Admins can read any user's todo list"
    $appRoles.Add($newRole)
-   $newRole = CreateAppRole -types "User" -name "TenantUser" -description "Users can read and modify their todolists"
+   $newRole = CreateAppRole -types "User" -name "TaskUsers" -description "Users can read and modify their todo lists"
    $appRoles.Add($newRole)
    Set-AzureADApplication -ObjectId $clientAadApplication.ObjectId -AppRoles $appRoles
 
@@ -326,10 +329,12 @@ Function ConfigureApplications
    Write-Host "IMPORTANT: Please follow the instructions below to complete a few manual step(s) in the Azure portal":
    Write-Host "- For 'service'"
    Write-Host "  - Navigate to '$servicePortalUrl'"
-   Write-Host "  - You can run the ..\CreateUsersAndAssignRoles.ps1 command to automatically create a number of users, and assign users to these roles or assign users to this application app roles using the portal.To receive the `roles` claim with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this app. The guide, https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal provides step by step instructions." -ForegroundColor Red 
+   Write-Host "  - To receive the `roles` claim with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this SPA app. The guide, https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal provides step by step instructions." -ForegroundColor Red 
+   Write-Host "  - Or you can run the ..\CreateUsersAndAssignRoles.ps1 command to automatically create a number of users, and assign these users to the app roles of this app." -ForegroundColor Red 
    Write-Host "- For 'client'"
    Write-Host "  - Navigate to '$clientPortalUrl'"
-   Write-Host "  - You can run the ..\CreateUsersAndAssignRoles.ps1 command to automatically create a number of users, and assign users to these roles or assign users to this application app roles using the portal.To receive the `roles` claim with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this app. The guide, https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal provides step by step instructions." -ForegroundColor Red 
+   Write-Host "  - To receive the `roles` claim with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this SPA app. The guide, https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal provides step by step instructions." -ForegroundColor Red 
+   Write-Host "  - Or you can run the ..\CreateUsersAndAssignRoles.ps1 command to automatically create a number of users, and assign these users to the app roles of this app." -ForegroundColor Red 
 
    Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 
      
