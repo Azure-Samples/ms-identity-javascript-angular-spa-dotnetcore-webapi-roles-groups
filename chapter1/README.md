@@ -196,8 +196,8 @@ Open the project in your IDE (like Visual Studio) to configure the code.
             "allowedMemberTypes": [
                "User"
             ],
-            "description": "Admins can read others' todolists",
-            "displayName": "TaskAdmin",
+            "description": "Admins can read others' TodoLists but cannot add/remove todos",
+            "displayName": "TenantAdmin",
             "id": "72ff9f52-8011-49e0-a4f4-cc1bb26206fa",
             "isEnabled": true,
             "lang": null,
@@ -208,8 +208,8 @@ Open the project in your IDE (like Visual Studio) to configure the code.
             "allowedMemberTypes": [
                "User"
             ],
-            "description": "Users can read and modify their todolist",
-            "displayName": "TaskUsers",
+            "description": "Users can read and modify their TodoList but cannot see others' lists",
+            "displayName": "TenantUser",
             "id": "a816142a-2e8e-46c4-9997-f984faccb625",
             "isEnabled": true,
             "lang": null,
@@ -219,13 +219,14 @@ Open the project in your IDE (like Visual Studio) to configure the code.
       ],
    ```
 
-1. The number of Approles that can be created for an app are limited by the [App Manifest limits](https://docs.microsoft.com/azure/active-directory/develop/reference-app-manifest#manifest-limits).
+1. The number of **App Roles** that can be created for an app are limited by the [App Manifest limits](https://docs.microsoft.com/azure/active-directory/develop/reference-app-manifest#manifest-limits).
 
 1. To receive the `roles` claim in **Id** and **Access** tokens with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this app. The guide, [Assign a user or group to an enterprise app in Azure Active Directory](https://docs.microsoft.com/azure/active-directory/manage-apps/assign-user-or-group-access-portal#assign-a-user-to-an-app---portal) provides step by step instructions.
 
-1. To be able to create and view tasks of their own, the signed-in user should be assigned the **TaskUsers** role.
-
-1. To be able to view all tasks  the signed-in user should be assigned the **TaskAdmin** role.
+   | Role          | Rights                                                                   |
+   |-------------- |--------------------------------------------------------------------------|
+   | `TenantAdmin` | Admins can read others' TodoLists but cannot add/remove todos.           |
+   | `TenantUser`  | Users can read and modify their TodoList but cannot see others' lists.   |
 
 > :bulb: **Important security tip**
 >
@@ -241,7 +242,7 @@ Using a command line interface such as VS Code integrated terminal, locate the a
    npm start
 ```
 
-In a separate console window, execute the following commands
+In a separate console window, execute the following commands:
 
 ```console
    cd TodoListAPI
@@ -276,7 +277,7 @@ Our client application, TodoListSPA, has a **RoleGuard** (`role-guard.service.ts
 ```typescript
 export class RoleGuardService implements CanActivate {
 
-  constructor(private authService: MsalService, private router: Router) {}
+  constructor(private authService: MsalService) {}
   
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const expectedRole = route.data.expectedRole;
@@ -302,15 +303,23 @@ const routes: Routes = [
     path: 'todo-edit/:id',
     component: TodoEditComponent,
     canActivate: [
-      MsalGuard
-    ]
+      MsalGuard,
+      RoleGuardService
+    ],
+    data: {
+      expectedRole: 'TenantUser'
+    }
   },
   {
     path: 'todo-view',
     component: TodoViewComponent,
     canActivate: [
-      MsalGuard
-    ]
+      MsalGuard,
+      RoleGuardService
+    ],
+    data: {
+      expectedRole: 'TenantUser'
+    }
   },
   {
     path: 'dashboard',
@@ -322,6 +331,10 @@ const routes: Routes = [
     data: {
       expectedRole: 'TaskAdmin'
     }
+  },
+  {
+    path: '',
+    component: HomeComponent
   }
 ];
 ```
