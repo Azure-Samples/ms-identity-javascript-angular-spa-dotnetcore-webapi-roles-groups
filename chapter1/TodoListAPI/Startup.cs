@@ -45,8 +45,8 @@ namespace TodoListAPI
                 // Adding authorization policies that enforce authorization using Azure AD roles.
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(AuthorizationPolicies.AssignmentToTenantUserRoleRequired, policy => policy.RequireRole(AppRole.TaskUsers));
-                options.AddPolicy(AuthorizationPolicies.AssignmentToTaskAdminRoleRequired, policy => policy.RequireRole(AppRole.TaskAdmins));
+                options.AddPolicy(AuthorizationPolicies.AssignmentToTaskUserRoleRequired, policy => policy.RequireRole(AppRole.TaskUser));
+                options.AddPolicy(AuthorizationPolicies.AssignmentToTaskAdminRoleRequired, policy => policy.RequireRole(AppRole.TaskAdmin));
             });
 
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
