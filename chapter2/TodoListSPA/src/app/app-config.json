@@ -20,7 +20,7 @@
       }
     },
     "groups": {
-      "groupAdmin": "2df638c0-8c92-4d52-b7a4-5bee2d9aa69e",
-      "groupMember": "831e0ef1-4786-4316-9ccb-dc1f1ed54282"
+      "groupAdmin": "Enter the Id of your 'GroupAdmin' group copied from the Azure Portal",
+      "groupMember": "Enter the Id of your 'GroupMember' group copied from the Azure Portal"
     }     
 }

@@ -7,6 +7,8 @@ param(
     [string] $azureEnvironmentName
 )
 
+#Requires -Modules AzureAD
+
 <#
  This script creates the Azure AD applications needed for this sample and updates the configuration files
  for the visual Studio projects from the data in the Azure AD applications.
@@ -216,7 +218,7 @@ Function ConfigureApplications
         Write-Host "'$($user.UserPrincipalName)' added as an application owner to app '$($serviceServicePrincipal.DisplayName)'"
    }
 
-    # rename the user_impersonation scope if it exists to match the readme steps or add a new scope
+    # rename the access_as_user scope if it exists to match the readme steps or add a new scope
     $scopes = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.OAuth2Permission]
    
     if ($scopes.Count -ge 0) 
@@ -262,7 +264,6 @@ Function ConfigureApplications
                                                   -ReplyUrls "http://localhost:4200/" `
                                                   -IdentifierUris "https://$tenantName/TodoListSPA" `
                                                   -GroupMembershipClaims "SecurityGroup" `
-                                                  -Oauth2AllowImplicitFlow $true `
                                                   -PublicClient $False
 
    # create the service principal of the newly created application 
@@ -301,7 +302,7 @@ Function ConfigureApplications
    # Update config file for 'service'
    $configFile = $pwd.Path + "\..\TodoListAPI\appsettings.json"
    Write-Host "Updating the sample code ($configFile)"
-   $dictionary = @{ "Enter the domain of your Azure AD tenant, e.g. 'contoso.onmicrosoft.com'" = $tenantName;"Enter the Id of your Azure AD tenant copied from the Azure porta" = $tenantId;"Enter the application ID (clientId) of the 'TodoListAPI' application copied from the Azure portal" = $serviceAadApplication.AppId };
+   $dictionary = @{ "Enter the domain of your Azure AD tenant, e.g. 'contoso.onmicrosoft.com'" = $tenantName;"Enter the Id of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the application ID (clientId) of the 'TodoListAPI' application copied from the Azure portal" = $serviceAadApplication.AppId };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
 
    # Update config file for 'client'
@@ -309,7 +310,20 @@ Function ConfigureApplications
    Write-Host "Updating the sample code ($configFile)"
    $dictionary = @{ "Enter the Client Id (aka 'Application ID')" = $clientAadApplication.AppId;"https://login.microsoftonline.com/Enter_the_Tenant_Id_Here" = "https://login.microsoftonline.com/"+$tenantId;"Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist'" = $serviceAadApplication.HomePage;"Enter the API scopes as declared in the app registration 'Expose an Api' blade in the form of 'api://{clientId}/access_as_user'" = ("api://"+$serviceAadApplication.AppId+"/access_as_user") };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
-  
+   Write-Host ""
+   Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 
+   Write-Host "IMPORTANT: Please follow the instructions below to complete a few manual step(s) in the Azure portal":
+   Write-Host "- For 'service'"
+   Write-Host "  - Navigate to '$servicePortalUrl'"
+   Write-Host "  - On Azure Portal, create a security group named GroupAdmin, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." -ForegroundColor Red 
+   Write-Host "  - On Azure Portal, create a security group named GroupMember, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." -ForegroundColor Red 
+   Write-Host "- For 'client'"
+   Write-Host "  - Navigate to '$clientPortalUrl'"
+   Write-Host "  - On Azure Portal, create a security group named GroupAdmin, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." -ForegroundColor Red 
+   Write-Host "  - On Azure Portal, create a security group named GroupMember, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." -ForegroundColor Red 
+
+   Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 
+     
    Add-Content -Value "</tbody></table></body></html>" -Path createdApps.html  
 }
 
