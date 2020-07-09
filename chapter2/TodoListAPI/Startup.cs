@@ -6,8 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
 using TodoListAPI.Models;
 using TodoListAPI.Utils;
+using Microsoft.Graph;
 
 namespace TodoListAPI
 {
@@ -25,16 +27,19 @@ namespace TodoListAPI
         {
             // Setting configuration for protected web api
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddProtectedWebApiCallsProtectedWebApi(Configuration);
+            //    .AddProtectedWebApi(Configuration);
 
             services.AddProtectedWebApi(Configuration)
-                    .AddProtectedWebApiCallsProtectedWebApi(Configuration);
+                    .AddProtectedWebApiCallsProtectedWebApi(Configuration)
+                    .AddInMemoryTokenCaches();
 
             // The following lines code instruct the asp.net core middleware to use the data in the "groups" claim in the Authorize attribute
             services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 // The claim in the Jwt token where groups are available.
                 options.TokenValidationParameters.RoleClaimType = "groups";
+                options.TokenValidationParameters.RoleClaimType = "hasgroups";
+
             });
 
             // Adding authorization policies that enforce authorization using Azure AD roles.

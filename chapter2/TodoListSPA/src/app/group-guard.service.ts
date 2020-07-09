@@ -26,7 +26,7 @@ export class GroupGuardService implements CanActivate {
         window.alert('You have too many group memberships. The application will now query Microsoft Graph to get the full list of groups that you are a member of.');
         
         this.service.getGroups().subscribe({
-          next: (response) => {
+          next: (response: any) => {
             this.groups = response.value.map(v => v.id);
           },
           error: (err: AuthError) => {
@@ -40,7 +40,7 @@ export class GroupGuardService implements CanActivate {
               .then(() => {
                 this.service.getGroups()
                   .toPromise()
-                  .then((response)  => {
+                  .then((response: any)  => {
                     this.groups = response.value.map(v => v.id);
                   });
               });
