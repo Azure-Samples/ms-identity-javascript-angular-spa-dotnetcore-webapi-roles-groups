@@ -8,8 +8,13 @@ import * as config from './app-config.json';
 })
 export class TodoService {
   apiUri = config.resources.todoListApi.resourceUri;
+  graphUri = config.resources.graphApi.resourceUri;
 
   constructor(private http: HttpClient) { }
+
+  getGroups() {
+    return this.http.get(this.graphUri);
+  }
 
   getAll() {
     return this.http.get<string[]>(this.apiUri + '/' +  'getAll');

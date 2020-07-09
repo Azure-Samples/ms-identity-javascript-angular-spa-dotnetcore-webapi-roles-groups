@@ -1,7 +1,7 @@
 {
   "auth": {
-    "clientId": "Enter the Client Id (aka 'Application ID')",
-    "authority": "https://login.microsoftonline.com/Enter_the_Tenant_Id_Here",
+    "clientId": "d472f179-2d03-4ec0-b6a3-d32869ab55bf",
+    "authority": "https://login.microsoftonline.com/cbaf2168-de14-4c72-9d88-f5f05366dbef",
     "validateAuthority": true,
     "redirectUri": "http://localhost:4200",
     "postLogoutRedirectUri": "http://localhost:4200",
@@ -15,12 +15,16 @@
     },
     "resources": {
       "todoListApi": {
-        "resourceUri": "Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist'",
-        "resourceScope": "Enter the API scopes as declared in the app registration 'Expose an Api' blade in the form of 'api://{clientId}/access_as_user'"
+        "resourceUri": "https://localhost:44351/api/todolist",
+        "resourceScope": "api://88e113e8-0959-4caa-a1cd-2de9ef91b716/access_as_user"
+      },
+      "graphApi": {
+        "resourceUri": "https://graph.microsoft.com/v1.0/me/memberOf",
+        "resourceScope": "GroupMember.Read.All"
       }
     },
     "groups": {
-      "groupAdmin": "Enter the Id of your 'GroupAdmin' group copied from the Azure Portal",
-      "groupMember": "Enter the Id of your 'GroupMember' group copied from the Azure Portal"
+      "groupAdmin": "2df638c0-8c92-4d52-b7a4-5bee2d9aa69e",
+      "groupMember": "831e0ef1-4786-4316-9ccb-dc1f1ed54282"
     }     
 }

@@ -24,8 +24,11 @@ namespace TodoListAPI
         public void ConfigureServices(IServiceCollection services)
         {
             // Setting configuration for protected web api
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddProtectedWebApi(Configuration);
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddProtectedWebApiCallsProtectedWebApi(Configuration);
+
+            services.AddProtectedWebApi(Configuration)
+                    .AddProtectedWebApiCallsProtectedWebApi(Configuration);
 
             // The following lines code instruct the asp.net core middleware to use the data in the "groups" claim in the Authorize attribute
             services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -50,7 +53,8 @@ namespace TodoListAPI
             {
                 builder.AllowAnyOrigin()
                        .AllowAnyMethod()
-                       .AllowAnyHeader();
+                       .AllowAnyHeader()
+                       .WithExposedHeaders("WWW-Authenticate");
             }));
         }
 

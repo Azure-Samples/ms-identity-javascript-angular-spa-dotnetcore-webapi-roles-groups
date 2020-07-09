@@ -38,7 +38,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 export const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
 export const protectedResourceMap: [string, string[]][] = [
-  [config.resources.todoListApi.resourceUri, [config.resources.todoListApi.resourceScope]]
+  [config.resources.todoListApi.resourceUri, [config.resources.todoListApi.resourceScope]],
+  [config.resources.graphApi.resourceUri, [config.resources.graphApi.resourceScope]]
 ];
 
 function MSALConfigFactory(): Configuration {

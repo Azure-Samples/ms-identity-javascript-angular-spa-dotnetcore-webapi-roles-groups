@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web.Resource;
 using TodoListAPI.Models;
 using TodoListAPI.Utils;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Client;
 
 namespace TodoListAPI.Controllers
 {
@@ -22,10 +23,12 @@ namespace TodoListAPI.Controllers
         static readonly string[] scopeRequiredByApi = new string[] { "access_as_user" };
 
         private readonly TodoContext _context;
+        private readonly ITokenAcquisition _tokenAcquisition;
 
-        public TodoListController(TodoContext context)
+        public TodoListController(TodoContext context, ITokenAcquisition tokenAcquisition)
         {
             _context = context;
+            _tokenAcquisition = tokenAcquisition;
         }
 
         // GET: api/todolist/getAll
@@ -143,6 +146,28 @@ namespace TodoListAPI.Controllers
         private bool TodoItemExists(int id)
         {
             return _context.TodoItems.Any(e => e.Id == id);
+        }
+
+        public async Task<dynamic> CallGraphApiOnBehalfOfUser()
+        {
+            string[] scopes = { "GroupMember.Read.All" };
+            dynamic response;
+
+            // we use MSAL.NET to get a token to call the API On Behalf Of the current user
+            try
+            {
+                string accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
+                GraphHelper.Initialize(accessToken);
+                var groups = await GraphHelper.GetMembershipAsync();
+                response = groups;
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                _tokenAcquisition.ReplyForbiddenWithWwwAuthenticateHeader(scopes, ex);
+                return "interaction required";
+            }
+
+            return response;
         }
     }
 }

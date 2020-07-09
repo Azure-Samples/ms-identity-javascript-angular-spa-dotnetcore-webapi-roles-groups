@@ -7,7 +7,7 @@
 $ErrorActionPreference = "Stop"
 
  # ObjectId of the user to be assigned to these security groups. The ObjectId can be obtained via Graph Explorer or in the "Users" blade on the portal.
-$usersobjectId = "5b6e08a5-7789-4ae0-a4cb-3d73b4097752"
+$usersobjectId = "a283a601-6ad4-4528-975d-6abbefa5edd7"
 
 Get-AzureADUser -ObjectId $usersobjectId
 
