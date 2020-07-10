@@ -43,7 +43,7 @@ namespace TodoListAPI.Controllers
 
         // GET: api/todolist
         [HttpGet]
-        //[Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberGroupRequired)]
+        // [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberGroupRequired)]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
