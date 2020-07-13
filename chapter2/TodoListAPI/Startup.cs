@@ -38,7 +38,6 @@ namespace TodoListAPI
             {
                 // The claim in the Jwt token where groups are available.
                 options.TokenValidationParameters.RoleClaimType = "groups";
-                options.TokenValidationParameters.RoleClaimType = "hasgroups";
             });
 
             // Adding authorization policies that enforce authorization using Azure AD roles.

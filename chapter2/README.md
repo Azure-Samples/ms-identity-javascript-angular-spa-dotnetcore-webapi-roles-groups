@@ -359,9 +359,34 @@ Consider the `group-guard.service.ts`. Here, we are checking whether the token f
 
 ##### .NET Core group authorization policy
 
-```csharp
+The asp.net middleware supports roles populated from claims by specifying the claim in the `RoleClaimType` property of `TokenValidationParameters`.
+Since the `groups` claim contains the object ids of the security groups than actual names by default, you'd use the group id's instead of group names. See [Role-based authorization in ASP.NET Core](https://docs.microsoft.com/aspnet/core/security/authorization/roles) for more info.
+
+```CSharp
+// Startup.cs
+
+// The following lines code instruct the asp.net core middleware to use the data in the "groups" claim in the [Authorize] attribute and for User.IsInrole()
+// See https://docs.microsoft.com/aspnet/core/security/authorization/roles
+services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+{
+    // Use the groups claim for populating roles
+    options.TokenValidationParameters.RoleClaimType = "groups";
+});
+
+// Adding asp.net core authorization policies that enforce authorization using Azure AD roles.
+services.AddAuthorization(options =>
+{
+      options.AddPolicy(AuthorizationPolicies.AssignmentToGroupAdminGroupRequired, policy => policy.RequireRole(Configuration["Groups:GroupAdmin"]));
+      options.AddPolicy(AuthorizationPolicies.AssignmentToGroupMemberGroupRequired, policy => policy.RequireRole(Configuration["Groups:GroupMember"]));
+});
+
+// In code..(Controllers & elsewhere)
+[Authorize(Roles = "Group-object-id")] // In controllers
+// or
+User.IsInRole("Group-object-id"); // In methods
 
 ```
+
 
 > :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
 
