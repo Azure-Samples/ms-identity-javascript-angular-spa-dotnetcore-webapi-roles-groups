@@ -409,6 +409,12 @@ To debug the .NET Core Web API that comes with this sample, install the [C# exte
 
 Learn more about using [.NET Core with Visual Studio Code](https://docs.microsoft.com/dotnet/core/tutorials/with-visual-studio-code).
 
+## Next Steps
+
+Authorization in Azure AD can also be done with `Security Groups` as well, as we will now cover in [second chapter](../chapter2/README.md). `Security Groups` and `App Roles` in Azure AD are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
+
+Now lets learn about how to use Security Groups for authorization in your app in the [second chapter](../chapter2/README.md).
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a

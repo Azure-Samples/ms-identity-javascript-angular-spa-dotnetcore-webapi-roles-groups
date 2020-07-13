@@ -1,6 +1,6 @@
 {
     "Sample": {
-      "Title": "Angular Single-Page Application (SPA) calling .NET Core Web API using App Roles and Security Groups for Implementing Role-Based Access Control (RBAC)",
+      "Title": "An Angular Single-Page Application (SPA) using Security Groups to implement authorization",
       "Level": 300,
       "Client": "TodoListSPA",
       "Service": "TodoListAPI",

@@ -10,22 +10,26 @@ products:
 - dotnet
 - azure-ad
 - ms-graph
-description: "This sample demonstrates an Angular single-page application calling a .NET Core Web API with role-based access control"
+description: "An Angular Single-Page Application (SPA) using Security Groups to implement authorization"
 urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups/Chapter2"
 ---
 
-# An Angular Single-page Application (SPA) that authenticates users with Azure AD and calls a protected ASP.NET Core Web API using Azure AD Security Groups
+# An Angular Single-page Application (SPA) using AAD Security Groups to implement authorization
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with Azure Active Directory. It also implements **role-based access control** by using Azure AD Security Groups: in the sample, a dashboard component allowing to see the tasks assigned to any user is only accessible by users in the **TaskAdmin** group.
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with Azure Active Directory. It also implements authorization for a **role-based access control** by using Azure AD Security Groups.
+
+In the sample, a dashboard component allows signed-in users to see the tasks assigned to them or other users based on their memberships to one of the two security groups, **TaskAdmin** and **TaskUsers**.
+
+Authorization in Azure AD can also be done with `App Roles` as well, as shown in [chapter1](../chapter1\README.md). `Groups` and `App Roles` in Azure AD are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
 
 ### Scenario
 
-- TodoListSPA uses [MSAL.js](https://github.com/AzureAD/microsoft-authentication-library-for-js) and [MSAL-Angular](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user.
-- The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure Active Directory (Azure AD) on behalf of the authenticated user for the TodoListAPI.
-- The access token is then used by the TodoListAPI to authorize the user.
-- TodoListAPI uses [MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) and [Microsoft.Identity.Web](https://github.com/AzureAD/microsoft-identity-web) to protect its endpoint and accept authorized calls.
+- TodoListSPA uses [MSAL.js](https://github.com/AzureAD/microsoft-authentication-library-for-js) and [MSAL-Angular](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user with the Microsoft Identity Platform.
+- The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure Active Directory (Azure AD) on behalf of the authenticated user for the **TodoListAPI**.
+- The access token is then used by the **TodoListAPI** to authorize the user.
+- **TodoListAPI** uses [MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) and [Microsoft.Identity.Web](https://github.com/AzureAD/microsoft-identity-web) to protect its endpoint and accept authorized calls.
 
 ![Topology](../ReadmeFiles/topology.png)
 
@@ -47,6 +51,7 @@ This sample demonstrates a cross-platform application suite involving an Angular
 - An Azure Active Directory (Azure AD) tenant.
 - At least **two** user accounts in your Azure AD tenant.
 - A modern Browser. This sample uses **ES6** conventions and will not run on **Internet Explorer**.
+- Two security groups **TaskAdmin** and **TaskUsers**, with users you want to test with assigned to them.
 - We recommend [VS Code](https://code.visualstudio.com/download) for running and debugging this cross-platform application.
 
 ## Setup
@@ -180,7 +185,7 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 1. Find the app key `webApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
 1. Find the app key `webApi.resourceScope` and replace the existing value with *Scope* you created earlier `api://{clientId}/access_as_user`.
 
-## Define Security Groups
+## Create Security Groups
 
 > :warning: The **Token Configuration** steps below that you need to perform are the same for both **TodoListAPI** and **TodoListSPA**.
 
