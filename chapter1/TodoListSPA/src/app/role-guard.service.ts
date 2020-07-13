@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { 
-  Router,
   CanActivate,
   ActivatedRouteSnapshot
 } from '@angular/router';
@@ -21,7 +20,7 @@ export class RoleGuardService implements CanActivate {
       return false;
     } else if (!this.authService.getAccount().idTokenClaims.roles.includes(expectedRole)) {
       window.alert('You do not have access as expected role is missing. Please ensure that your account is assigned to an app role and then sign-out and sign-in again.');
-        return false;
+      return false;
     }
 
     return true;

@@ -285,7 +285,7 @@ In a separate console window, execute the following commands:
 
 ![error](../ReadmeFiles/ch1_error.png)
 
-## About the COde
+## About the Code
 
 Much of the specifics of implementing **RBAC** with **Security Groups** is the same with implementing **RBAC** with **App Roles** discussed in [Chapter1](../Chapter1/). In order to avoid redundancy, here we discuss particular issues that might arise with using **groups** claim.
 
@@ -295,41 +295,73 @@ To ensure that the token size doesn’t exceed HTTP header size limits, the Micr
 
 If a user is member of more groups than the overage limit (**150 for SAML tokens, 200 for JWT tokens, 6 for Single Page applications**, ), then the Microsoft Identity Platform does not emit the group ids in the `groups` claim in the token. Instead, it includes an **overage** claim in the token that indicates to the application to query the [MS Graph API](https://graph.microsoft.com) to retrieve the user’s group membership.
 
-```JSON
-{
-  ...
-  "_claim_names": {
-    "groups": "src1"
-    },
-    {
-   "_claim_sources": {
-    "src1": {
-        "endpoint":"[Graph Url to get this user's group membership from]"
-        }
-    }
-  ...
-}
-```
+> We strongly advise you use the [group filtering feature](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to) (if possible) to avoid running into group overages.
 
-#### Create the Overage Scenario in this sample for testing
+#### Create the Overage Scenario for testing
 
 1. You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. Remember to change the user's **objectId** provided in the `BulkCreateGroups.ps1` script.
-2. We strongly advise you use the [group filtering feature](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to) (if possible) to avoid running into group overages.
-3. In case you cannot avoid running into group overage, we suggest you use the following logic to process groups claim in your token.  
-    1. Check for the claim `_claim_names` with one of the values being `groups`. This indicates overage.
-    2. If found, make a call to the endpoint specified in `_claim_sources` to fetch user’s groups.
-    3. If none found, look into the `groups`  claim for user’s groups.
 
-> When attending to overage scenarios, which requires a call to [Microsoft Graph](https://graph.microsoft.com) to read the signed-in user's group memberships, your app will need to have the [GroupMember.Read.All](https://docs.microsoft.com/graph/permissions-reference#group-permissions) for the [getMemberObjects](https://docs.microsoft.com/graph/api/user-getmemberobjects?view=graph-rest-1.0) function to execute successfully.
-
-> Developers who wish to gain good familiarity of programming for Microsoft Graph are advised to go through the [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A) recorded session.
-
-##### Single-page Application and using the Implicit Grant flow to authenticate
+#### Single-page Applications and how to handle the Overage Scenario
 
 When authenticating using the [implicit grant flow](https://docs.microsoft.com/azure/active-directory/develop/v1-oauth2-implicit-grant-flow), the **overage** indication and limits are different than the apps using other flows.
 
 1. A claim named `hasgroups` with a value of true will be present in the token instead of the `groups` claim.
 1. The maximum number of groups provided in the `groups` claim is limited to 6. This is done to prevent the URI fragment beyond the URL length limits.
+
+When attending to overage scenarios, which requires a call to [Microsoft Graph](https://graph.microsoft.com) to read the signed-in user's group memberships, your app will need to have the [GroupMember.Read.All](https://docs.microsoft.com/graph/permissions-reference#group-permissions) for the [getMemberGroups](https://docs.microsoft.com/graph/api/user-getmembergroups) function to execute successfully.
+
+> Developers who wish to gain good familiarity of programming for Microsoft Graph are advised to go through the [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A) recorded session.
+
+We will now discuss how this scenario is handled in the sample.
+
+##### Angular *group-guard* service
+
+Consider the `group-guard.service.ts`. Here, we are checking whether the token for the user has the "hasgroups" claims, which indicates that the user has too many group memberships. Then, we initiate a call to MS Graph API `https://graph.microsoft.com/v1.0/me/memberOf` endpoint to query the full list of groups that the user belong to. Finally we check for the designated groupID among this list.
+
+```javascript
+    if (!this.authService.getAccount().idTokenClaims.groups) {
+
+      if (this.authService.getAccount().idTokenClaims.hasgroups) {
+        window.alert('You have too many group memberships. The application will now query Microsoft Graph to get the full list of groups that you are a member of.');
+        this.service.getGroups().subscribe({
+          next: (response: any) => {
+            this.groups = response.value.map(v => v.id);
+          },
+          error: (err: AuthError) => {
+            console.log(err)
+            // If there is an interaction required error,
+            // call one of the interactive methods and then make the request again.
+            if (InteractionRequiredAuthError.isInteractionRequiredError(err.errorCode)) {
+              this.authService.acquireTokenPopup({
+                scopes: this.authService.getScopesForEndpoint(config.resources.graphApi.resourceUri)
+              }).then(() => {
+                this.service.getGroups()
+                  .toPromise()
+                  .then((response: any)  => {
+                    this.groups = response.value.map(v => v.id);
+                  });
+              });
+            }
+          }
+        });
+
+        if (this.groups && this.groups.includes(expectedGroup)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      window.alert('Token does not have groups claim');
+      return false;
+    }
+```
+
+##### .NET Core group authorization policy
+
+```csharp
+
+```
 
 > :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
 

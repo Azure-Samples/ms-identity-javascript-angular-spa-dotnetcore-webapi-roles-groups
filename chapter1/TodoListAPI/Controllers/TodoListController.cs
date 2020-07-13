@@ -41,7 +41,7 @@ namespace TodoListAPI.Controllers
 
         // GET: api/todolist
         [HttpGet]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantUserRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToTaskUserRoleRequired)]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
@@ -51,7 +51,7 @@ namespace TodoListAPI.Controllers
 
         // GET: api/todolist/5
         [HttpGet("{id}")]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantUserRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToTaskUserRoleRequired)]
         public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
@@ -70,7 +70,7 @@ namespace TodoListAPI.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantUserRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToTaskUserRoleRequired)]
         public async Task<IActionResult> PutTodoItem(int id, TodoItem todoItem)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
@@ -105,7 +105,7 @@ namespace TodoListAPI.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantUserRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToTaskUserRoleRequired)]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
@@ -124,7 +124,7 @@ namespace TodoListAPI.Controllers
 
         // DELETE: api/todolist/5
         [HttpDelete("{id}")]
-        [Authorize(Policy = AuthorizationPolicies.AssignmentToTenantUserRoleRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToTaskUserRoleRequired)]
         public async Task<ActionResult<TodoItem>> DeleteTodoItem(int id)
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);

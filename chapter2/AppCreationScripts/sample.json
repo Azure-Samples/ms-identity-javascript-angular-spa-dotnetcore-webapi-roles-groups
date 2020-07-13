@@ -14,7 +14,11 @@
         "Kind": "WebApi",
         "Audience": "AzureADMyOrg",
         "HomePage": "https://localhost:44351/api/todolist",
-        "GroupMembershipClaims": "SecurityGroup"      
+        "GroupMembershipClaims": "SecurityGroup",
+        "ManualSteps": [
+          { "Comment": "On Azure Portal, create a security group named GroupAdmin, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." },
+          { "Comment": "On Azure Portal, create a security group named GroupMember, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." }
+        ]      
       },
       {
         "Id": "client",
@@ -29,7 +33,11 @@
             "Resource": "service",
             "DelegatedPermissions": [ "access_as_user" ]
           }
-        ]
+        ],
+        "ManualSteps": [
+          { "Comment": "On Azure Portal, create a security group named GroupAdmin, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." },
+          { "Comment": "On Azure Portal, create a security group named GroupMember, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." }
+        ]  
       }
     ],
     "CodeConfiguration": [

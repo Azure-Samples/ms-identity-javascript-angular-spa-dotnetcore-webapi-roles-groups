@@ -16,7 +16,7 @@ const routes: Routes = [
       RoleGuardService
     ],
     data: { 
-      expectedRole: 'TenantUser'
+      expectedRole: 'TaskUser'
     } 
   },
   {
@@ -27,7 +27,7 @@ const routes: Routes = [
       RoleGuardService
     ],
     data: { 
-      expectedRole: 'TenantUser'
+      expectedRole: 'TaskUser'
     } 
   },
   {

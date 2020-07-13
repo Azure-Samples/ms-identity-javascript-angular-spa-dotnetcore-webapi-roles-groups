@@ -197,7 +197,7 @@ Open the project in your IDE (like Visual Studio) to configure the code.
                "User"
             ],
             "description": "Admins can read others' TodoLists but cannot add/remove todos",
-            "displayName": "TenantAdmin",
+            "displayName": "TaskAdmin",
             "id": "72ff9f52-8011-49e0-a4f4-cc1bb26206fa",
             "isEnabled": true,
             "lang": null,
@@ -209,7 +209,7 @@ Open the project in your IDE (like Visual Studio) to configure the code.
                "User"
             ],
             "description": "Users can read and modify their TodoList but cannot see others' lists",
-            "displayName": "TenantUser",
+            "displayName": "TaskUsers",
             "id": "a816142a-2e8e-46c4-9997-f984faccb625",
             "isEnabled": true,
             "lang": null,
@@ -225,8 +225,8 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 
    | Role          | Rights                                                                   |
    |-------------- |--------------------------------------------------------------------------|
-   | `TenantAdmin` | Admins can read others' TodoLists but cannot add/remove todos.           |
-   | `TenantUser`  | Users can read and modify their TodoList but cannot see others' lists.   |
+   | `TaskAdmin` | Admins can read others' TodoLists but cannot add/remove todos.           |
+   | `TaskUser`  | Users can read and modify their TodoList but cannot see others' lists.   |
 
 > :bulb: **Important security tip**
 >
