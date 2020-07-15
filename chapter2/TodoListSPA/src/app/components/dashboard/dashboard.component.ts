@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { BroadcastService, MsalService } from '@azure/msal-angular';
-import { TodoService } from './../todo.service';
+import { TodoService } from './../../services/todo.service';
 import { InteractionRequiredAuthError, AuthError } from 'msal';
-import { Todo } from '../todo';
-import * as config from '../app-config.json';
+import { Todo } from '../../interfaces/todo';
+import * as config from '../../app-config.json';
 
 @Component({
   selector: 'app-dashboard',

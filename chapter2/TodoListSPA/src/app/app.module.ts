@@ -27,12 +27,13 @@ import {
 
 import * as config from './app-config.json';
 import { AppRoutingModule } from './app-routing.module';
-import { HomeComponent } from './home/home.component';
-import { TodoService } from './todo.service';
+import { HomeComponent } from './components/home/home.component';
+import { TodoService } from './services/todo.service';
 import { AppComponent } from './app.component';
-import { TodoEditComponent } from './todo-edit/todo-edit.component';
-import { TodoViewComponent } from './todo-view/todo-view.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { TodoEditComponent } from './components/todo-edit/todo-edit.component';
+import { TodoViewComponent } from './components/todo-view/todo-view.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { OverageComponent } from './components/overage/overage.component';
 
 // checks if the app is running on IE
 export const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
@@ -79,6 +80,7 @@ function MSALAngularConfigFactory(): MsalAngularConfiguration {
     TodoEditComponent,
     TodoViewComponent,
     DashboardComponent,
+    OverageComponent,
   ],
   imports: [
     BrowserModule,

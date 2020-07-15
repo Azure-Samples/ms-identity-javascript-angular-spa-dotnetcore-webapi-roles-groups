@@ -20,7 +20,7 @@ urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups/
 
 This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core Web API (*TodoListAPI*) secured with Azure Active Directory. It also implements authorization for a **role-based access control** by using Azure AD Security Groups.
 
-In the sample, a dashboard component allows signed-in users to see the tasks assigned to them or other users based on their memberships to one of the two security groups, **TaskAdmin** and **TaskUsers**.
+In the sample, a dashboard component allows signed-in users to see the tasks assigned to them or other users based on their memberships to one of the two security groups, **GroupAdmin** and **GroupMember**.
 
 Authorization in Azure AD can also be done with `App Roles` as well, as shown in [chapter1](../chapter1\README.md). `Groups` and `App Roles` in Azure AD are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
 
@@ -51,7 +51,7 @@ Authorization in Azure AD can also be done with `App Roles` as well, as shown in
 - An Azure Active Directory (Azure AD) tenant.
 - At least **two** user accounts in your Azure AD tenant.
 - A modern Browser. This sample uses **ES6** conventions and will not run on **Internet Explorer**.
-- Two security groups **TaskAdmin** and **TaskUsers**, with users you want to test with assigned to them.
+- Two security groups **GroupAdmin** and **GroupMember**, with users you want to test with assigned to them.
 - We recommend [VS Code](https://code.visualstudio.com/download) for running and debugging this cross-platform application.
 
 ## Setup
@@ -386,7 +386,6 @@ services.AddAuthorization(options =>
 User.IsInRole("Group-object-id"); // In methods
 
 ```
-
 
 > :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
 

@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { BroadcastService, MsalService } from '@azure/msal-angular';
 import { InteractionRequiredAuthError, AuthError } from 'msal';
-import { TodoService } from './../todo.service';
-import { Todo } from '../todo';
-import * as config from '../app-config.json';
+import { TodoService } from '../../services/todo.service';
+import { Todo } from '../../interfaces/todo';
+import * as config from '../../app-config.json';
 
 @Component({
   selector: 'app-todo-view',

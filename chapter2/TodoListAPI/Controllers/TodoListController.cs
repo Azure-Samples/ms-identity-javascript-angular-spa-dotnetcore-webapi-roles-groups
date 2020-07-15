@@ -43,21 +43,10 @@ namespace TodoListAPI.Controllers
 
         // GET: api/todolist
         [HttpGet]
-        // [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberGroupRequired)]
+        [Authorize(Policy = AuthorizationPolicies.AssignmentToGroupMemberGroupRequired)]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
             HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
-
-            if (User.HasClaim("hasgroups", "true"))
-            {
-                var groups = CallGraphApiOnBehalfOfUser().GetAwaiter().GetResult();      
-            } 
-            else
-            {
-                // This is how group ids / names are used in the IsInRole method
-                var isinrole = User.IsInRole("831e0ef1-4786-4316-9ccb-dc1f1ed54282");
-            }
-           
             string owner = User.FindFirst("preferred_username")?.Value;
             return await _context.TodoItems.Where(item => item.Owner == owner).ToListAsync();
         }

@@ -23,7 +23,7 @@ namespace TodoListAPI.Utils
         {
             try
             {
-                // GET /me
+                // GET /me/memberof
                 return await graphClient.Me.MemberOf.Request().GetAsync();
             }
             catch (ServiceException)
