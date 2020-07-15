@@ -128,6 +128,13 @@ There are two projects in this sample. Each needs to be registered separately in
 The first thing that we need to do is to declare the unique [resource](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow) URI that the clients will be using to obtain access tokens for this Api. To declare an resource URI, follow the following steps:
    - Click `Set` next to the **Application ID URI** to generate a URI that is unique for this app.
    - For this sample, accept the proposed Application ID URI (api://{clientId}) by selecting **Save**.
+1. Select the **API permissions** section
+   1. Click the **Add a permission** button and then,
+   2. Ensure that the **Microsoft APIs** tab is selected.
+   3. In the commonly used **Microsoft APIs** section, click on **Microsoft Graph**
+   4. In the **Delegated permissions** section, select the **User.Read** in the list. Use the search box if necessary.
+   5. (Optional) In the **Delegated permissions** section, select the **GroupMember.Read.All** in the list. Grant **Admin Consent** for this permission.
+   6. Click on the **Add permissions** button at the bottom.
 1. All APIs have to publish a minimum of one [scope](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code) for the client's to obtain an access token successfully. To publish a scope, follow the following steps:
    - Select **Add a scope** button open the **Add a scope** screen and Enter the values as indicated below:
         - For **Scope name**, use `access_as_user`.
@@ -167,7 +174,14 @@ Open the project in your IDE (like Visual Studio) to configure the code.
      sign-in the user, and call an API.
 
 1. Select **Save** to save your changes.
-1. In the app's registration screen, click on the **API permissions** blade in the left to open the page where we add access to the Apis that your application needs.
+1. Select the **API permissions** section
+   1. Click the **Add a permission** button and then,
+   2. Ensure that the **Microsoft APIs** tab is selected.
+   3. In the commonly used **Microsoft APIs** section, click on **Microsoft Graph**
+   4. In the **Delegated permissions** section, select the **User.Read** in the list. Use the search box if necessary.
+   5. (Optional) In the **Delegated permissions** section, select the **GroupMember.Read.All** in the list. Grant **Admin Consent** for this permission.
+   6. Click on the **Add permissions** button at the bottom.
+1. Select the **API permissions** section again.
    - Click the **Add a permission** button and then,
    - Ensure that the **My APIs** tab is selected.
    - In the list of APIs, select the API `TodoListAPI`.
@@ -203,10 +217,6 @@ Now you have two different options available to you on how you can further confi
 1. Select `Security groups` **or** the `All groups (includes distribution lists but not groups assigned to the application)` option. Choosing both negates the effect of `Security Groups` option.
 1. Under the **ID** section, select `Group ID`. This will result in Azure AD sending the [object id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the **groups** claim of the [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) that your app receives after signing-in a user.
 
-<!-- REVIEW THIS SECTION -->
-1. Under the **Access** section, if you have exposed a Web API previously and would like to , then you can also choose the `Group ID` option (click on "Groups assigned to the application" checkbox). This will result in Azure AD sending the [object id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [Access Token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) issued to the client applications of your API.
-<!-- REVIEW THIS SECTION -->
-
 ### Configure your application to receive the `groups` claim values from a **filtered set of groups** a user may be assigned to
 
 #### Prerequisites, benefits and limitations of using this option
@@ -222,7 +232,7 @@ Now you have two different options available to you on how you can further confi
 1. Select `Groups assigned to the application`.
     1. Choosing additional options like `Security Groups` or `All groups (includes distribution lists but not groups assigned to the application)` will negate the benefits your app derives from choosing to use this option.
 1. Under the **ID** section, select `Group ID`. This will result in Azure AD sending the object [id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) that your app receives after signing-in a user.
-1. If you are exposing a Web API using the **Expose an API** option, then you can also choose the `Group ID` option under the **Access** section. This will result in Azure AD sending the object [id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [Access Token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) issued to the client applications of your API.
+1. If you are exposing a Web API using the **Expose an API** option, then you can also choose the `Group ID` option under the **Access** section. This will result in Azure AD sending the [Object ID](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [Access Token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) issued to the client applications of your API.
 1. In the app's registration screen, click on the **Overview** blade in the left to open the Application overview screen. Select the hyperlink with the name of your application in **Managed application in local directory** (note this field title can be truncated for instance `Managed application in ...`). When you select this link you will navigate to the **Enterprise Application Overview** page associated with the service principal for your application in the tenant where you created it. You can navigate back to the app registration page by using the *back* button of your browser.
 1. Select the **Users and groups** blade in the left to open the page where you can assign users and groups to your application.
     1. Click on the **Add user** button on the top row.
@@ -239,11 +249,17 @@ Now you have two different options available to you on how you can further confi
 
 ### Configure the client app (TodoListSPA) to recognize Group IDs
 
+> :warning:
+> If you choose any other option except **groupID**, like **DNSDomain\sAMAccountName**, then mention the group name, for example "contoso.com\Test Group"
+
 1. Open the `TodoListSPA\src\app\app-config.json` file.
 1. Find the app key `groups.groupAdmin` and replace the existing value with the object ID of the **GroupAdmin** group copied from the Azure portal.
 1. Find the app key `groups.groupMember` and replace the existing value with the object ID of the **GroupMember** group copied from the Azure portal.
 
 ### Configure the service app (TodoListAPI) to recognize Group IDs
+
+> :warning:
+> If you choose any other option except **groupID**, like **DNSDomain\sAMAccountName**, then mention the group name, for example "contoso.com\Test Group"
 
 1. Open the `TodoListAPI\appsettings.json` file.
 2. Find the app key `Groups.GroupAdmin` and replace the existing value with the object ID of the **GroupAdmin** group copied from the Azure portal.
@@ -308,53 +324,86 @@ When authenticating using the [implicit grant flow](https://docs.microsoft.com/a
 1. A claim named `hasgroups` with a value of true will be present in the token instead of the `groups` claim.
 1. The maximum number of groups provided in the `groups` claim is limited to 6. This is done to prevent the URI fragment beyond the URL length limits.
 
-When attending to overage scenarios, which requires a call to [Microsoft Graph](https://graph.microsoft.com) to read the signed-in user's group memberships, your app will need to have the [GroupMember.Read.All](https://docs.microsoft.com/graph/permissions-reference#group-permissions) for the [getMemberGroups](https://docs.microsoft.com/graph/api/user-getmembergroups) function to execute successfully.
+When attending to overage scenarios, which requires a call to [Microsoft Graph](https://graph.microsoft.com) to read the signed-in user's group memberships, your app will need to have the [User.Read](https://docs.microsoft.com/graph/permissions-reference#user-permissions) and [GroupMember.Read.All](https://docs.microsoft.com/graph/permissions-reference#group-permissions) for the [getMemberGroups](https://docs.microsoft.com/graph/api/user-getmembergroups) function to execute successfully.
 
 > Developers who wish to gain good familiarity of programming for Microsoft Graph are advised to go through the [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A) recorded session.
 
 We will now discuss how this scenario is handled in the sample.
 
+> :warning: For the overage scenario, make sure you have granted **Admin Consent** for the MS Graph API's **GroupMember.Read.All** scope for both the Client and the Service apps (see the **App Registration** steps above).
+
 ##### Angular *group-guard* service
 
-Consider the `group-guard.service.ts`. Here, we are checking whether the token for the user has the "hasgroups" claims, which indicates that the user has too many group memberships. Then, we initiate a call to MS Graph API `https://graph.microsoft.com/v1.0/me/memberOf` endpoint to query the full list of groups that the user belong to. Finally we check for the designated groupID among this list.
+Consider the `group-guard.service.ts`. Here, we are checking whether the token for the user has the "hasgroups" claims, which indicates that the user has too many group memberships. If so, we redirect the user to the `/overage` page. Then, we initiate a call to MS Graph API `https://graph.microsoft.com/v1.0/me/memberOf` endpoint to query the full list of groups that the user belong to. Finally we check for the designated groupID among this list.
 
 ```javascript
-    if (!this.authService.getAccount().idTokenClaims.groups) {
+    // src/app/services/group-guard.service.ts
+    canActivate(route: ActivatedRouteSnapshot): boolean {
+    this.service.user.displayName = this.authService.getAccount().idTokenClaims.preferred_username;
 
+    if (this.authService.getAccount().idTokenClaims.groups) {
+      this.service.user.groupIDs = <string[]><unknown>this.authService.getAccount().idTokenClaims.groups;
+    }
+
+    const expectedGroup = route.data.expectedGroup;
+
+    if (this.service.user.groupIDs.length === 0) {
       if (this.authService.getAccount().idTokenClaims.hasgroups) {
         window.alert('You have too many group memberships. The application will now query Microsoft Graph to get the full list of groups that you are a member of.');
-        this.service.getGroups().subscribe({
-          next: (response: any) => {
-            this.groups = response.value.map(v => v.id);
-          },
-          error: (err: AuthError) => {
-            console.log(err)
-            // If there is an interaction required error,
-            // call one of the interactive methods and then make the request again.
-            if (InteractionRequiredAuthError.isInteractionRequiredError(err.errorCode)) {
-              this.authService.acquireTokenPopup({
-                scopes: this.authService.getScopesForEndpoint(config.resources.graphApi.resourceUri)
-              }).then(() => {
-                this.service.getGroups()
-                  .toPromise()
-                  .then((response: any)  => {
-                    this.groups = response.value.map(v => v.id);
-                  });
-              });
-            }
-          }
-        });
-
-        if (this.groups && this.groups.includes(expectedGroup)) {
-          return true;
-        } else {
-          return false;
-        }
+        this.router.navigate(['/overage']);
+        return false;
       }
-
       window.alert('Token does not have groups claim');
       return false;
+    } else if (!this.service.user.groupIDs.includes(expectedGroup)) {
+      window.alert('You do not have access for this');
+      return false;
     }
+    return true;
+  }
+```
+
+```javascript
+// src/app/components/overage.component.ts
+ngOnInit(): void {
+    this.service.getGroups().subscribe({
+      next: (response: any) => {
+        this.groups = response.value.map(v => v.id);
+
+        if (this.groups.includes(config.groups.groupAdmin)) {
+          this.service.user.groupIDs.push(config.groups.groupAdmin)
+        }
+
+        if (this.groups.includes(config.groups.groupMember)) {
+          this.service.user.groupIDs.push(config.groups.groupMember)
+        }
+      },
+      error: (err: AuthError) => {
+        console.log(err)
+        // If there is an interaction required error,
+        // call one of the interactive methods and then make the request again.
+        if (InteractionRequiredAuthError.isInteractionRequiredError(err.errorCode)) {
+          this.authService.acquireTokenPopup({
+            scopes: this.authService.getScopesForEndpoint(config.resources.graphApi.resourceUri)
+          })
+          .then(() => {
+            this.service.getGroups()
+              .toPromise()
+              .then((response: any)  => {
+                this.groups = response.value.map(v => v.id);
+
+                if (this.groups.includes(config.groups.groupAdmin)) {
+                  this.service.user.groupIDs.push(config.groups.groupAdmin)
+                }
+                if (this.groups.includes(config.groups.groupMember)) {
+                  this.service.user.groupIDs.push(config.groups.groupMember)
+                }
+              });
+          });
+        }
+      }
+    });
+  }
 ```
 
 ##### .NET Core group authorization policy

@@ -200,7 +200,6 @@ Function ConfigureApplications
    Write-Host "Creating the AAD application (TodoListAPI)"
    # create the application 
    $serviceAadApplication = New-AzureADApplication -DisplayName "TodoListAPI" `
-                                                   -HomePage "https://localhost:44351/api/todolist" `
                                                    -GroupMembershipClaims "SecurityGroup" `
                                                    -PublicClient $False
    $serviceIdentifierUri = 'api://'+$serviceAadApplication.AppId
@@ -218,7 +217,7 @@ Function ConfigureApplications
         Write-Host "'$($user.UserPrincipalName)' added as an application owner to app '$($serviceServicePrincipal.DisplayName)'"
    }
 
-    # rename the access_as_user scope if it exists to match the readme steps or add a new scope
+    # rename the user_impersonation scope if it exists to match the readme steps or add a new scope
     $scopes = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.OAuth2Permission]
    
     if ($scopes.Count -ge 0) 
@@ -255,6 +254,18 @@ Function ConfigureApplications
    $servicePortalUrl = "https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/CallAnAPI/appId/"+$serviceAadApplication.AppId+"/objectId/"+$serviceAadApplication.ObjectId+"/isMSAApp/"
    Add-Content -Value "<tr><td>service</td><td>$currentAppId</td><td><a href='$servicePortalUrl'>TodoListAPI</a></td></tr>" -Path createdApps.html
 
+   $requiredResourcesAccess = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.RequiredResourceAccess]
+
+   # Add Required Resources Access (from 'service' to 'Microsoft Graph')
+   Write-Host "Getting access from 'service' to 'Microsoft Graph'"
+   $requiredPermissions = GetRequiredPermissions -applicationDisplayName "Microsoft Graph" `
+                                                -requiredDelegatedPermissions "User.Read|GroupMember.Read.All" `
+
+   $requiredResourcesAccess.Add($requiredPermissions)
+
+
+   Set-AzureADApplication -ObjectId $serviceAadApplication.ObjectId -RequiredResourceAccess $requiredResourcesAccess
+   Write-Host "Granted permissions."
 
    # Create the client AAD application
    Write-Host "Creating the AAD application (TodoListSPA)"
@@ -264,6 +275,7 @@ Function ConfigureApplications
                                                   -ReplyUrls "http://localhost:4200/" `
                                                   -IdentifierUris "https://$tenantName/TodoListSPA" `
                                                   -GroupMembershipClaims "SecurityGroup" `
+                                                  -Oauth2AllowImplicitFlow $true `
                                                   -PublicClient $False
 
    # create the service principal of the newly created application 
@@ -295,9 +307,24 @@ Function ConfigureApplications
 
    $requiredResourcesAccess.Add($requiredPermissions)
 
+   # Add Required Resources Access (from 'client' to 'Microsoft Graph')
+   Write-Host "Getting access from 'client' to 'Microsoft Graph'"
+   $requiredPermissions = GetRequiredPermissions -applicationDisplayName "Microsoft Graph" `
+                                                -requiredDelegatedPermissions "User.Read|GroupMember.Read.All" `
+
+   $requiredResourcesAccess.Add($requiredPermissions)
+
 
    Set-AzureADApplication -ObjectId $clientAadApplication.ObjectId -RequiredResourceAccess $requiredResourcesAccess
    Write-Host "Granted permissions."
+
+   # Configure known client applications for service 
+   Write-Host "Configure known client applications for the 'service'"
+   $knowApplications = New-Object System.Collections.Generic.List[System.String]
+    $knowApplications.Add($clientAadApplication.AppId)
+   Set-AzureADApplication -ObjectId $serviceAadApplication.ObjectId -KnownClientApplications $knowApplications
+   Write-Host "Configured."
+
 
    # Update config file for 'service'
    $configFile = $pwd.Path + "\..\TodoListAPI\appsettings.json"
@@ -308,7 +335,7 @@ Function ConfigureApplications
    # Update config file for 'client'
    $configFile = $pwd.Path + "\..\TodoListSPA\src\app\app-config.json"
    Write-Host "Updating the sample code ($configFile)"
-   $dictionary = @{ "Enter the Client Id (aka 'Application ID')" = $clientAadApplication.AppId;"https://login.microsoftonline.com/Enter_the_Tenant_Id_Here" = "https://login.microsoftonline.com/"+$tenantId;"Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist'" = $serviceAadApplication.HomePage;"Enter the API scopes as declared in the app registration 'Expose an Api' blade in the form of 'api://{clientId}/access_as_user'" = ("api://"+$serviceAadApplication.AppId+"/access_as_user") };
+   $dictionary = @{ "Enter the Client Id (aka 'Application ID')" = $clientAadApplication.AppId;"https://login.microsoftonline.com/Enter_the_Tenant_Id_Here" = "https://login.microsoftonline.com/"+$tenantId;"Enter the API scopes as declared in the app registration 'Expose an Api' blade in the form of 'api://{clientId}/access_as_user'" = ("api://"+$serviceAadApplication.AppId+"/access_as_user") };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
    Write-Host ""
    Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 

@@ -13,8 +13,13 @@
         "Name": "TodoListAPI",
         "Kind": "WebApi",
         "Audience": "AzureADMyOrg",
-        "HomePage": "https://localhost:44351/api/todolist",
         "GroupMembershipClaims": "SecurityGroup",
+        "RequiredResourcesAccess": [
+          {
+            "Resource": "Microsoft Graph",
+            "DelegatedPermissions": [ "User.Read", "GroupMember.Read.All" ]
+          }
+        ],
         "ManualSteps": [
           { "Comment": "On Azure Portal, create a security group named GroupAdmin, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." },
           { "Comment": "On Azure Portal, create a security group named GroupMember, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." }
@@ -32,6 +37,10 @@
           {
             "Resource": "service",
             "DelegatedPermissions": [ "access_as_user" ]
+          },
+          {
+            "Resource": "Microsoft Graph",
+            "DelegatedPermissions": [ "User.Read", "GroupMember.Read.All" ]
           }
         ],
         "ManualSteps": [
@@ -73,10 +82,6 @@
           {
             "key": "https://login.microsoftonline.com/Enter_the_Tenant_Id_Here",
             "value": "\"https://login.microsoftonline.com/\"+$tenantId"
-          },
-          {
-            "key": "Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist'",
-            "value": "service.HomePage"
           },
           {
             "key": "Enter the API scopes as declared in the app registration 'Expose an Api' blade in the form of 'api://{clientId}/access_as_user'",
