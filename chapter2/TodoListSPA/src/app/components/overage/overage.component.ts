@@ -66,11 +66,11 @@ export class OverageComponent implements OnInit {
                   this.handleNextPage(response['@odata.nextLink'])
                 } else {
                   if (this.groups.includes(config.groups.groupAdmin)) {
-                    this.service.user.groupIDs.push(config.groups.groupAdmin)
+                    this.service.user.groupIDs.push(config.groups.groupAdmin);
                   }
         
                   if (this.groups.includes(config.groups.groupMember)) {
-                    this.service.user.groupIDs.push(config.groups.groupMember)
+                    this.service.user.groupIDs.push(config.groups.groupMember);
                   }
                 }
                 console.log(this.groups);
@@ -95,30 +95,13 @@ export class OverageComponent implements OnInit {
           this.handleNextPage(response['@odata.nextLink'])
         } else {
           if (this.groups.includes(config.groups.groupAdmin)) {
-            this.service.user.groupIDs.push(config.groups.groupAdmin)
+            this.service.user.groupIDs.push(config.groups.groupAdmin);
           }
 
           if (this.groups.includes(config.groups.groupMember)) {
-            this.service.user.groupIDs.push(config.groups.groupMember)
+            this.service.user.groupIDs.push(config.groups.groupMember);
           }
         }
       })
   }
 }
-
-
-// if (this.groups.includes(config.groups.groupAdmin)) {
-//   this.service.user.groupIDs.push(config.groups.groupAdmin)
-// }
-
-// if (this.groups.includes(config.groups.groupMember)) {
-//   this.service.user.groupIDs.push(config.groups.groupMember)
-// }
-
-// if (this.groups.includes(config.groups.groupAdmin)) {
-//   this.service.user.groupIDs.push(config.groups.groupAdmin)
-// }
-
-// if (this.groups.includes(config.groups.groupMember)) {
-//   this.service.user.groupIDs.push(config.groups.groupMember)
-// }
