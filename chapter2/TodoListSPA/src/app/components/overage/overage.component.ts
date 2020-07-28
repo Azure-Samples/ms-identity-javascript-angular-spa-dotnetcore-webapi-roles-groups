@@ -17,7 +17,7 @@ export class OverageComponent implements OnInit {
   constructor(private authService: MsalService, private service: GraphService, private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.handleResponse()
+    this.handleResponse();
   }
 
   handleResponse(): void {
@@ -26,6 +26,13 @@ export class OverageComponent implements OnInit {
 
         response.value.map(v => this.groups.push(v.id));
 
+        /**
+         * Some queries against Microsoft Graph return multiple pages of data either due to server-side paging 
+         * or due to the use of the $top query parameter to specifically limit the page size in a request. 
+         * When a result set spans multiple pages, Microsoft Graph returns an @odata.nextLink property in 
+         * the response that contains a URL to the next page of results.
+         * learn more at https://docs.microsoft.com/graph/paging
+         */
         if (response['@odata.nextLink']) {
           this.handleNextPage(response['@odata.nextLink'])
         } else {

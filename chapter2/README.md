@@ -366,43 +366,32 @@ Consider the `group-guard.service.ts`. Here, we are checking whether the token f
 ```javascript
 // src/app/components/overage.component.ts
 ngOnInit(): void {
-    this.service.getGroups().subscribe({
-      next: (response: any) => {
-        this.groups = response.value.map(v => v.id);
+    this.handleResponse();
+  }
 
-        if (this.groups.includes(config.groups.groupAdmin)) {
-          this.service.user.groupIDs.push(config.groups.groupAdmin)
-        }
+  handleResponse(): void {
+    this.service.getGroups().subscribe((response: any) => {
+        response.value.map(v => this.groups.push(v.id));
 
-        if (this.groups.includes(config.groups.groupMember)) {
-          this.service.user.groupIDs.push(config.groups.groupMember)
-        }
-      },
-      error: (err: AuthError) => {
-        console.log(err)
-        // If there is an interaction required error,
-        // call one of the interactive methods and then make the request again.
-        if (InteractionRequiredAuthError.isInteractionRequiredError(err.errorCode)) {
-          this.authService.acquireTokenPopup({
-            scopes: this.authService.getScopesForEndpoint(config.resources.graphApi.resourceUri)
-          })
-          .then(() => {
-            this.service.getGroups()
-              .toPromise()
-              .then((response: any)  => {
-                this.groups = response.value.map(v => v.id);
+        /**
+         * Some queries against Microsoft Graph return multiple pages of data either due to server-side paging
+         * or due to the use of the $top query parameter to specifically limit the page size in a request.
+         * When a result set spans multiple pages, Microsoft Graph returns an @odata.nextLink property in
+         * the response that contains a URL to the next page of results.
+         * learn more at https://docs.microsoft.com/graph/paging
+         */
+        if (response['@odata.nextLink']) {
+          this.handleNextPage(response['@odata.nextLink'])
+        } else {
+          if (this.groups.includes(config.groups.groupAdmin)) {
+            this.service.user.groupIDs.push(config.groups.groupAdmin)
+          }
 
-                if (this.groups.includes(config.groups.groupAdmin)) {
-                  this.service.user.groupIDs.push(config.groups.groupAdmin)
-                }
-                if (this.groups.includes(config.groups.groupMember)) {
-                  this.service.user.groupIDs.push(config.groups.groupMember)
-                }
-              });
-          });
+          if (this.groups.includes(config.groups.groupMember)) {
+            this.service.user.groupIDs.push(config.groups.groupMember)
+          }
         }
-      }
-    });
+    })
   }
 ```
 
