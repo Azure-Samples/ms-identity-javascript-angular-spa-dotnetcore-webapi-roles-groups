@@ -20,4 +20,8 @@ export class GraphService {
   getGroups() {
     return this.http.get(this.graphUri);
   }
+
+  getNextPage(nextPage) {
+    return this.http.get(nextPage);
+  }
 }
