@@ -9,7 +9,8 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
 using TodoListAPI.Models;
 using TodoListAPI.Utils;
-using Microsoft.Graph;
+using WebAppCallsMicrosoftGraph;
+using System.Linq;
 
 namespace TodoListAPI
 {
@@ -26,12 +27,23 @@ namespace TodoListAPI
         public void ConfigureServices(IServiceCollection services)
         {
             // Setting configuration for protected web api
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddProtectedWebApi(Configuration);
-
-            services.AddProtectedWebApi(Configuration)
-                    .AddProtectedWebApiCallsProtectedWebApi(Configuration)
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddMicrosoftWebApi(options =>
+            {
+                Configuration.Bind("AzureAd", options);
+                options.Events = new JwtBearerEvents();
+                options.Events.OnTokenValidated = async context =>
+                {
+                    if (context.Principal.Claims.Any(x => x.Type == "hasgroups" || (x.Type == "_claim_names" && x.Value == "{\"groups\":\"src1\"}")))
+                    {
+                        await GraphHelper.AddGroupsClaim(context);
+                    }
+                };
+            }, options => { Configuration.Bind("AzureAd", options); })
+                    .AddMicrosoftWebApiCallsWebApi(Configuration)
                     .AddInMemoryTokenCaches();
+
+            services.AddMicrosoftGraph(Configuration, new string[] { "GroupMember.Read.All" });
 
             // The following lines code instruct the asp.net core middleware to use the data in the "groups" claim in the Authorize attribute
             services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>

@@ -14,6 +14,7 @@
         "Kind": "WebApi",
         "Audience": "AzureADMyOrg",
         "GroupMembershipClaims": "SecurityGroup",
+        "PasswordCredentials": "Auto",
         "RequiredResourcesAccess": [
           {
             "Resource": "Microsoft Graph",
@@ -66,6 +67,10 @@
           {
             "key": "Enter the application ID (clientId) of the 'TodoListAPI' application copied from the Azure portal",
             "value": "service.AppId"
+          },
+          {
+            "key": "Enter the Client Secret",
+            "value": "service.AppKey"
           }
         ]
       },

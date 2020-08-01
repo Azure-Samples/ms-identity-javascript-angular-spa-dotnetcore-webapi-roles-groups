@@ -147,27 +147,5 @@ namespace TodoListAPI.Controllers
         {
             return _context.TodoItems.Any(e => e.Id == id);
         }
-
-        public async Task<dynamic> CallGraphApiOnBehalfOfUser()
-        {
-            string[] scopes = { "GroupMember.Read.All" };
-            dynamic response;
-
-            // we use MSAL.NET to get a token to call the API On Behalf Of the current user
-            try
-            {
-                string accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
-                GraphHelper.Initialize(accessToken);
-                var groups = await GraphHelper.GetMembershipAsync();
-                response = groups;
-            }
-            catch (MsalUiRequiredException ex)
-            {
-                _tokenAcquisition.ReplyForbiddenWithWwwAuthenticateHeader(scopes, ex);
-                return "interaction required";
-            }
-
-            return response;
-        }
     }
 }
