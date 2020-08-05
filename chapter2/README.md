@@ -124,6 +124,12 @@ There are two projects in this sample. Each needs to be registered separately in
 1. Select **Register** to create the application.
 1. In the app's registration screen, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
 1. Select **Save** to save your changes.
+1. In the app's registration screen, click on the **Certificates & secrets** blade in the left to open the page where we can generate secrets and upload certificates.
+1. In the **Client secrets** section, click on **New client secret**:
+   - Type a key description (for instance `app secret`),
+   - Select one of the available key durations (**In 1 year**, **In 2 years**, or **Never Expires**) as per your security concerns.
+   - The generated key value will be displayed when you click the **Add** button. Copy the generated value for use in the steps later.
+   - You'll need this key later in your code's configuration files. This key value will not be displayed again, and is not retrievable by any other means, so make sure to note it from the Azure portal before navigating to any other screen or blade.
 1. In the app's registration screen, click on the **Expose an API** blade to the left to open the page where you can declare the parameters to expose this app as an API for which client applications can obtain [access tokens](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) for.
 The first thing that we need to do is to declare the unique [resource](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow) URI that the clients will be using to obtain access tokens for this Api. To declare an resource URI, follow the following steps:
    - Click `Set` next to the **Application ID URI** to generate a URI that is unique for this app.
@@ -156,6 +162,7 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 1. Find the app key `Domain` and replace the existing value with your Azure AD tenant name.
 1. Find the app key `ClientId` and replace the existing value with the application ID (clientId) of the `TodoListAPI` application copied from the Azure portal.
 1. Find the app key `TenantId` and replace the existing value with the tenant ID of the `TodoListAPI` application copied from the Azure portal.
+1. Find the app key `ClientSecret` and replace the existing value with the key you saved during the creation of the `TodoListAPI` app, in the Azure portal.
 
 ### Register the client app (TodoListSPA)
 
@@ -395,7 +402,57 @@ ngOnInit(): void {
   }
 ```
 
-##### .NET Core group authorization policy
+#### .NET Core Web API and how to handle the Overage Scenario
+
+In `Startup.cs`, for a protected Web API the `AddGroupsClaim` method retrieves all the groups and adds the values into claims when group overage occurs.
+
+```csharp
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddMicrosoftWebApi(options =>
+{
+    Configuration.Bind("AzureAd", options);
+    options.Events = new JwtBearerEvents();
+    options.Events.OnTokenValidated = async context =>
+    {
+        if (context.Principal.Claims.Any(x => x.Type == "hasgroups" || (x.Type == "_claim_names" && x.Value == "{\"groups\":\"src1\"}")))
+        {
+            await GraphHelper.AddGroupsClaim(context);
+        }
+    };
+}, options => { Configuration.Bind("AzureAd", options); })
+        .AddMicrosoftWebApiCallsWebApi(Configuration)
+        .AddInMemoryTokenCaches();
+
+//Adds microsoft graph client
+services.AddMicrosoftGraph(Configuration, new string[] { "GroupMember.Read.All" });
+```
+
+`AddGroupsClaim` method stores group id in `groups` claim by sending request to Microsoft Graph. The call to MS Graph requires access token that is retrieved using `JwtSecurityTokenUsedToCallWebAPI` key. The key is added before the request and removed once all the groups are fetched. It's mandatory to remove the key to avoid the failure. The maximum number of groups returned is 100 at a time so `ProcessIGraphServiceMemberOfCollectionPage` method is used to get the remaining groups.
+
+```csharp
+public static async Task AddGroupsClaim(TokenValidatedContext context)
+{
+    ...
+      string select = "id,displayName,onPremisesNetBiosName,onPremisesDomainName,onPremisesSamAccountNameonPremisesSecurityIdentifier";
+        var graph = context.HttpContext.RequestServices.GetRequiredService<GraphServiceClient>();
+        context.HttpContext.Items.Add("JwtSecurityTokenUsedToCallWebAPI", context.SecurityToken as JwtSecurityToken);
+        var memberPage = await graph.Me.MemberOf.Request().Select(select).GetAsync().ConfigureAwait(false);
+        var allgroups = ProcessIGraphServiceMemberOfCollectionPage(memberPage);
+        context.HttpContext.Items.Remove("JwtSecurityTokenUsedToCallWebAPI");
+
+        if (allgroups != null)
+        {
+            var identity = (ClaimsIdentity)context.Principal.Identity;
+            foreach (Group group in allgroups)
+            {
+                identity.AddClaim(new Claim("groups", group.Id));
+            }
+        }
+    ...
+}
+```
+
+##### Group authorization policy
 
 The asp.net middleware supports roles populated from claims by specifying the claim in the `RoleClaimType` property of `TokenValidationParameters`.
 Since the `groups` claim contains the object ids of the security groups than actual names by default, you'd use the group id's instead of group names. See [Role-based authorization in ASP.NET Core](https://docs.microsoft.com/aspnet/core/security/authorization/roles) for more info.

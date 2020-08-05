@@ -34,8 +34,10 @@ namespace TodoListAPI
                 options.Events = new JwtBearerEvents();
                 options.Events.OnTokenValidated = async context =>
                 {
+                    //Checks if the token contains 'Group Overage' Claim.
                     if (context.Principal.Claims.Any(x => x.Type == "hasgroups" || (x.Type == "_claim_names" && x.Value == "{\"groups\":\"src1\"}")))
                     {
+                        //Calls method to add 'groups' claim.
                         await GraphHelper.AddGroupsClaim(context);
                     }
                 };
@@ -43,6 +45,7 @@ namespace TodoListAPI
                     .AddMicrosoftWebApiCallsWebApi(Configuration)
                     .AddInMemoryTokenCaches();
 
+            //Adds Microsoft Graph Client
             services.AddMicrosoftGraph(Configuration, new string[] { "GroupMember.Read.All" });
 
             // The following lines code instruct the asp.net core middleware to use the data in the "groups" claim in the Authorize attribute
