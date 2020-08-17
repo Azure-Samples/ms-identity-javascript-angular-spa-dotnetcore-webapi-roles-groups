@@ -34,11 +34,10 @@ namespace TodoListAPI
                 options.Events = new JwtBearerEvents();
                 options.Events.OnTokenValidated = async context =>
                 {
-                    //Checks if the token contains 'Group Overage' Claim.
-                    if (context.Principal.Claims.Any(x => x.Type == "hasgroups" || (x.Type == "_claim_names" && x.Value == "{\"groups\":\"src1\"}")))
+                    if (context != null)
                     {
-                        //Calls method to add 'groups' claim.
-                        await GraphHelper.AddGroupsClaim(context);
+                        //Calls method to process groups overage claim.
+                        await GraphHelper.ProcessGroupsClaimforAccessToken(context);
                     }
                 };
             }, options => { Configuration.Bind("AzureAd", options); })
