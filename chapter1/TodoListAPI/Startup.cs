@@ -32,7 +32,7 @@ namespace TodoListAPI
 
             // Setting configuration for protected web api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddProtectedWebApi(Configuration);
+                .AddMicrosoftIdentityWebApi(Configuration);
 
             // The following lines code instruct the asp.net core middleware to use the data in the "roles" claim in the Authorize attribute and User.IsInrole()
             // See https://docs.microsoft.com/aspnet/core/security/authorization/roles for more info.
