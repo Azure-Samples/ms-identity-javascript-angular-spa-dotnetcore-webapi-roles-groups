@@ -9,7 +9,6 @@ using Microsoft.Identity.Web.Resource;
 using TodoListAPI.Models;
 using TodoListAPI.Utils;
 using Microsoft.Identity.Web;
-using Microsoft.Identity.Client;
 
 namespace TodoListAPI.Controllers
 {

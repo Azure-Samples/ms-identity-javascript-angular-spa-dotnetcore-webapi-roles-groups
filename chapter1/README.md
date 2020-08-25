@@ -209,12 +209,12 @@ Open the project in your IDE (like Visual Studio) to configure the code.
                "User"
             ],
             "description": "Users can read and modify their TodoList but cannot see others' lists",
-            "displayName": "TaskUsers",
+            "displayName": "TaskUser",
             "id": "a816142a-2e8e-46c4-9997-f984faccb625",
             "isEnabled": true,
             "lang": null,
             "origin": "Application",
-            "value": "TaskUsers"
+            "value": "TaskUser"
          }
       ],
    ```
