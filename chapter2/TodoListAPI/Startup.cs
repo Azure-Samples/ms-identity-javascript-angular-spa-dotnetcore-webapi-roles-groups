@@ -6,16 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
 using TodoListAPI.Models;
 using TodoListAPI.Utils;
-using WebAppCallsMicrosoftGraph;
-using System.Linq;
 
 namespace TodoListAPI
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,24 +26,22 @@ namespace TodoListAPI
         {
             // Setting configuration for protected web api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddMicrosoftWebApi(options =>
-            {
-                Configuration.Bind("AzureAd", options);
-                options.Events = new JwtBearerEvents();
-                options.Events.OnTokenValidated = async context =>
+                        .AddMicrosoftIdentityWebApi(options =>
                 {
-                    if (context != null)
+                    Configuration.Bind("AzureAd", options);
+                    options.Events = new JwtBearerEvents();
+                    options.Events.OnTokenValidated = async context =>
                     {
+                        if (context != null)
+                        {
                         //Calls method to process groups overage claim.
                         await GraphHelper.ProcessGroupsClaimforAccessToken(context);
-                    }
-                };
-            }, options => { Configuration.Bind("AzureAd", options); })
-                    .AddMicrosoftWebApiCallsWebApi(Configuration)
+                        }
+                    };
+                }, options => { Configuration.Bind("AzureAd", options); })
+                        .EnableTokenAcquisitionToCallDownstreamApi(options => Configuration.Bind("AzureAd", options))
+                        .AddMicrosoftGraph(Configuration.GetSection("GraphBeta"))
                     .AddInMemoryTokenCaches();
-
-            //Adds Microsoft Graph Client
-            services.AddMicrosoftGraph(Configuration, new string[] { "GroupMember.Read.All" });
 
             // The following lines code instruct the asp.net core middleware to use the data in the "groups" claim in the Authorize attribute
             services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
