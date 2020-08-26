@@ -234,6 +234,7 @@ Function ConfigureApplications
                                                    -PasswordCredentials $key `
                                                    -GroupMembershipClaims "SecurityGroup" `
                                                    -PublicClient $False
+
    $serviceIdentifierUri = 'api://'+$serviceAadApplication.AppId
    Set-AzureADApplication -ObjectId $serviceAadApplication.ObjectId -IdentifierUris $serviceIdentifierUri
 
@@ -249,7 +250,7 @@ Function ConfigureApplications
         Write-Host "'$($user.UserPrincipalName)' added as an application owner to app '$($serviceServicePrincipal.DisplayName)'"
    }
 
-    # rename the access_as_user scope if it exists to match the readme steps or add a new scope
+    # rename the user_impersonation scope if it exists to match the readme steps or add a new scope
     $scopes = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.OAuth2Permission]
    
     if ($scopes.Count -ge 0) 
@@ -307,6 +308,7 @@ Function ConfigureApplications
                                                   -ReplyUrls "http://localhost:4200/" `
                                                   -IdentifierUris "https://$tenantName/TodoListSPA" `
                                                   -GroupMembershipClaims "SecurityGroup" `
+                                                  -Oauth2AllowImplicitFlow $true `
                                                   -PublicClient $False
 
    # create the service principal of the newly created application 

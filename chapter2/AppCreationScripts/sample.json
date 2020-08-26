@@ -33,6 +33,7 @@
         "Audience": "AzureADMyOrg",
         "HomePage": "http://localhost:4200/",
         "ReplyUrls": "http://localhost:4200/",
+        "AllowImplicitFlow": true,
         "GroupMembershipClaims": "SecurityGroup",
         "RequiredResourcesAccess": [
           {
