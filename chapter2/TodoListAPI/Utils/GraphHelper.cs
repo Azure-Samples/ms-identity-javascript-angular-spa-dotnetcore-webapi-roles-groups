@@ -13,55 +13,84 @@ namespace TodoListAPI.Utils
     public class GraphHelper
     {
         /// <summary>
-        /// Adds groups claim for group overage
+        /// This method inspects the claims collection created from the ID or Access token issued to a user and returns the groups that are present in the token . If it detects groups overage,
+        /// the method then makes calls to Microsoft Graph to fetch the group membership of the authenticated user.
         /// </summary>
         /// <param name="context">TokenValidatedContext</param>
-        public static async Task ProcessGroupsClaimforAccessToken(TokenValidatedContext context)
+        public static async Task GetSignedInUsersGroups(TokenValidatedContext context)
         {
             try
             {
-                //Checks if the token contains 'Group Overage' Claim.
+                // Checks if the incoming token contained a 'Group Overage' claim.
                 if (context.Principal.Claims.Any(x => x.Type == "hasgroups" || (x.Type == "_claim_names" && x.Value == "{\"groups\":\"src1\"}")))
                 {
-                    //This API should have permission set for Microsoft graph: 'GroupMember.Read.All'
-                    var graph = context.HttpContext.RequestServices.GetService<GraphServiceClient>();
-                    if (graph == null)
+                    // Before instatntiating GraphServiceClient, the app should have granted admin consent for 'GroupMember.Read.All' permission.
+                    var graphClient = context.HttpContext.RequestServices.GetService<GraphServiceClient>();
+
+                    if (graphClient == null)
                     {
-                        Console.WriteLine("No service for type 'Microsoft.Graph.GraphServiceClient' has been registered.");
+                        Console.WriteLine("No service for type 'Microsoft.Graph.GraphServiceClient' has been registered in the Startup.");
                     }
+
+                    // Checks if the SecurityToken is not null.
+                    // For the Web App, SecurityToken contains value of the ID Token.
                     else if (context.SecurityToken != null)
                     {
+                        // Checks if 'JwtSecurityTokenUsedToCallWebAPI' key already exists.
+                        // This key is required to acquire Access Token for Graph Service Client.
                         if (!context.HttpContext.Items.ContainsKey("JwtSecurityTokenUsedToCallWebAPI"))
                         {
-                            //Added current access token in below key to get Access Token on-behalf of user. 
+                            // For Web App, access token is retrieved using account identifier. But at this point account identifier is null.
+                            // So, SecurityToken is saved in 'JwtSecurityTokenUsedToCallWebAPI' key.
+                            // The key is then used to get the Access Token on-behalf of user.
                             context.HttpContext.Items.Add("JwtSecurityTokenUsedToCallWebAPI", context.SecurityToken as JwtSecurityToken);
                         }
-                        //Specify the property names in the 'select' variable to get values for the specified properties.
+
+                        // The properties that we want to retrieve from MemberOf endpoint.
                         string select = "id,displayName,onPremisesNetBiosName,onPremisesDomainName,onPremisesSamAccountNameonPremisesSecurityIdentifier";
 
-                        //Request to get groups and directory roles that the user is a direct member of.
-                        var memberPage = await graph.Me.MemberOf.Request().Select(select).GetAsync().ConfigureAwait(false);
-                        
+                        IUserMemberOfCollectionWithReferencesPage memberPage = new UserMemberOfCollectionWithReferencesPage();
+                        try
+                        {
+                            //Request to get groups and directory roles that the user is a direct member of.
+                            memberPage = await graphClient.Me.MemberOf.Request().Select(select).GetAsync().ConfigureAwait(false);
+                        }
+                        catch (Exception graphEx)
+                        {
+                            var exMsg = graphEx.InnerException != null ? graphEx.InnerException.Message : graphEx.Message;
+                            Console.WriteLine("Call to Microsoft Graph failed: " + exMsg);
+                        }
+
                         if (memberPage?.Count > 0)
                         {
-                            //There is a limit to number of groups returned, below method make calls to Microsoft graph to get all the groups.
+                            // There is a limit to number of groups returned, below method make calls to Microsoft graph to get all the groups.
                             var allgroups = ProcessIGraphServiceMemberOfCollectionPage(memberPage);
-                            
+
                             if (allgroups?.Count > 0)
                             {
                                 var identity = (ClaimsIdentity)context.Principal.Identity;
 
                                 if (identity != null)
                                 {
-                                    //Remove existing groups claims
-                                    RemoveExistingClaims(context, identity);
-
-                                    foreach (Group group in allgroups)
+                                    // Checks if token is for protected APIs i.e., if token is 'Access Token'.
+                                    // For Access Token either 'aapid' or 'azp' claim is present.
+                                    // 'appid' is present in v1.0 tokens and it is the application ID of the client using the token.
+                                    // 'azp' is present in v2.0 tokens (replacement for appid)
+                                    if (identity.Claims.Any(x => x.Type == "appid" || x.Type == "azp"))
                                     {
-                                        //Adds group id as 'groups' claim. But it can be changed as per requirment. 
-                                        //For instance if the required format is 'NetBIOSDomain\sAMAccountName' then the code is as commented below:
-                                        //identity.AddClaim(new Claim("groups", group.OnPremisesNetBiosName+"\\"+group.OnPremisesSamAccountName));
-                                        identity.AddClaim(new Claim("groups", group.Id));
+                                        //Remove existing groups claims
+                                        RemoveExistingGroupsClaims(identity);
+
+                                        // Re-populate the `groups` claim with the complete list of groups fetched from MS Graph
+                                        foreach (Group group in allgroups)
+                                        {
+                                            // The following code adds group ids to the 'groups' claim. But depending upon your reequirement and the format of the 'groups' claim selected in
+                                            // the app registration, you might want to add other attributes than id to the `groups` claim, examples being;
+
+                                            // For instance if the required format is 'NetBIOSDomain\sAMAccountName' then the code is as commented below:
+                                            // identity.AddClaim(new Claim("groups", group.OnPremisesNetBiosName+"\\"+group.OnPremisesSamAccountName));
+                                            identity.AddClaim(new Claim("groups", group.Id));
+                                        }
                                     }
                                 }
                             }
@@ -75,10 +104,12 @@ namespace TodoListAPI.Utils
             }
             finally
             {
+                // Checks if the key 'JwtSecurityTokenUsedToCallWebAPI' exists.
                 if (context.HttpContext.Items.ContainsKey("JwtSecurityTokenUsedToCallWebAPI"))
                 {
-                    //Remove the key as Microsoft.Identity.Web library utilizes this key. 
-                    //If not removed then it can cause failure to the application.
+                    // Removes 'JwtSecurityTokenUsedToCallWebAPI' from Items collection.
+                    // If not removed then it can cause failure to the application.
+                    // Because this key is also added by StoreTokenUsedToCallWebAPI method of Microsoft.Identity.Web.
                     context.HttpContext.Items.Remove("JwtSecurityTokenUsedToCallWebAPI");
                 }
             }
@@ -87,12 +118,11 @@ namespace TodoListAPI.Utils
         /// <summary>
         /// Remove groups claims if already exists.
         /// </summary>
-        /// <param name="context"></param>
         /// <param name="identity"></param>
-        private static void RemoveExistingClaims(TokenValidatedContext context, ClaimsIdentity identity)
+        private static void RemoveExistingGroupsClaims(ClaimsIdentity identity)
         {
             //clear existing claim
-            List<Claim> existingGroupsClaims = context.Principal.Claims.Where(x => x.Type == "groups").ToList();
+            List<Claim> existingGroupsClaims = identity.Claims.Where(x => x.Type == "groups").ToList();
             if (existingGroupsClaims?.Count > 0)
             {
                 foreach (Claim groupsClaim in existingGroupsClaims)

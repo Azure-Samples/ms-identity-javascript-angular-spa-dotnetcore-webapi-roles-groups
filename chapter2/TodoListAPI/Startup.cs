@@ -35,7 +35,7 @@ namespace TodoListAPI
                         if (context != null)
                         {
                         //Calls method to process groups overage claim.
-                        await GraphHelper.ProcessGroupsClaimforAccessToken(context);
+                        await GraphHelper.GetSignedInUsersGroups(context);
                         }
                     };
                 }, options => { Configuration.Bind("AzureAd", options); })
