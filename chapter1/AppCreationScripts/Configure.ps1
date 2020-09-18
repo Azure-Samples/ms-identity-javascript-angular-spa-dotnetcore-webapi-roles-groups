@@ -287,7 +287,7 @@ Function ConfigureApplications
    $appRoles = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.AppRole]
    $newRole = CreateAppRole -types "User" -name "TaskAdmin" -description "Admins can read any user's todo list"
    $appRoles.Add($newRole)
-   $newRole = CreateAppRole -types "User" -name "TaskUsers" -description "Users can read and modify their todo lists"
+   $newRole = CreateAppRole -types "User" -name "TaskUser" -description "Users can read and modify their todo lists"
    $appRoles.Add($newRole)
    Set-AzureADApplication -ObjectId $clientAadApplication.ObjectId -AppRoles $appRoles
 
