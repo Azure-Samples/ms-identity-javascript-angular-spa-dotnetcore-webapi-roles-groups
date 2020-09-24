@@ -38,6 +38,17 @@ namespace TodoListAPI.Utils
         }
 
         /// <summary>
+        /// ID Token does not contain 'scp' claim.
+        /// This claims exist for Access Token.
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <returns></returns>
+        private static bool IsAccessToken(ClaimsIdentity identity)
+        {
+            return identity.Claims.Any(x => x.Type == "scp");
+        }
+
+        /// <summary>
         /// This method inspects the claims collection created from the ID or Access token issued to a user and returns the groups that are present in the token . If it detects groups overage,
         /// the method then makes calls to Microsoft Graph to fetch the group membership of the authenticated user.
         /// </summary>
@@ -95,10 +106,7 @@ namespace TodoListAPI.Utils
                             if (identity != null)
                             {
                                 // Checks if token is for protected APIs i.e., if token is 'Access Token'.
-                                // For Access Token either 'aapid' or 'azp' claim is present.
-                                // 'appid' is present in v1.0 tokens and it is the application ID of the client using the token.
-                                // 'azp' is present in v2.0 tokens (replacement for appid)
-                                if (identity.Claims.Any(x => x.Type == "appid" || x.Type == "azp"))
+                                 if (IsAccessToken(identity))
                                 {
                                     //Remove existing groups claims
                                     RemoveExistingGroupsClaims(identity);

@@ -1,15 +1,14 @@
 ---
 page_type: sample
-author: derisen
 languages:
 - javascript
 - typescript
 - csharp
 products:
-- angular
-- dotnet
-- azure-ad
-- ms-graph
+  - dotnet
+  - azure-active-directory 
+  - ms-graph
+name: An Angular Single-Page Application (SPA) using Security Groups to implement authorization						 
 description: "An Angular Single-Page Application (SPA) using Security Groups to implement authorization"
 urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups/Chapter2"
 ---
@@ -94,15 +93,15 @@ There are two projects in this sample. Each needs to be registered separately in
 <details>
   <summary>Expand this section if you want to use this automation:</summary>
 
-1. On Windows, run PowerShell and navigate to the root of the cloned directory
-2. In PowerShell run:
+1. On Windows, run PowerShell as **Administrator** and navigate to the root of the cloned directory
+1. In PowerShell run:
 
    ```PowerShell
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
    ```
 
-3. Run the script to create your Azure AD application and configure the code of the sample application accordingly.
-4. In PowerShell run:
+1. Run the script to create your Azure AD application and configure the code of the sample application accordingly.
+1. In PowerShell run:
 
    ```PowerShell
    cd .\AppCreationScripts\
@@ -116,31 +115,31 @@ There are two projects in this sample. Each needs to be registered separately in
 
 ### Register the service app (TodoListAPI)
 
-1. Navigate to the Microsoft identity platform for developers [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page.
-1. Select **New registration**.
+1. Navigate to the [Azure portal](https://portal.azure.com) and select the **Azure AD** service.
+1. Select the **App registrations** blade on the left, then select **New registration**.
 1. In the **Register an application page** that appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `TodoListAPI`.
-   - Under **Supported account types**, select **Accounts in this organizational directory**.
+   - Under **Supported account types**, select **Accounts in this organizational directory only**.
 1. Select **Register** to create the application.
 1. In the app's registration screen, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
 1. Select **Save** to save your changes.
 1. In the app's registration screen, click on the **Certificates & secrets** blade in the left to open the page where we can generate secrets and upload certificates.
 1. In the **Client secrets** section, click on **New client secret**:
    - Type a key description (for instance `app secret`),
-   - Select one of the available key durations (**In 1 year**, **In 2 years**, or **Never Expires**) as per your security concerns.
+   - Select one of the available key durations (**In 1 year**, **In 2 years**, or **Never Expires**) as per your security posture.
    - The generated key value will be displayed when you click the **Add** button. Copy the generated value for use in the steps later.
    - You'll need this key later in your code's configuration files. This key value will not be displayed again, and is not retrievable by any other means, so make sure to note it from the Azure portal before navigating to any other screen or blade.
-1. In the app's registration screen, click on the **Expose an API** blade to the left to open the page where you can declare the parameters to expose this app as an API for which client applications can obtain [access tokens](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) for.
-The first thing that we need to do is to declare the unique [resource](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow) URI that the clients will be using to obtain access tokens for this Api. To declare an resource URI, follow the following steps:
+1. In the app's registration screen, click on the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs.
+   - Click the **Add a permission** button and then,
+   - Ensure that the **Microsoft APIs** tab is selected.
+   - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
+   - In the **Delegated permissions** section, select the **User.Read**, **GroupMember.Read.All** in the list. Use the search box if necessary.
+   - Click on the **Add permissions** button at the bottom.
+   - **GroupMember.Read.All** requires admin to consent. Click the **Grant/revoke admin consent for {tenant}** button, and then select **Yes** when you are asked if you want to grant consent for the requested permissions for all account in the tenant. You need to be an Azure AD tenant admin to do this.
+1. In the app's registration screen, select the **Expose an API** blade to the left to open the page where you can declare the parameters to expose this app as an API for which client applications can obtain [access tokens](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) for.
+The first thing that we need to do is to declare the unique [resource](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow) URI that the clients will be using to obtain access tokens for this API. To declare an resource URI, follow the following steps:
    - Click `Set` next to the **Application ID URI** to generate a URI that is unique for this app.
    - For this sample, accept the proposed Application ID URI (api://{clientId}) by selecting **Save**.
-1. Select the **API permissions** section
-   1. Click the **Add a permission** button and then,
-   2. Ensure that the **Microsoft APIs** tab is selected.
-   3. In the commonly used **Microsoft APIs** section, click on **Microsoft Graph**
-   4. In the **Delegated permissions** section, select the **User.Read** in the list. Use the search box if necessary.
-   5. (Optional) In the **Delegated permissions** section, select the **GroupMember.Read.All** in the list. Grant **Admin Consent** for this permission.
-   6. Click on the **Add permissions** button at the bottom.
 1. All APIs have to publish a minimum of one [scope](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code) for the client's to obtain an access token successfully. To publish a scope, follow the following steps:
    - Select **Add a scope** button open the **Add a scope** screen and Enter the values as indicated below:
         - For **Scope name**, use `access_as_user`.
@@ -154,50 +153,47 @@ The first thing that we need to do is to declare the unique [resource](https://d
 
 #### Configure the service app (TodoListAPI) to use your app registration
 
-Open the project in your IDE (like Visual Studio) to configure the code.
+Open the project in your IDE (like Visual Studio or Visual Studio Code) to configure the code.
 
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListAPI\appsettings.json` file.
 1. Find the app key `Domain` and replace the existing value with your Azure AD tenant name.
 1. Find the app key `ClientId` and replace the existing value with the application ID (clientId) of the `TodoListAPI` application copied from the Azure portal.
-1. Find the app key `TenantId` and replace the existing value with the tenant ID of the `TodoListAPI` application copied from the Azure portal.
+1. Find the app key `TenantId` and replace the existing value with your Azure AD tenant ID.
 1. Find the app key `ClientSecret` and replace the existing value with the key you saved during the creation of the `TodoListAPI` app, in the Azure portal.
 
 ### Register the client app (TodoListSPA)
 
-1. Navigate to the Microsoft identity platform for developers [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page.
-1. Select **New registration**.
+1. Navigate to the [Azure portal](https://portal.azure.com) and select the **Azure AD** service.
+1. Select the **App registrations** blade on the left, then select **New registration**.
 1. In the **Register an application page** that appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `TodoListSPA`.
-   - Under **Supported account types**, select **Accounts in this organizational directory**.
-   - In the **Redirect URI** section, select **Single-page application** in the combo-box and enter the following redirect URI: `http://localhost:4200/`.
+   - Under **Supported account types**, select **Accounts in this organizational directory only**.
+   - In the **Redirect URI (optional)** section, select **Single-Page Application** in the combo-box and enter the following redirect URI: `http://localhost:4200/`.
 1. Select **Register** to create the application.
 1. In the app's registration screen, find and note the **Application (client) ID**. You use this value in your app's configuration file(s) later in your code.
 1. In the app's registration screen, select **Authentication** in the menu.
-   - If you don't have a platform added, select **Add a platform** and select the **Single-page application** option.
+   - If you don't have a platform added, select **Add a platform** and select the **Single-Page Application** option.
    - In the **Implicit grant** section, check the **Access tokens** and **ID tokens** option as this sample requires
-     the [Implicit grant flow](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) to be enabled to
-     sign-in the user, and call an API.
-
+     the the [Implicit grant flow](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) to be enabled to sign-in the user and call an API.
 1. Select **Save** to save your changes.
-1. Select the **API permissions** section
-   1. Click the **Add a permission** button and then,
-   2. Ensure that the **Microsoft APIs** tab is selected.
-   3. In the commonly used **Microsoft APIs** section, click on **Microsoft Graph**
-   4. In the **Delegated permissions** section, select the **User.Read** in the list. Use the search box if necessary.
-   5. (Optional) In the **Delegated permissions** section, select the **GroupMember.Read.All** in the list. Grant **Admin Consent** for this permission.
-   6. Click on the **Add permissions** button at the bottom.
-1. Select the **API permissions** section again.
-   - Click the **Add a permission** button and then,
+1. In the app's registration screen, click on the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs.
+   - Click the **Add a permission** button and then:
    - Ensure that the **My APIs** tab is selected.
    - In the list of APIs, select the API `TodoListAPI`.
-   - In the **Delegated permissions** section, select the **access_as_user** in the list. Use the search box if necessary.
+   - In the **Delegated permissions** section, select the **Access 'TodoListAPI'** in the list. Use the search box if necessary.
    - Click on the **Add permissions** button at the bottom.
+   - Click the **Add a permission** button and then:
+   - Ensure that the **Microsoft APIs** tab is selected.
+   - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
+   - In the **Delegated permissions** section, select the **User.Read**, **GroupMember.Read.All** in the list. Use the search box if necessary.
+   - Click on the **Add permissions** button at the bottom.
+   - **GroupMember.Read.All** requires admin to consent. Click the **Grant/revoke admin consent for {tenant}** button, and then select **Yes** when you are asked if you want to grant consent for the requested permissions for all account in the tenant. You need to be an Azure AD tenant admin to do this.
 
 #### Configure the client app (TodoListSPA) to use your app registration
 
-Open the project in your IDE (like Visual Studio) to configure the code.
+Open the project in your IDE (like Visual Studio or Visual Studio Code) to configure the code.
 
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
@@ -206,7 +202,7 @@ Open the project in your IDE (like Visual Studio) to configure the code.
 1. Find the app key `webApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
 1. Find the app key `webApi.resourceScope` and replace the existing value with *Scope* you created earlier `api://{clientId}/access_as_user`.
 
-## Create Security Groups
+## Configure your application to receive the **groups** claim
 
 > :warning: The **Token Configuration** steps below that you need to perform are the same for both **TodoListAPI** and **TodoListSPA**.
 
@@ -260,8 +256,8 @@ Now you have two different options available to you on how you can further confi
 > During **Token Configuration**, if you have chosen any other option except **groupID** (e.g. like **DNSDomain\sAMAccountName**) you should enter the **group name** (for example `contoso.com\Test Group`) instead of the **object ID** below:
 
 1. Open the `TodoListSPA\src\app\app-config.json` file.
-2. Find the app key `groups.groupAdmin` and replace the existing value with the **object ID** of the **GroupAdmin** group copied from the Azure portal.
-3. Find the app key `groups.groupMember` and replace the existing value with the **object ID** of the **GroupMember** group copied from the Azure portal.
+1. Find the app key `groups.groupAdmin` and replace the existing value with the **object ID** of the **GroupAdmin** group copied from the Azure portal.
+1. Find the app key `groups.groupMember` and replace the existing value with the **object ID** of the **GroupMember** group copied from the Azure portal.
 
 ### Configure the service app (TodoListAPI) to recognize Group IDs
 
@@ -404,53 +400,109 @@ ngOnInit(): void {
 
 #### .NET Core Web API and how to handle the Overage Scenario
 
-In `Startup.cs`, for a protected Web API the `AddGroupsClaim` method retrieves all the groups and adds the values into claims when group overage occurs.
+1. In `Startup.cs`, `OnTokenValidated` event calls **GetSignedInUsersGroups** method defined in GraphHelper.cs to process groups overage claim.
 
-```csharp
-services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddMicrosoftWebApi(options =>
-{
-    Configuration.Bind("AzureAd", options);
-    options.Events = new JwtBearerEvents();
-    options.Events.OnTokenValidated = async context =>
-    {
-        if (context.Principal.Claims.Any(x => x.Type == "hasgroups" || (x.Type == "_claim_names" && x.Value == "{\"groups\":\"src1\"}")))
+    ```csharp
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(options =>
         {
-            await GraphHelper.AddGroupsClaim(context);
-        }
-    };
-}, options => { Configuration.Bind("AzureAd", options); })
-        .AddMicrosoftWebApiCallsWebApi(Configuration)
-        .AddInMemoryTokenCaches();
-
-//Adds microsoft graph client
-services.AddMicrosoftGraph(Configuration, new string[] { "GroupMember.Read.All" });
-```
-
-`AddGroupsClaim` method stores group id in `groups` claim by sending request to Microsoft Graph. The call to MS Graph requires access token that is retrieved using `JwtSecurityTokenUsedToCallWebAPI` key. The key is added before the request and removed once all the groups are fetched. It's mandatory to remove the key to avoid the failure. The maximum number of groups returned is 100 at a time so `ProcessIGraphServiceMemberOfCollectionPage` method is used to get the remaining groups.
-
-```csharp
-public static async Task AddGroupsClaim(TokenValidatedContext context)
-{
-    ...
-      string select = "id,displayName,onPremisesNetBiosName,onPremisesDomainName,onPremisesSamAccountNameonPremisesSecurityIdentifier";
-        var graph = context.HttpContext.RequestServices.GetRequiredService<GraphServiceClient>();
-        context.HttpContext.Items.Add("JwtSecurityTokenUsedToCallWebAPI", context.SecurityToken as JwtSecurityToken);
-        var memberPage = await graph.Me.MemberOf.Request().Select(select).GetAsync().ConfigureAwait(false);
-        var allgroups = ProcessIGraphServiceMemberOfCollectionPage(memberPage);
-        context.HttpContext.Items.Remove("JwtSecurityTokenUsedToCallWebAPI");
-
-        if (allgroups != null)
-        {
-            var identity = (ClaimsIdentity)context.Principal.Identity;
-            foreach (Group group in allgroups)
+            Configuration.Bind("AzureAd", options);
+            options.Events = new JwtBearerEvents();
+            options.Events.OnTokenValidated = async context =>
             {
-                identity.AddClaim(new Claim("groups", group.Id));
+                if (context != null)
+                {
+                //Calls method to process groups overage claim.
+                await GraphHelper.GetSignedInUsersGroups(context);
+                }
+            };
+        }, options => { Configuration.Bind("AzureAd", options); })
+                .EnableTokenAcquisitionToCallDownstreamApi(options => Configuration.Bind("AzureAd", options))
+                .AddMicrosoftGraph(Configuration.GetSection("GraphBeta"))
+            .AddInMemoryTokenCaches();
+    ```
+
+    `AddMicrosoftGraph` registers the service for `GraphServiceClient`. The values for BaseUrl and Scopes defined in `GraphAPI` section of **appsettings.json**.
+
+1. In GraphHelper.cs, **GetSignedInUsersGroups** method checks if incoming token contains *Group Overage* claim then it will call **ProcessUserGroupsForOverage** method to retrieve groups.
+
+    ```csharp
+            public static async Task GetSignedInUsersGroups(TokenValidatedContext context)
+            {
+                // Checks if the incoming token contained a 'Group Overage' claim.
+                if (HasOverageOccurred(context.Principal))
+                {
+                    await ProcessUserGroupsForOverage(context);
+                }
             }
-        }
-    ...
-}
-```
+    ```
+
+    **ProcessClaimsForGroupsOverage** method uses `GraphServiceClient` to retrieve groups for the signed-in user from [/me/memberOf](https://docs.microsoft.com/graph/api/user-list-memberof) endpoint. All the group ids are stored in Session.
+
+    ```csharp
+                private static async Task ProcessUserGroupsForOverage(TokenValidatedContext context)
+                {
+                      ...
+                        var graphClient = context.HttpContext.RequestServices.GetService<GraphServiceClient>();
+                        if (graphClient == null)
+                        {
+                            Console.WriteLine("No service for type 'Microsoft.Graph.GraphServiceClient' has been registered in the Startup.");
+                        }
+                        else if (context.SecurityToken != null)
+                        {
+                            if (!context.HttpContext.Items.ContainsKey("JwtSecurityTokenUsedToCallWebAPI"))
+                            {
+                                context.HttpContext.Items.Add("JwtSecurityTokenUsedToCallWebAPI", context.SecurityToken as JwtSecurityToken);
+                            }
+                            string select = "id,displayName,onPremisesNetBiosName,onPremisesDomainName,onPremisesSamAccountNameonPremisesSecurityIdentifier";
+                            IUserMemberOfCollectionWithReferencesPage memberPage = new UserMemberOfCollectionWithReferencesPage();
+                            try
+                            {
+                                memberPage = await graphClient.Me.MemberOf.Request().Select(select).GetAsync().ConfigureAwait(false);
+                            }
+                            catch (Exception graphEx)
+                            {
+                                var exMsg = graphEx.InnerException != null ? graphEx.InnerException.Message : graphEx.Message;
+                                Console.WriteLine("Call to Microsoft Graph failed: " + exMsg);
+                            }
+
+                            if (memberPage?.Count > 0)
+                            {
+                                var allgroups = ProcessIGraphServiceMemberOfCollectionPage(memberPage);
+
+                                if (allgroups?.Count > 0)
+                                {
+                                    var identity = (ClaimsIdentity)context.Principal.Identity;
+
+                                    if (identity != null)
+                                    {
+                                        if (IsAccessToken(identity))
+                                        {
+                                            RemoveExistingGroupsClaims(identity);
+                                            foreach (Group group in allgroups)
+                                            {
+                                                identity.AddClaim(new Claim("groups", group.Id));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ...
+                }
+      ```
+
+      In the app registration, you might want to add other attributes than id to the `groups` claim; For instance if, the required format is `NetBIOSDomain\sAMAccountName` then replace
+
+      ```csharp
+          identity.AddClaim(new Claim("groups", group.Id));
+      ```
+
+      with
+
+      ```csharp
+          identity.AddClaim(new Claim("groups", group.OnPremisesNetBiosName+"\\"+group.OnPremisesSamAccountName));
+      ```
 
 ##### Group authorization policy
 
