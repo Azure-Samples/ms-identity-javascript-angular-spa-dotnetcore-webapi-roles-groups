@@ -20,7 +20,7 @@
     },
     "graphApi": {
       "resourceUri": "https://graph.microsoft.com/v1.0/me/memberOf",
-      "resourceScope": "GroupMember.Read.All"
+      "resourceScope": "User.Read GroupMember.Read.All"
     }
   },
   "groups": {

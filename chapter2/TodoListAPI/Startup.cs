@@ -13,6 +13,7 @@ namespace TodoListAPI
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,13 +25,23 @@ namespace TodoListAPI
         public void ConfigureServices(IServiceCollection services)
         {
             // Setting configuration for protected web api
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddProtectedWebApi(Configuration);
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(Configuration)
-                    .EnableTokenAcquisitionToCallDownstreamApi()
-                        .AddInMemoryTokenCaches();
+                        .AddMicrosoftIdentityWebApi(options =>
+                {
+                    Configuration.Bind("AzureAd", options);
+                    options.Events = new JwtBearerEvents();
+                    options.Events.OnTokenValidated = async context =>
+                    {
+                        if (context != null)
+                        {
+                        //Calls method to process groups overage claim.
+                        await GraphHelper.GetSignedInUsersGroups(context);
+                        }
+                    };
+                }, options => { Configuration.Bind("AzureAd", options); })
+                        .EnableTokenAcquisitionToCallDownstreamApi(options => Configuration.Bind("AzureAd", options))
+                        .AddMicrosoftGraph(Configuration.GetSection("GraphBeta"))
+                    .AddInMemoryTokenCaches();
 
             // The following lines code instruct the asp.net core middleware to use the data in the "groups" claim in the Authorize attribute
             services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>

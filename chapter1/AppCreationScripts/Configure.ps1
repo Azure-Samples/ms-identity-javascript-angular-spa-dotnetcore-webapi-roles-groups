@@ -202,6 +202,7 @@ Function ConfigureApplications
    $serviceAadApplication = New-AzureADApplication -DisplayName "TodoListAPI" `
                                                    -HomePage "https://localhost:44351/api/todolist" `
                                                    -PublicClient $False
+
    $serviceIdentifierUri = 'api://'+$serviceAadApplication.AppId
    Set-AzureADApplication -ObjectId $serviceAadApplication.ObjectId -IdentifierUris $serviceIdentifierUri
 
@@ -224,7 +225,7 @@ Function ConfigureApplications
    $newRole = CreateAppRole -types "User" -name "TaskUser" -description "Users can read and modify their todo lists"
    $appRoles.Add($newRole)
    Set-AzureADApplication -ObjectId $serviceAadApplication.ObjectId -AppRoles $appRoles
-    # rename the access_as_user scope if it exists to match the readme steps or add a new scope
+    # rename the user_impersonation scope if it exists to match the readme steps or add a new scope
     $scopes = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.OAuth2Permission]
    
     if ($scopes.Count -ge 0) 
@@ -269,6 +270,7 @@ Function ConfigureApplications
                                                   -HomePage "http://localhost:4200/" `
                                                   -ReplyUrls "http://localhost:4200/" `
                                                   -IdentifierUris "https://$tenantName/TodoListSPA" `
+                                                  -Oauth2AllowImplicitFlow $true `
                                                   -PublicClient $False
 
    # create the service principal of the newly created application 

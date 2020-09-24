@@ -9,7 +9,6 @@ using Microsoft.Identity.Web.Resource;
 using TodoListAPI.Models;
 using TodoListAPI.Utils;
 using Microsoft.Identity.Web;
-using Microsoft.Identity.Client;
 
 namespace TodoListAPI.Controllers
 {
@@ -146,28 +145,6 @@ namespace TodoListAPI.Controllers
         private bool TodoItemExists(int id)
         {
             return _context.TodoItems.Any(e => e.Id == id);
-        }
-
-        public async Task<dynamic> CallGraphApiOnBehalfOfUser()
-        {
-            string[] scopes = { "GroupMember.Read.All" };
-            dynamic response;
-
-            // we use MSAL.NET to get a token to call the API On Behalf Of the current user
-            try
-            {
-                string accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
-                GraphHelper.Initialize(accessToken);
-                var groups = await GraphHelper.GetMembershipAsync();
-                response = groups;
-            }
-            catch (MsalUiRequiredException ex)
-            {
-                await _tokenAcquisition.ReplyForbiddenWithWwwAuthenticateHeaderAsync(scopes, ex);
-                return "interaction required";
-            }
-
-            return response;
         }
     }
 }
