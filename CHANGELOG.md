@@ -1,8 +1,12 @@
 # CHANGELOG
 
+## 10/23/2020
+
+* Updated msal.js to 1.4.2 and M.I.W. to 1.2
+
 ## 10/02/2020
 
-* Updated msal.js 1.4.1 (resolves id token cache issue).
+* Updated msal.js to 1.4.1 (resolves id token cache issue).
 
 ## 8/28/2020
 
