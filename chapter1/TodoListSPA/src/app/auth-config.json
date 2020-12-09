@@ -1,0 +1,20 @@
+{
+  "credentials": {
+    "clientId": "d472f179-2d03-4ec0-b6a3-d32869ab55bf",
+    "tenantId": "cbaf2168-de14-4c72-9d88-f5f05366dbef"
+  },
+  "configuration": {
+    "redirectUri": "http://localhost:4200",
+    "postLogoutRedirectUri": "http://localhost:4200"
+  },
+  "resources": {
+    "todoListApi": {
+      "resourceUri": "https://localhost:44351/api/todolist",
+      "resourceScopes": [ "api://88e113e8-0959-4caa-a1cd-2de9ef91b716/access_as_user" ]
+    }
+  },
+  "roles": [
+    "TaskAdmin",
+    "TaskUser"
+  ]
+}

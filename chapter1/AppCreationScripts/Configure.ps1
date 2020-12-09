@@ -7,7 +7,7 @@ param(
     [string] $azureEnvironmentName
 )
 
-#Requires -Modules AzureAD
+#Requires -Modules AzureAD -RunAsAdministrator
 
 <#
  This script creates the Azure AD applications needed for this sample and updates the configuration files
@@ -270,7 +270,6 @@ Function ConfigureApplications
                                                   -HomePage "http://localhost:4200/" `
                                                   -ReplyUrls "http://localhost:4200/" `
                                                   -IdentifierUris "https://$tenantName/TodoListSPA" `
-                                                  -Oauth2AllowImplicitFlow $true `
                                                   -PublicClient $False
 
    # create the service principal of the newly created application 
@@ -289,7 +288,7 @@ Function ConfigureApplications
    $appRoles = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.AppRole]
    $newRole = CreateAppRole -types "User" -name "TaskAdmin" -description "Admins can read any user's todo list"
    $appRoles.Add($newRole)
-   $newRole = CreateAppRole -types "User" -name "TaskUser" -description "Users can read and modify their todo lists"
+   $newRole = CreateAppRole -types "User" -name "TaskUsers" -description "Users can read and modify their todo lists"
    $appRoles.Add($newRole)
    Set-AzureADApplication -ObjectId $clientAadApplication.ObjectId -AppRoles $appRoles
 
@@ -316,13 +315,13 @@ Function ConfigureApplications
    # Update config file for 'service'
    $configFile = $pwd.Path + "\..\TodoListAPI\appsettings.json"
    Write-Host "Updating the sample code ($configFile)"
-   $dictionary = @{ "Enter the domain of your Azure AD tenant, e.g. 'contoso.onmicrosoft.com'" = $tenantName;"Enter the Id of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the application ID (clientId) of the 'TodoListAPI' application copied from the Azure portal" = $serviceAadApplication.AppId };
+   $dictionary = @{ "Enter the domain of your Azure AD tenant, e.g. 'contoso.onmicrosoft.com'" = $tenantName;"Enter the ID of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the application ID (clientId) of the 'TodoListAPI' application copied from the Azure portal" = $serviceAadApplication.AppId };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
 
    # Update config file for 'client'
    $configFile = $pwd.Path + "\..\TodoListSPA\src\app\app-config.json"
    Write-Host "Updating the sample code ($configFile)"
-   $dictionary = @{ "Enter the Client Id (aka 'Application ID')" = $clientAadApplication.AppId;"https://login.microsoftonline.com/Enter_the_Tenant_Id_Here" = "https://login.microsoftonline.com/"+$tenantId;"Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist'" = $serviceAadApplication.HomePage;"Enter the API scopes as declared in the app registration 'Expose an Api' blade in the form of 'api://{clientId}/access_as_user'" = ("api://"+$serviceAadApplication.AppId+"/access_as_user") };
+   $dictionary = @{ "Enter the Client ID (aka 'Application ID')" = $clientAadApplication.AppId;"https://login.microsoftonline.com/Enter_the_Tenant_Id_Here" = "https://login.microsoftonline.com/"+$tenantId;"Enter the endpoint for TodoList web API, e.g. 'https://localhost:44351/api/todolist'" = $serviceAadApplication.HomePage;"Enter the API scopes as declared in the app registration 'Expose an API' blade in the form of 'api://{clientId}/access_as_user'" = ("api://"+$serviceAadApplication.AppId+"/access_as_user") };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
    Write-Host ""
    Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 

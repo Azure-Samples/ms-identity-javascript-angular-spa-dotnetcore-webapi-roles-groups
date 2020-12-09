@@ -1,9 +1,9 @@
 {
   "Sample": {
-    "Title": "Angular Single-Page Application (SPA) calling .NET Core Web API using App Roles and Security Groups for Implementing Role-Based Access Control (RBAC)",
+    "Title": "Angular single-Page application (SPA) calling .NET Core web API using App Roles and Security Groups for Implementing Role-Based Access Control (RBAC)",
     "Level": 300,
-    "Client": "TodoListSPA",
-    "Service": "TodoListAPI",
+    "Client": "Angular SPA TodoListSPA",
+    "Service": ".NET Core web API TodoListAPI",
     "RepositoryUrl": "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups",
     "Endpoint": "AAD v2.0"
   },
@@ -38,7 +38,6 @@
       "Audience": "AzureADMyOrg",
       "HomePage": "http://localhost:4200/",
       "ReplyUrls": "http://localhost:4200/",
-      "AllowImplicitFlow": true,
       "RequiredResourcesAccess": [
         {
           "Resource": "service",
@@ -74,7 +73,7 @@
           "value": "$tenantName"
         },
         {
-          "key": "Enter the Id of your Azure AD tenant copied from the Azure portal",
+          "key": "Enter the ID of your Azure AD tenant copied from the Azure portal",
           "value": "$tenantId"
         },
         {
@@ -90,7 +89,7 @@
       "SettingFile": "\\..\\TodoListSPA\\src\\app\\app-config.json",
       "Mappings": [
         {
-          "key": "Enter the Client Id (aka 'Application ID')",
+          "key": "Enter the Client ID (aka 'Application ID')",
           "value": "client.AppId"
         },
         {
@@ -98,11 +97,11 @@
           "value": "\"https://login.microsoftonline.com/\"+$tenantId"
         },
         {
-          "key": "Enter the TodoList Web APIs base address, e.g. 'https://localhost:44351/api/todolist'",
+          "key": "Enter the endpoint for TodoList web API, e.g. 'https://localhost:44351/api/todolist'",
           "value": "service.HomePage"
         },
         {
-          "key": "Enter the API scopes as declared in the app registration 'Expose an Api' blade in the form of 'api://{clientId}/access_as_user'",
+          "key": "Enter the API scopes as declared in the app registration 'Expose an API' blade in the form of 'api://{clientId}/access_as_user'",
           "value": "service.Scope"
         }
       ]

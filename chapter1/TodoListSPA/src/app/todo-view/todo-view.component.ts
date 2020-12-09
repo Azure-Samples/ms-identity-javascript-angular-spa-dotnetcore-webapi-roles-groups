@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { BroadcastService, MsalService } from '@azure/msal-angular';
-import { InteractionRequiredAuthError, AuthError } from 'msal';
+
 import { TodoService } from './../todo.service';
 import { Todo } from '../todo';
-import * as config from '../app-config.json';
 
 @Component({
   selector: 'app-todo-view',
@@ -13,51 +11,23 @@ import * as config from '../app-config.json';
 })
 export class TodoViewComponent implements OnInit {
   
-  todo: Todo;
+  todo?: Todo;
 
-  todos: Todo[];
+  todos: Todo[] = [];
 
   displayedColumns = ['status', 'description', 'edit', 'remove'];
 
-  constructor(private authService: MsalService, private service: TodoService, private broadcastService: BroadcastService) { }
+  constructor(private service: TodoService) { }
 
   ngOnInit(): void {
-    this.broadcastService.subscribe('msal:acquireTokenSuccess', (payload) => {
-      console.log(payload);
-      console.log('access token acquired: ' + new Date().toString());
-      
-    });
- 
-    this.broadcastService.subscribe('msal:acquireTokenFailure', (payload) => {
-      console.log(payload);
-      console.log('access token acquisition fails');
-    });
-
     this.getTodos();
   }
 
   getTodos(): void {
-    this.service.getTodos().subscribe({
-      next: (response: Todo[]) => {
-        this.todos = response;
-      },
-      error: (err: AuthError) => {
-        // If there is an interaction required error,
-        // call one of the interactive methods and then make the request again.
-        if (InteractionRequiredAuthError.isInteractionRequiredError(err.errorCode)) {
-          this.authService.acquireTokenPopup({
-            scopes: this.authService.getScopesForEndpoint(config.resources.todoListApi.resourceUri)
-          })
-          .then(() => {
-            this.service.getTodos()
-              .toPromise()
-              .then((response: Todo[])  => {
-                this.todos = response;
-              });
-          });
-        }
-      }
-    });
+    this.service.getTodos()
+      .subscribe((todos: Todo[]) => {
+        this.todos = todos;
+      });
   }
 
   addTodo(add: NgForm): void {
@@ -67,12 +37,12 @@ export class TodoViewComponent implements OnInit {
     add.resetForm();
   }
 
-  checkTodo(todo): void {
+  checkTodo(todo: Todo): void {
     this.service.editTodo(todo).subscribe();
   }
 
-  removeTodo(id): void {
-    this.service.deleteTodo(id).subscribe(() => {
+  removeTodo(id: string): void {
+    this.service.deleteTodo(+id).subscribe(() => {
       this.getTodos();
     })
   }

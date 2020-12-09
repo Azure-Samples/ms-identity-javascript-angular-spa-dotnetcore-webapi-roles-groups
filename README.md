@@ -1,6 +1,5 @@
 ---
 page_type: sample
-author: derisen
 languages:
 - javascript
 - typescript
@@ -8,15 +7,17 @@ languages:
 products:
 - dotnet
 - angular
-- azure-ad
+- msal-angular
 - ms-graph
-description: "Angular Single-Page Application (SPA) calling .NET Core Web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)"
+- microsoft-identity-web
+- azure-active-directory
+description: "Angular single-page application (SPA) calling .NET Core web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)"
 urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups"
 ---
 
-# Angular Single-Page Application (SPA) calling a .NET Core Web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)
+# Angular single-page application (SPA) calling .NET Core web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)
 
-This chapter-wise tutorial demonstrates how to use Azure AD App Roles and Security Groups features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in **Id** and **Access** tokens, how to protect restricted routes in your client app, and how to accept only authorized calls in your web API.
+This chapter-wise tutorial demonstrates how to use Azure AD **App Roles** and **Security Groups** features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in **ID** and **Access** tokens, how to protect restricted routes in your client app, and how to accept only authorized calls in your web API.
 
 We recommend you to follow each chapter in a successive fashion, as the concepts used in later chapters are built on top of previous ones and explanations may not be repeated. Before proceeding to **Chapter 1**, please review the [Prerequisites](#prerequisites) below.
 
@@ -24,18 +25,18 @@ We recommend you to follow each chapter in a successive fashion, as the concepts
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-| `Chapter1`        | Angular SPA calling .NET Core Web API and using App Roles. |
-| `Chapter2`        | Angular SPA calling .NET Core Web API and using Security Groups. |
-| `Misc`            | Contains screenshots and illustrations.    |
-| `CHANGELOG.md`    | List of changes to the sample.             |
+| `Chapter1/`        | Angular SPA calling .NET Core web API and using App Roles. |
+| `Chapter2/`        | Angular SPA calling .NET Core web API and using Security Groups. |
+| `ReadmeFiles/`     | Contains screenshots and illustrations.    |
+| `AppCreationScripts/`| Contains Powershell scripts for automating app registration. |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
 | `LICENSE`         | The license for the sample.                |
 
 ## Prerequisites
 
 - We highly recommend you first getting familiar with the following *basic sign-in* examples and documents. This will help you easily grasp the various aspects that are presented here.
-  - [VanillaJS Single-page Application calling MS Graph API](https://github.com/Azure-Samples/active-directory-javascript-graphapi-v2)
-  - [Angular Single-page Application calling a custom .NET Core Web API](https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-aspnetcore-webapi)
+  - [Angular single-page application calling MS Graph API](https://github.com/Azure-Samples/active-directory-javascript-graphapi-v2)
+  - [Angular single-page application calling a custom .NET Core web API](https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-aspnetcore-webapi)
 - Please take a moment to review [Azure RBAC documentation](https://docs.microsoft.com/azure/role-based-access-control/) in order to become familiar with App Roles and Security Groups. More specific documentation pointers can be found below under [More information](#more-information).
 
 > A Microsoft Identity Platform Office Hours session covered Azure AD App roles and security groups, featuring this scenario and this sample. A recording of the session is provided in this video [Implement Authorization in your Applications with Microsoft identity platform](https://www.youtube.com/watch?v=LRoc-na27l0)
@@ -46,7 +47,7 @@ Please refer to each chapter's sub-folder for sample-specific prerequisites.
 
 ### Step 1
 
-Using a command line interface such as VS Code integrated terminal, clone or download this repository:
+Using a command line interface such as **VS Code** integrated terminal, clone or download this repository:
 
 ```console
 git clone https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups.git
@@ -66,7 +67,7 @@ For more information, visit the following links:
   - [Configure group claims for applications with Azure Active Directory (Public Preview)](https://docs.microsoft.com/azure/active-directory/hybrid/how-to-connect-fed-group-claims#configure-the-azure-ad-application-registration-for-group-attributes)
   - [How to: Configure the role claim issued in the SAML token for enterprise applications](https://docs.microsoft.com/azure/active-directory/develop/active-directory-enterprise-app-role-management)
   - [Azure Active Directory app manifest](https://docs.microsoft.com/azure/active-directory/develop/reference-app-manifest)
-  - [user: getMemberObjects function](https://docs.microsoft.com/graph/api/user-getmemberobjects?view=graph-rest-1.0)
+  - [User: getMemberObjects function](https://docs.microsoft.com/graph/api/user-getmemberobjects?view=graph-rest-1.0)
   - [How to: Provide optional claims to your Azure AD app](https://docs.microsoft.com/azure/active-directory/develop/active-directory-optional-claims)
   - [How to: Restrict your Azure AD app to a set of users in an Azure AD tenant](https://docs.microsoft.com/azure/active-directory/develop/howto-restrict-your-app-to-a-set-of-users)
   - [How to: Add app roles in your application and receive them in the token](https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps)
@@ -87,9 +88,11 @@ Use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) to get supp
 Ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before.
 Make sure that your questions or comments are tagged with [`msal` `dotnet` `angular` `azure-active-directory`].
 
-If you find a bug in the sample, please raise the issue on [GitHub Issues](../../issues).
+If you find a bug in the sample, please raise the issue on [GitHub Issues](../../../issues).
 
 To provide a recommendation, visit the following [User Voice page](https://feedback.azure.com/forums/169401-azure-active-directory).
+
+> :information_source: Consider taking a moment to share [your experience with us](https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR73pcsbpbxNJuZCMKN0lURpUQ09BMkFPQ0cyWEczSEFJSVVQSVVTREw0TCQlQCN0PWcu)
 
 ## Contributing
 
