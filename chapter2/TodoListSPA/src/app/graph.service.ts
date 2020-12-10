@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../interfaces/user';
-import * as config from '../app-config.json';
+import { User } from './user';
+import * as auth from './auth-config.json';
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +12,16 @@ export class GraphService {
     displayName: "",
     groupIDs: [],
   };
-
-  graphUri = config.resources.graphApi.resourceUri;
+  
+  uri = auth.resources.graphApi.resourceUri;
 
   constructor(private http: HttpClient) { }
 
   getGroups() {
-    return this.http.get(this.graphUri);
+    return this.http.get(this.uri);
   }
 
-  getNextPage(nextPage) {
+  getNextPage(nextPage: any) {
     return this.http.get(nextPage);
   }
 }

@@ -11,7 +11,7 @@ import { Todo } from '../todo';
 })
 export class TodoEditComponent implements OnInit {
 
-  todo?: Todo;
+  todo!: Todo;
 
   constructor(private route: ActivatedRoute, private router: Router, private service: TodoService) { }
 
@@ -25,8 +25,8 @@ export class TodoEditComponent implements OnInit {
   }
 
   editTodo(todo: Todo): void {
-    this.todo!.description = todo.description;
-    this.service.editTodo(this.todo!).subscribe(() => {
+    this.todo.description = todo.description;
+    this.service.editTodo(this.todo).subscribe(() => {
       this.router.navigate(['/todo-view']);
     })
   }

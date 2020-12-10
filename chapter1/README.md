@@ -1,4 +1,4 @@
-# Angular single-page application (SPA) and a protected ASP.NET Core web API use Azure AD App Roles for authorization
+# Angular single-page application (SPA) calling .NET Core web API using App Roles to implement Role-Based Access Control (RBAC)
 
  1. [Overview](#overview)
  1. [Scenario](#scenario)
@@ -9,7 +9,6 @@
  1. [Running the sample](#running-the-sample)
  1. [Explore the sample](#explore-the-sample)
  1. [About the code](#about-the-code)
- 1. [Deployment](#deployment)
  1. [More information](#more-information)
  1. [Community Help and Support](#community-help-and-support)
  1. [Contributing](#contributing)
@@ -223,7 +222,9 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 ### (Optional) Define Application Roles via App Manifest
 
-> :warning: You need to perform the steps below for both **TodoListAPI** and **TodoListSPA**. Keep in mind that App Roles definitions are exactly the same for both the  **TodoListAPI** and the **TodoListSPA** in this sample. But as a developer you can choose to implement app roles for just one of the apps or use different role names in your SPA app and the Api, if your authorization requirements demand so.
+The following section provides instructions for defining application roles using the app manifest.
+
+> :warning: You need to perform the steps below for both **TodoListAPI** and **TodoListSPA**. Keep in mind that App Roles definitions are exactly the same for both the  **TodoListAPI** and the **TodoListSPA** in this sample. But as a developer you can choose to implement app roles for just one of the apps or use different role names in your SPA app and the API, if your authorization requirements demand so.
 
 1. In the blade for your application on Azure Portal, click **Manifest**.
 1. Edit the manifest by locating the `appRoles` setting and adding the two Application Roles.  The role definitions are provided in the JSON code block below.  Leave the `allowedMemberTypes` to **User** only.  Each role definition in this manifest must have a different valid **Guid** for the "id" property. Note that the `"value"` property of each role is set to the exact strings **TaskAdmin** and **TaskUsers** (as these strings are used in the code in the application).
@@ -459,18 +460,22 @@ Learn more about using [.NET Core with Visual Studio Code](https://docs.microsof
 
 ## Next Steps
 
-Authorization in Azure AD can also be done with `Security Groups` as well, as we will now cover in [second chapter](../chapter2/README.md). `Security Groups` and `App Roles` in Azure AD are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
+Authorization in Azure AD can also be done with **Security Groups** as well, as we will now cover in [second chapter](../chapter2/README.md). **Security Groups** and **App Roles** in Azure AD are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
 
-Now lets learn about how to use Security Groups for authorization in your app in the [second chapter](../chapter2/README.md).
+Now lets learn about how to use **Security Groups** for authorization in your app in the [second chapter](../chapter2/README.md).
+
+## Community Help and Support
+
+Use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) to get support from the community.
+Ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before.
+Make sure that your questions or comments are tagged with [`azure-active-directory` `azure-ad-b2c` `ms-identity` `msal`].
+
+If you find a bug in the sample, raise the issue on [GitHub Issues](../../../issues).
+
+To provide feedback on or suggest features for Azure Active Directory, visit [User Voice page](https://feedback.azure.com/forums/169401-azure-active-directory).
 
 ## Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+If you'd like to contribute to this sample, see [CONTRIBUTING.MD](/CONTRIBUTING.md).
 
-## Code of Conduct
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.

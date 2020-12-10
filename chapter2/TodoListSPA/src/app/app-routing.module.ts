@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
-import { HomeComponent } from './components/home/home.component';
-import { TodoViewComponent } from './components/todo-view/todo-view.component';
-import { TodoEditComponent } from './components/todo-edit/todo-edit.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { OverageComponent } from './components/overage/overage.component';
-import { GroupGuardService } from './services/group-guard.service';
-import * as config from './app-config.json';
+import { HomeComponent } from './home/home.component';
+import { TodoViewComponent } from './todo-view/todo-view.component';
+import { TodoEditComponent } from './todo-edit/todo-edit.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { OverageComponent } from './overage/overage.component';
+import { GroupGuardService } from './group-guard.service';
+
+import * as auth from './auth-config.json';
 
 const routes: Routes = [
   {
@@ -18,7 +19,7 @@ const routes: Routes = [
       GroupGuardService
     ],
     data: { 
-      expectedGroup: config.groups.groupMember
+      expectedGroup: auth.groups.groupMember
     }
   },
   {
@@ -29,7 +30,7 @@ const routes: Routes = [
       GroupGuardService
     ],
     data: { 
-      expectedGroup: config.groups.groupMember
+      expectedGroup: auth.groups.groupMember
     }
   },
   {
@@ -40,7 +41,7 @@ const routes: Routes = [
       GroupGuardService,
     ],
     data: { 
-      expectedGroup: config.groups.groupAdmin
+      expectedGroup: auth.groups.groupAdmin
     } 
   },
   {
@@ -51,13 +52,30 @@ const routes: Routes = [
     ]
   },
   {
+    // Needed for hash routing
+    path: 'state',
+    component: HomeComponent
+  },
+  {
+    // Needed for hash routing
+    path: 'code',
+    component: HomeComponent
+  },
+  {
     path: '',
     component: HomeComponent
   }
 ];
 
+const isIframe = window !== window.parent && !window.opener;
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: false })],
+  imports: [
+    RouterModule.forRoot(routes, {
+    useHash: true,
+    // Don't perform initial navigation in iframes
+    initialNavigation: !isIframe ? 'enabled' : 'disabled'
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

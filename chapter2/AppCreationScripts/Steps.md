@@ -1,3 +1,29 @@
+---
+page_type: sample
+languages:
+  - csharp
+  - javascript
+  - typescript
+  - python
+  - java
+products:
+  - node.js
+  - dotnet
+  - aspnet
+  - aspnet-core
+  - dotnet-core
+  - ms-graph
+  - azure-app-service
+  - azure-storage
+  - azure-active-directory  
+  - azure-active-directory-b2c
+name: Angular single-page application (SPA) calling .NET Core web API using Security Groups to implement Role-Based Access Control (RBAC)
+urlFragment: ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups
+description: "This sample demonstrates a Angular SPA TodoListSPA calling a .NET Core web API TodoListAPI that is secured using Azure AD"
+azureDeploy: <ENTER_FULLY_QUALIFIED_URL_TO_AN_AZURE_RESOURCE_MANAGER>
+extendedZipContent: <FILES_OR_FOLDERS_WITH_TWO_ABSOLUTE_PATHS_TO_INCLUDE_WITH_ZIP:PATH(NAME_IN_THE_REPO), TARGET(NAME_IN_THE_ZIP)>
+extensions: <ENTER_CONTENT_THAT_OTHER_TEAMS_CAN_USE_TO_IDENTIFY_SAMPLES>
+---
 # Angular single-page application (SPA) calling .NET Core web API using Security Groups to implement Role-Based Access Control (RBAC)
 
  1. [Overview](#overview)
@@ -9,89 +35,80 @@
  1. [Running the sample](#running-the-sample)
  1. [Explore the sample](#explore-the-sample)
  1. [About the code](#about-the-code)
+ 1. [Deployment](#deployment)
  1. [More information](#more-information)
  1. [Community Help and Support](#community-help-and-support)
  1. [Contributing](#contributing)
 
+![Build badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/<BuildNumber>/badge)
+
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with **Azure Active Directory**. It also implements authorization for **role-based access control** using Azure AD **Security Groups**.
-
-In the sample, a dashboard component allows signed-in users to see the tasks assigned to them or other users based on their memberships to one of the two security groups, **GroupAdmin** and **GroupMember**.
-
-Authorization in Azure AD can also be done with **App Roles**, as shown in [chapter1](../chapter1\README.md). **Groups** and **App Roles** in Azure AD are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
+This sample demonstrates a Angular SPA TodoListSPA calling a .NET Core web API TodoListAPI that is secured using Azure AD.
 
 ## Scenario
 
-- **TodoListSPA** uses [MSAL.js](https://github.com/AzureAD/microsoft-authentication-library-for-js) and [MSAL-Angular](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user with the Microsoft identity platform.
-- The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure AD on behalf of the authenticated user for the **TodoListAPI**.
-- The access token is then used by the **TodoListAPI** to authorize the user.
-- **TodoListAPI** uses [MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) and [Microsoft.Identity.Web](https://github.com/AzureAD/microsoft-identity-web) to protect its endpoint and accept authorized calls.
+1. The client Angular SPA TodoListSPA uses the Microsoft Authentication Library (MSAL) to sign-in and obtain a JWT access token from **Azure AD**.
+2. The access token is used as a bearer token to authorize the user to call the .NET Core web API TodoListAPI protected **Azure AD**.
 
-![Topology](../ReadmeFiles/topology.png)
+![Overview](./ReadmeFiles/topology.png)
 
 ## Contents
 
+> Give a high-level folder structure of the sample.
+
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-| `AppCreationScripts` | Contains Powershell scripts to automate app registrations. |
-| `TodoListAPI`     | Source code of the TodoList API.           |
-| `TodoListSPA`     | Source code of the TodoList client SPA.    |
 | `CHANGELOG.md`    | List of changes to the sample.             |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
 | `LICENSE`         | The license for the sample.                |
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/en/download/) must be installed to run this sample.
-- [Dotnet Core SDK](https://dotnet.microsoft.com/download) must be installed to run this sample.
-- An Azure Active Directory (Azure AD) tenant.
-- At least **two** user accounts in your Azure AD tenant.
-- A modern Browser. This sample uses **ES6** conventions and will not run on **Internet Explorer**.
-- Two security groups **GroupAdmin** and **GroupMember**, with users you want to test with assigned to them.
-- We recommend [VS Code](https://code.visualstudio.com/download) for running and debugging this cross-platform application.
+- Either [Visual Studio](https://visualstudio.microsoft.com/downloads/) or [Visual Studio Code](https://code.visualstudio.com/download) and [.NET Core SDK](https://www.microsoft.com/net/learn/get-started)
+- An **Azure AD** tenant. For more information see: [How to get an Azure AD tenant](https://docs.microsoft.com/azure/active-directory/develop/quickstart-create-new-tenant)
+- A user account in your **Azure AD** tenant. This sample will not work with a **personal Microsoft account**. Therefore, if you signed in to the [Azure portal](https://portal.azure.com) with a personal account and have never created a user account in your directory before, you need to do that now.
 
 ## Setup
 
-Using a command line interface such as VS Code integrated terminal, follow the steps below:
+### Step 1: Clone or download this repository
 
-### Step 1. Install .NET Core API dependencies
-
-```console
-   cd TodoListAPI
-   dotnet restore
-```
-
-### Step 2. Trust development certificates
+From your shell or command line:
 
 ```console
-   dotnet dev-certs https --clean
-   dotnet dev-certs https --trust
+    git clone https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups.git
 ```
 
-Learn more about [HTTPS in .NET Core](https://docs.microsoft.com/aspnet/core/security/enforcing-ssl).
+or download and extract the repository .zip file.
 
-### Step 3. Install Angular SPA dependencies
+> :warning: To avoid path length limitations on Windows, we recommend cloning into a directory near the root of your drive.
+
+### Step 2: Install project dependencies
 
 ```console
-   cd ../
-   cd TodoListSPA
-   npm install
+    dotnet restore
 ```
 
-## Registration
+```console
+    dotnet restore
+```
 
-There are two projects in this sample. Each needs to be registered separately in your Azure AD tenant. To register these projects, you can:
+### Register the sample application(s) with your Azure Active Directory tenant
 
-- either follow the steps below for manual registration,
+There are two projects in this sample. Each needs to be separately registered in your Azure AD tenant. To register these projects, you can:
+
+- follow the steps below for manually register your apps
 - or use PowerShell scripts that:
   - **automatically** creates the Azure AD applications and related objects (passwords, permissions, dependencies) for you.
-  - modify the configuration files.
+  - modify the projects' configuration files.
 
 <details>
   <summary>Expand this section if you want to use this automation:</summary>
 
+> :warning: If you have never used **Azure AD Powershell** before, we recommend you go through the [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md) once to ensure that your environment is prepared correctly for this step.
+
 1. On Windows, run PowerShell as **Administrator** and navigate to the root of the cloned directory
+1. If you have never used Azure AD Powershell before, we recommend you go through the [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md) once to ensure that your environment is prepared correctly for this step.
 1. In PowerShell run:
 
    ```PowerShell
@@ -110,6 +127,13 @@ There are two projects in this sample. Each needs to be registered separately in
    > The scripts also provide a guide to automated application registration, configuration and removal which can help in your CI/CD scenarios.
 
 </details>
+
+### Choose the Azure AD tenant where you want to create your applications
+
+As a first step you'll need to:
+
+1. Sign in to the [Azure portal](https://portal.azure.com).
+1. If your account is present in more than one Azure AD tenant, select your profile at the top right corner in the menu on top of the page, and then **switch directory** to change your portal session to the desired Azure AD tenant.
 
 ### Register the service app (TodoListAPI)
 
@@ -155,10 +179,10 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListAPI\appsettings.json` file.
-1. Find the app key `Domain` and replace the existing value with your Azure AD tenant name.
-1. Find the app key `ClientId` and replace the existing value with the application ID (clientId) of the `TodoListAPI` application copied from the Azure portal.
-1. Find the app key `TenantId` and replace the existing value with your Azure AD tenant ID.
-1. Find the app key `ClientSecret` and replace the existing value with the key you saved during the creation of the `TodoListAPI` app, in the Azure portal.
+1. Find the key `Enter the domain of your Azure AD tenant, e.g. 'contoso.onmicrosoft.com'` and replace the existing value with your Azure AD tenant name.
+1. Find the key `Enter the ID of your Azure AD tenant copied from the Azure portal` and replace the existing value with your Azure AD tenant ID.
+1. Find the key `Enter the application ID (clientId) of the 'TodoListAPI' application copied from the Azure portal` and replace the existing value with the application ID (clientId) of `TodoListAPI` app copied from the Azure portal.
+1. Find the key `Enter the Client Secret` and replace the existing value with the key you saved during the creation of `TodoListAPI` copied from the Azure portal.
 
 ### Register the client app (TodoListSPA)
 
@@ -184,7 +208,6 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
    - In the *Commonly used Microsoft APIs* section, select **Microsoft Graph**
    - In the **Delegated permissions** section, select the **User.Read**, **GroupMember.Read.All** in the list. Use the search box if necessary.
    - Select the **Add permissions** button at the bottom.
-   - **GroupMember.Read.All** requires admin to consent. Select the **Grant/revoke admin consent for {tenant}** button, and then select **Yes** when you are asked if you want to grant consent for the requested permissions for all account in the tenant. You need to be an Azure AD tenant admin to do this.
 
 #### Configure the client app (TodoListSPA) to use your app registration
 
@@ -193,20 +216,22 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListSPA\src\app\app-config.json` file.
-1. Find the app key `clientId` and replace the existing value with the application ID (clientId) of the `TodoListSPA` application copied from the Azure portal.
-1. Find the app key `todoListApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
-1. Find the app key `todoListApi.resourceScopes` and replace the existing value with *Scope* you created earlier `api://{clientId-of-service}/access_as_user`.
+1. Find the key `Enter the client ID (aka 'Application ID')` and replace the existing value with the application ID (clientId) of `TodoListSPA` app copied from the Azure portal.
+1. Find the key `Enter the tenant ID` and replace the existing value with your Azure AD tenant ID.
+1. Find the key `Enter the endpoint for TodoList web API, e.g. https://localhost:44351/api/todolist` and replace the existing value with the base address of `TodoListAPI` (by default ``).
+1. Find the key `Enter the API scopes as declared in the app registration 'Expose an API' blade, e.g. api://{clientId}/access_as_user` and replace the existing value with Scope.
 
 #### Configure Known Client Applications for service (TodoListAPI)
 
-For a middle tier web API (`TodoListAPI`) to be able to call a downstream web API, the middle tier app needs to be granted the required permissions as well.
+For a middle tier Web API (`TodoListAPI`) to be able to call a downstream Web API, the middle tier app needs to be granted the required permissions as well.
 However, since the middle tier cannot interact with the signed-in user, it needs to be explicitly bound to the client app in its **Azure AD** registration.
 This binding merges the permissions required by both the client and the middle tier Web Api and presents it to the end user in a single consent dialog. The user then consent to this combined set of permissions.
 
-To achieve this, you need to add the **Application Id** of the client app, in the Manifest of the web API in the `knownClientApplications` property. Here's how:
+To achieve this, you need to add the **Application Id** of the client app, in the Manifest of the Web API in the `knownClientApplications` property. Here's how:
 
 1. In the [Azure portal](https://portal.azure.com), navigate to your `TodoListAPI` app registration, and select **Manifest** section.
-1. In the manifest editor, change the `"knownClientApplications": []` line so that the array contains the Client ID of the client application (`TodoListSPA`) as an element of the array.
+1. In the manifest editor, change the `"knownClientApplications": []` line so that the array contains 
+   the Client ID of the client application (`TodoListSPA`) as an element of the array.
 
     For instance:
 
@@ -247,7 +272,7 @@ You have two different options available to you on how you can further configure
 1. Select `Groups assigned to the application`.
     1. Choosing additional options like `Security Groups` or `All groups (includes distribution lists but not groups assigned to the application)` will negate the benefits your app derives from choosing to use this option.
 1. Under the **ID** section, select `Group ID`. This will result in Azure AD sending the object [id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) that your app receives after signing-in a user.
-1. If you are exposing a web API using the **Expose an API** option, then you can also choose the `Group ID` option under the **Access** section. This will result in Azure AD sending the [Object ID](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [Access Token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) issued to the client applications of your API.
+1. If you are exposing a Web API using the **Expose an API** option, then you can also choose the `Group ID` option under the **Access** section. This will result in Azure AD sending the [Object ID](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [Access Token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) issued to the client applications of your API.
 1. In the app's registration screen, select on the **Overview** blade in the left to open the Application overview screen. Select the hyperlink with the name of your application in **Managed application in local directory** (note this field title can be truncated for instance `Managed application in ...`). When you select this link you will navigate to the **Enterprise Application Overview** page associated with the service principal for your application in the tenant where you created it. You can navigate back to the app registration page by using the *back* button of your browser.
 1. Select the **Users and groups** blade in the left to open the page where you can assign users and groups to your application.
     1. Select the **Add user** button on the top row.
@@ -262,65 +287,37 @@ You have two different options available to you on how you can further configure
 >
 > When you set **User assignment required?** to **Yes**, Azure AD will check that only users assigned to your application in the **Users and groups** blade are able to sign-in to your app. You can assign users directly or by assigning security groups they belong to.
 
-### Configure the client app (TodoListSPA) to recognize Group IDs
+## Running the sample
 
-> :warning:
-> During **Token Configuration**, if you have chosen any other option except **groupID** (e.g. like **DNSDomain\sAMAccountName**) you should enter the **group name** (for example `contoso.com\Test Group`) instead of the **object ID** below:
-
-1. Open the `TodoListSPA\src\app\app-config.json` file.
-1. Find the app key `groups.groupAdmin` and replace the existing value with the **object ID** of the **GroupAdmin** group copied from the Azure portal.
-1. Find the app key `groups.groupMember` and replace the existing value with the **object ID** of the **GroupMember** group copied from the Azure portal.
-
-### Configure the service app (TodoListAPI) to recognize Group IDs
-
-> :warning:
-> During **Token Configuration**, if you have chosen any other option except **groupID** (e.g. like **DNSDomain\sAMAccountName**) you should enter the **group name** (for example `contoso.com\Test Group`) instead of the **object ID** below:
-
-1. Open the `TodoListAPI\appsettings.json` file.
-2. Find the app key `Groups.GroupAdmin` and replace the existing value with the object ID of the **GroupAdmin** group copied from the Azure portal.
-3. Find the app key `Groups.GroupMember` and replace the existing value with the object ID of the **GroupMember** group copied from the Azure portal.
-
-## Run the sample
-
-Using a command line interface such as VS Code integrated terminal, locate the application directory. Then:  
+> For Visual Studio Users
+>
+> Clean the solution, rebuild the solution, and run it.  You might want to go into the solution properties and set both projects as startup projects, with the service project starting first.
 
 ```console
-   cd ../
-   cd TodoListSPA
-   npm start
+    cd TodoListAPI
+    dotnet run
 ```
 
-In a separate console window, execute the following commands:
-
 ```console
-   cd TodoListAPI
-   dotnet run
+    cd TodoListSPA
+    dotnet run
 ```
 
 ## Explore the sample
 
-1. Open your browser and navigate to `http://localhost:4200`.
-2. Sign-in using the button on top-right:
+> Explain how to explore the sample.
+> Insert a screenshot of the client application.
 
-![login](../ReadmeFiles/ch1_login.png)
+> :information_source: Did the sample not work for you as expected? Then please reach out to us using the [GitHub Issues](../../../issues) page.
 
-1. Click on the **Get My Tasks** button to access your (the signed-in user's) todo list:
+## We'd love your feedback!
 
-![todolist](../ReadmeFiles/ch1_todolist.png)
+Were we successful in addressing your learning objective? Consider taking a moment to [share your experience with us](Enter_Survey_Form_Link).
 
-1. If the signed-in user has the right privileges (i.e. in the right "group"), click on the **See All Tasks** button to access every users' todo list:
+## About the code
 
-![dashboard](../ReadmeFiles/ch1_dashboard.png)
-
-1. If the signed-in user does not have the right privileges, clicking on the **See All Tasks** will give an error:
-
-![error](../ReadmeFiles/ch1_error.png)
-
-> :information_source: Consider taking a moment to share [your experience with us](https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR73pcsbpbxNJuZCMKN0lURpUQ09BMkFPQ0cyWEczSEFJSVVQSVVTREw0TCQlQCN0PWcu)
-
-## About the Code
-
-Much of the specifics of implementing **RBAC** with **Security Groups** is the same with implementing **RBAC** with **App Roles** discussed in [Chapter1](../Chapter1/). In order to avoid redundancy, here we discuss particular issues that might arise with using **groups** claim.
+> - Describe where the code uses auth libraries, or calls the graph
+> - Describe specific aspects (e.g. caching, validation etc.)
 
 ### The Groups Overage Claim
 
@@ -332,102 +329,117 @@ If a user is member of more groups than the overage limit (**150 for SAML tokens
 
 #### Create the Overage Scenario for testing
 
-You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. Remember to change the user's **objectId** provided in the `BulkCreateGroups.ps1` script.
+1. You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. Remember to change the user's **objectId** provided in the `BulkCreateGroups.ps1` script.
 
 When attending to overage scenarios, which requires a call to [Microsoft Graph](https://graph.microsoft.com) to read the signed-in user's group memberships, your app will need to have the [User.Read](https://docs.microsoft.com/graph/permissions-reference#user-permissions) and [GroupMember.Read.All](https://docs.microsoft.com/graph/permissions-reference#group-permissions) for the [getMemberGroups](https://docs.microsoft.com/graph/api/user-getmembergroups) function to execute successfully.
 
 > :warning: For the overage scenario, make sure you have granted **Admin Consent** for the MS Graph API's **GroupMember.Read.All** scope for both the Client and the Service apps (see the **App Registration** steps above).
 
-// HEURISTIC
+## Deployment
 
-##### Angular *group-guard* service
+### Deploying web API to Azure App Services
 
-Consider the `group-guard.service.ts`. Here, we are checking whether the token for the user has the "hasgroups" claims, which indicates that the user has too many group memberships. If so, we redirect the user to the `/overage` page. Then, we initiate a call to MS Graph API `https://graph.microsoft.com/v1.0/me/memberOf` endpoint to query the full list of groups that the user belong to. Finally we check for the designated groupID among this list.
+There is one web API in this sample. To deploy it to **Azure App Services**, you'll need to:
 
-```javascript
+- create an **Azure App Service**
+- publish the projects to the **App Services**
 
-```
+#### Publish your files (TodoListAPI)
 
-```javascript
+##### Publish using Visual Studio
 
-```
+Follow the link to [Publish with Visual Studio](https://docs.microsoft.com/visualstudio/deployment/quickstart-deploy-to-azure?view=vs-2019).
 
-#### .NET Core web API and how to handle the Overage Scenario
+##### Publish using Visual Studio Code
 
-1. In `Startup.cs`, `OnTokenValidated` event calls **GetSignedInUsersGroups** method defined in GraphHelper.cs to process groups overage claim.
+1. Install the VS Code extension [Azure App Service](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice).
+1. Sign-in to App Service using Azure AD Account.
+1. Open the TodoListAPI project folder.
+1. Choose View > Terminal from the main menu.
+1. The terminal opens in the TodoListAPI folder.
+1. Run the following command:
 
-    ```csharp
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(options =>
-        {
-            Configuration.Bind("AzureAd", options);
-            options.Events = new JwtBearerEvents();
-            options.Events.OnTokenValidated = async context =>
-            {
-                if (context != null)
-                {
-                //Calls method to process groups overage claim.
-                await GraphHelper.GetSignedInUsersGroups(context);
-                }
-            };
-        }, options => { Configuration.Bind("AzureAd", options); })
-                .EnableTokenAcquisitionToCallDownstreamApi(options => Configuration.Bind("AzureAd", options))
-                .AddMicrosoftGraph(Configuration.GetSection("GraphBeta"))
-            .AddInMemoryTokenCaches();
+    ```console
+    dotnet publish --configuration Release
     ```
 
-`AddMicrosoftGraph` registers the service for `GraphServiceClient`. The values for `BaseUrl` and `Scopes` defined in `GraphAPI` section of the **appsettings.json**.
+1. Publish folder is created under path ``bin/Release/<Enter_Framework_FolderName>``.
+1. Right Click on **Publish** folder and select **Deploy to Web App**.
+1. Select **Create New Web App**, enter unique name for the app.
+1. Select Windows as the OS. Press Enter.
 
-1. In `GraphHelper.cs`, **GetSignedInUsersGroups** method checks if incoming token contains *Group Overage* claim then it will call **ProcessUserGroupsForOverage** method to retrieve groups.
+#### Disable Azure App Services default authentication (TodoListAPI)
 
-    ```csharp
-            public static async Task GetSignedInUsersGroups(TokenValidatedContext context)
-            {
-                // Checks if the incoming token contained a 'Group Overage' claim.
-                if (HasOverageOccurred(context.Principal))
-                {
-                    await ProcessUserGroupsForOverage(context);
-                }
-            }
-    ```
+1. Go to [Azure portal](https://portal.azure.com), and locate your project there.
+    - On the Settings tab, select **Authentication/Authorization**. Make sure **App Service Authentication** is `off`. Select **Save**.
+1. Browse your website. If you see the default web page of the project, the publication was successful.
 
-##### Group authorization policy
+### Enable cross-origin resource sharing (CORS) (TodoListAPI)
 
-The ASP.NET middleware supports roles populated from claims by specifying the claim in the `RoleClaimType` property of `TokenValidationParameters`.
-Since the `groups` claim contains the object IDs of the security groups than the actual names by default, you'd use the group IDs instead of group names. See [Role-based authorization in ASP.NET Core](https://docs.microsoft.com/aspnet/core/security/authorization/roles) for more info.
+1. Go to [Azure portal](https://portal.azure.com), and locate your project there.
+    - On the API tab, select **CORS**. Check the box **Enable Access-Control-Allow-Credentials**.
+    - Under **Allowed origins**, add the site URL of your published website **that will call this web API**. 
+### Deploying SPA to Azure Storage
 
-```CSharp
-// Startup.cs
+There is one single-page application in this sample. To deploy it to **Azure Storage**, you'll need to:
 
-// The following lines code instruct the asp.net core middleware to use the data in the "groups" claim in the [Authorize] attribute and for User.IsInrole()
-// See https://docs.microsoft.com/aspnet/core/security/authorization/roles
-services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
-{
-    // Use the groups claim for populating roles
-    options.TokenValidationParameters.RoleClaimType = "groups";
-});
+- create an Azure Storage blob and obtain website coordinates
+- build your project and upload it to Azure Storage blob
+- update config files with website coordinates
 
-// Adding asp.net core authorization policies that enforce authorization using Azure AD roles.
-services.AddAuthorization(options =>
-{
-      options.AddPolicy(AuthorizationPolicies.AssignmentToGroupAdminGroupRequired, policy => policy.RequireRole(Configuration["Groups:GroupAdmin"]));
-      options.AddPolicy(AuthorizationPolicies.AssignmentToGroupMemberGroupRequired, policy => policy.RequireRole(Configuration["Groups:GroupMember"]));
-});
+> :information_source: If you would like to use **VS Code Azure Tools** extension for deployment, [watch the tutorial](https://docs.microsoft.com/azure/developer/javascript/tutorial-vscode-static-website-node-01) offered by Microsoft Docs.
 
-// In code..(Controllers & elsewhere)
-[Authorize(Roles = "Group-object-id")] // In controllers
-// or
-User.IsInRole("Group-object-id"); // In methods
+#### Build and upload (TodoListSPA) to an Azure Storage blob
 
-```
+Build your project to get a distributable files folder, where your built `html`, `css` and `javascript` files will be generated. Then follow the steps below:
 
-> :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
+> :warning: When uploading, make sure you upload the contents of your distributable files folder and **not** the entire folder itself.
 
-## Debugging the sample
+> :information_source: If you don't have an account already, see: [How to create a storage account](https://docs.microsoft.com/azure/storage/common/storage-account-create).
 
-To debug the .NET Core web API that comes with this sample, install the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) for Visual Studio Code.
+1. Sign in to the [Azure portal](https://portal.azure.com).
+1. Locate your storage account and display the account overview.
+1. Select **Static website** to display the configuration page for static websites.
+1. Select **Enabled** to enable static website hosting for the storage account.
+1. In the **Index document name** field, specify a default index page (For example: `index.html`).
+1. The default **index page** is displayed when a user navigates to the root of your static website.
+1. Select **Save**. The Azure portal now displays your static website endpoint. Make a note of the **Primary endpoint field**.
+1. In the `TodoListSPA` project source code, update your configuration file with the **Primary endpoint field** as your new **Redirect URI** (you will register this URI later).
+1. Next, select **Storage Explorer**.
+1. Expand the **BLOB CONTAINERS** node, and then select the `$web` container.
+1. Choose the **Upload** button to upload files.
+1. If you intend for the browser to display the contents of file, make sure that the content type of that file is set to `text/html`.
+1. In the pane that appears beside the **account overview page** of your storage account, select **Static Website**. The URL of your site appears in the **Primary endpoint field**. In the next section, you will register this URI.
 
-Learn more about using [.NET Core with Visual Studio Code](https://docs.microsoft.com/dotnet/core/tutorials/with-visual-studio-code).
+##### Update the Azure AD app registration for TodoListSPA
+
+1. Navigate back to to the [Azure portal](https://portal.azure.com).
+1. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations**.
+1. In the resulting screen, select `TodoListSPA`.
+1. In the app's registration screen, select **Authentication** in the menu.
+   - In the **Redirect URIs** section, update the reply URLs to match the site URL of your Azure deployment. For example:
+      - `https://TodoListSPA.azurewebsites.net/`
+
+### Update authentication configuration parameters (TodoListSPA)
+
+1. In your IDE, locate the `TodoListSPA` project. Then, open `TodoListSPA\src\app\app-config.json`.
+2. Find the key for **redirect URI** and replace its value with the address of the web app you published, for example, [https://TodoListSPA.azurewebsites.net/redirect](https://TodoListSPA.azurewebsites.net/redirect).
+3. Find the key for **web API endpoint** and replace its value with the address of the web API you published, for example, [https://TodoListAPI.azurewebsites.net/api](https://TodoListAPI.azurewebsites.net/api).
+
+
+## More information
+
+- [Microsoft identity platform (Azure Active Directory for developers)](https://docs.microsoft.com/azure/active-directory/develop/)
+- [Overview of Microsoft Authentication Library (MSAL)](https://docs.microsoft.com/azure/active-directory/develop/msal-overview)
+- [Quickstart: Register an application with the Microsoft identity platform (Preview)](https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app)
+- [Quickstart: Configure a client application to access web APIs (Preview)](https://docs.microsoft.com/azure/active-directory/develop/quickstart-configure-app-access-web-apis)
+- [Understanding Azure AD application consent experiences](https://docs.microsoft.com/azure/active-directory/develop/application-consent-experience)
+- [Understand user and admin consent](https://docs.microsoft.com/azure/active-directory/develop/howto-convert-app-to-be-multi-tenant#understand-user-and-admin-consent)
+- [Application and service principal objects in Azure Active Directory](https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals)
+- [National Clouds](https://docs.microsoft.com/azure/active-directory/develop/authentication-national-cloud#app-registration-endpoints)
+- [MSAL code samples](https://docs.microsoft.com/azure/active-directory/develop/sample-v2-code)
+
+For more information about how OAuth 2.0 protocols work in this scenario and other scenarios, see [Authentication Scenarios for Azure AD](https://docs.microsoft.com/azure/active-directory/develop/authentication-flows-app-scenarios).
 
 ## Community Help and Support
 

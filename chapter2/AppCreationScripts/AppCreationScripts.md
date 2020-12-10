@@ -4,7 +4,7 @@
 
 ### Quick summary
 
-1. On Windows run PowerShell and navigate to the root of the cloned directory
+1. On Windows run PowerShell as **Administrator** and navigate to the root of the cloned directory
 1. In PowerShell run:
 
    ```PowerShell
@@ -75,8 +75,8 @@ The `Configure.ps1` will stop if it tries to create an Azure AD application whic
     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
     ```
 
-1. ### (Optionally) install AzureAD PowerShell modules
-2. 
+### (Optionally) install AzureAD PowerShell modules
+
 The scripts install the required PowerShell module (AzureAD) for the current user if needed. However, if you want to install if for all users on the machine, you can follow the following steps:
 
 1. If you have never done it already, in the PowerShell window, install the AzureAD PowerShell modules. For this:

@@ -1,7 +1,7 @@
 {
   "credentials": {
-    "clientId": "d472f179-2d03-4ec0-b6a3-d32869ab55bf",
-    "tenantId": "cbaf2168-de14-4c72-9d88-f5f05366dbef"
+    "clientId": "Enter the client ID (aka 'Application ID')",
+    "tenantId": "Enter the tenant ID"
   },
   "configuration": {
     "redirectUri": "http://localhost:4200",
@@ -9,12 +9,12 @@
   },
   "resources": {
     "todoListApi": {
-      "resourceUri": "https://localhost:44351/api/todolist",
-      "resourceScopes": [ "api://88e113e8-0959-4caa-a1cd-2de9ef91b716/access_as_user" ]
+      "resourceUri": "Enter the endpoint for TodoList web API, e.g. https://localhost:44351/api/todolist",
+      "resourceScopes": [ "Enter the API scopes as declared in the app registration 'Expose an API' blade, e.g. api://{clientId}/access_as_user" ]
     }
   },
-  "roles": [
-    "TaskAdmin",
-    "TaskUser"
-  ]
+  "roles": {
+    "TaskAdmin": "TaskAdmin",
+    "TaskUser": "TaskUser"
+  }
 }

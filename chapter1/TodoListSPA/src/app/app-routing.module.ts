@@ -7,6 +7,8 @@ import { TodoEditComponent } from './todo-edit/todo-edit.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RoleGuardService } from './role-guard.service';
 
+import * as auth from './auth-config.json';
+
 const routes: Routes = [
   {
     path: 'todo-edit/:id',
@@ -16,7 +18,7 @@ const routes: Routes = [
       RoleGuardService
     ],
     data: { 
-      expectedRole: 'TaskUser'
+      expectedRole: auth.roles.TaskUser
     } 
   },
   {
@@ -27,7 +29,7 @@ const routes: Routes = [
       RoleGuardService
     ],
     data: { 
-      expectedRole: 'TaskUser'
+      expectedRole: auth.roles.TaskUser
     } 
   },
   {
@@ -38,7 +40,7 @@ const routes: Routes = [
       RoleGuardService,
     ],
     data: { 
-      expectedRole: 'TaskAdmin'
+      expectedRole: auth.roles.TaskAdmin
     } 
   },
   {

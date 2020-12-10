@@ -20,11 +20,11 @@ export class DashboardComponent implements OnInit {
   }
 
   getAll(): void {
-    this.service.getAll()
-      .subscribe((todos: Todo[]) => {
-        this.todos = todos;
-        this.tabulateTodos(this.todos);
-      });
+    this.service.getTodos()
+    .subscribe((todos: Todo[]) => {
+      this.todos = todos;
+      this.tabulateTodos(this.todos);
+    });
   }
 
   tabulateTodos(todos: Todo[]): void {
@@ -32,6 +32,7 @@ export class DashboardComponent implements OnInit {
       if (!this.users.includes(todo.owner)) {
         this.users.push(todo.owner)
         this.table.push({"owner": todo.owner, "tasks": todos.filter(t => t.owner === todo.owner && !t.status)})
+        console.log(this.table)
       }
     })  
   }
