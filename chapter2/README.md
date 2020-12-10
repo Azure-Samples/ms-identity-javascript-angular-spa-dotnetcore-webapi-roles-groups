@@ -199,9 +199,7 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 #### Configure Known Client Applications for service (TodoListAPI)
 
-For a middle tier web API (`TodoListAPI`) to be able to call a downstream web API, the middle tier app needs to be granted the required permissions as well.
-However, since the middle tier cannot interact with the signed-in user, it needs to be explicitly bound to the client app in its **Azure AD** registration.
-This binding merges the permissions required by both the client and the middle tier Web Api and presents it to the end user in a single consent dialog. The user then consent to this combined set of permissions.
+For a middle tier web API (`TodoListAPI`) to be able to call a downstream web API, the middle tier app needs to be granted the required permissions as well. However, since the middle tier cannot interact with the signed-in user, it needs to be explicitly bound to the client app in its **Azure AD** registration. This binding merges the permissions required by both the client and the middle tier web API and presents it to the end user in a single consent dialog. The user then consent to this combined set of permissions.
 
 To achieve this, you need to add the **Application Id** of the client app, in the Manifest of the web API in the `knownClientApplications` property. Here's how:
 
@@ -230,7 +228,7 @@ You have two different options available to you on how you can further configure
 1. In the app's registration screen, select the **Token Configuration** blade in the left to open the page where you can configure the claims provided tokens issued to your application.
 1. Select the **Add groups claim** button on top to open the **Edit Groups Claim** screen.
 1. Select `Security groups` **or** the `All groups (includes distribution lists but not groups assigned to the application)` option. Choosing both negates the effect of `Security Groups` option.
-1. Under the **ID** section, select `Group ID`. This will result in Azure AD sending the [object id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the **groups** claim of the [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) that your app receives after signing-in a user.
+1. Under the **ID** section, select `Group ID`. This will result in Azure AD sending the [Object ID](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the **groups** claim of the [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) that your app receives after signing-in a user.
 
 #### Configure your application to receive the `groups` claim values from a **filtered set of groups** a user may be assigned to
 
@@ -246,7 +244,7 @@ You have two different options available to you on how you can further configure
 1. Select the **Add groups claim** button on top to open the **Edit Groups Claim** screen.
 1. Select `Groups assigned to the application`.
     1. Choosing additional options like `Security Groups` or `All groups (includes distribution lists but not groups assigned to the application)` will negate the benefits your app derives from choosing to use this option.
-1. Under the **ID** section, select `Group ID`. This will result in Azure AD sending the object [id](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) that your app receives after signing-in a user.
+1. Under the **ID** section, select `Group ID`. This will result in Azure AD sending the [Object ID](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [ID Token](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) that your app receives after signing-in a user.
 1. If you are exposing a web API using the **Expose an API** option, then you can also choose the `Group ID` option under the **Access** section. This will result in Azure AD sending the [Object ID](https://docs.microsoft.com/graph/api/resources/group?view=graph-rest-1.0) of the groups the user is assigned to in the `groups` claim of the [Access Token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) issued to the client applications of your API.
 1. In the app's registration screen, select on the **Overview** blade in the left to open the Application overview screen. Select the hyperlink with the name of your application in **Managed application in local directory** (note this field title can be truncated for instance `Managed application in ...`). When you select this link you will navigate to the **Enterprise Application Overview** page associated with the service principal for your application in the tenant where you created it. You can navigate back to the app registration page by using the *back* button of your browser.
 1. Select the **Users and groups** blade in the left to open the page where you can assign users and groups to your application.
@@ -316,7 +314,7 @@ In a separate console window, execute the following commands:
 
 ![error](../ReadmeFiles/ch1_error.png)
 
-> :information_source: Consider taking a moment to share [your experience with us](https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR73pcsbpbxNJuZCMKN0lURpUQ09BMkFPQ0cyWEczSEFJSVVQSVVTREw0TCQlQCN0PWcu)
+> :information_source: Consider taking a moment to [share your experience with us](https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR73pcsbpbxNJuZCMKN0lURpUQ09BMkFPQ0cyWEczSEFJSVVQSVVTREw0TCQlQCN0PWcu)
 
 ## About the Code
 
@@ -332,24 +330,96 @@ If a user is member of more groups than the overage limit (**150 for SAML tokens
 
 #### Create the Overage Scenario for testing
 
-You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. Remember to change the user's **objectId** provided in the `BulkCreateGroups.ps1` script.
+1. You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. Remember to change the user's **objectId** provided in the `BulkCreateGroups.ps1` script.
+1. When you run this sample and an overage occurred, then you'd see the `_claim_names` in the home page after the user signs-in.
+1. We strongly advise you use the [group filtering feature](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to) (if possible) to avoid running into group overages.
+1. In case you cannot avoid running into group overage, we suggest you use the following logic to process groups claim in your token.  
+    1. Check for the claim `_claim_names` with one of the values being `groups`. This indicates overage.
+    1. If found, make a call to the endpoint specified in `_claim_sources` to fetch user’s groups.
+    1. If none found, look into the `groups`  claim for user’s groups.
 
-When attending to overage scenarios, which requires a call to [Microsoft Graph](https://graph.microsoft.com) to read the signed-in user's group memberships, your app will need to have the [User.Read](https://docs.microsoft.com/graph/permissions-reference#user-permissions) and [GroupMember.Read.All](https://docs.microsoft.com/graph/permissions-reference#group-permissions) for the [getMemberGroups](https://docs.microsoft.com/graph/api/user-getmembergroups) function to execute successfully.
+> When attending to overage scenarios, which requires a call to [Microsoft Graph](https://graph.microsoft.com) to read the signed-in user's group memberships, your app will need to have the [GroupMember.Read.All](https://docs.microsoft.com/graph/permissions-reference#group-permissions) for the [getMemberObjects](https://docs.microsoft.com/graph/api/user-getmemberobjects?view=graph-rest-1.0) function to execute successfully.
 
-> :warning: For the overage scenario, make sure you have granted **Admin Consent** for the MS Graph API's **GroupMember.Read.All** scope for both the Client and the Service apps (see the **App Registration** steps above).
-
-// HEURISTIC
+> Developers who wish to gain good familiarity of programming for Microsoft Graph are advised to go through the [An introduction to Microsoft Graph for developers](https://www.youtube.com/watch?v=EBbnpFdB92A) recorded session.
 
 ##### Angular *group-guard* service
 
-Consider the `group-guard.service.ts`. Here, we are checking whether the token for the user has the "hasgroups" claims, which indicates that the user has too many group memberships. If so, we redirect the user to the `/overage` page. Then, we initiate a call to MS Graph API `https://graph.microsoft.com/v1.0/me/memberOf` endpoint to query the full list of groups that the user belong to. Finally we check for the designated groupID among this list.
+Consider the `group-guard.service.ts`. Here, we are checking whether the token for the user has the `_claim_names` claim, which indicates that the user has too many group memberships. If so, we redirect the user to the `/overage` page. Then, we initiate a call to MS Graph API's `https://graph.microsoft.com/v1.0/me/memberOf` endpoint to query the full list of groups that the user belong to. Finally we check for the designated groupID among this list.
 
-```javascript
+```typescript
+@Injectable({
+    providedIn: 'root'
+  })
+export class GroupGuardService implements CanActivate {
 
+  constructor(private authService: MsalService, private graphService: GraphService, private router: Router) {}
+  
+  canActivate(route: ActivatedRouteSnapshot): boolean {
+
+    const expectedGroup = route.data.expectedGroup;
+    let account: Account = this.authService.instance.getAllAccounts()[0];
+
+    this.graphService.user.displayName = account.idTokenClaims?.preferred_username!;
+
+    if (this.graphService.user.groupIDs.includes(expectedGroup)) {
+      return true;
+    }
+
+    if (account.idTokenClaims?.groups) {
+      this.graphService.user.groupIDs = account.idTokenClaims?.groups;
+    } else {
+      if (account.idTokenClaims?._claim_names) { 
+        window.alert('You have too many group memberships. The application will now query Microsoft Graph to get the full list of groups that you are a member of.');
+        this.router.navigate(['/overage']);
+        return false;
+      }
+
+      window.alert('Token does not have groups claim');
+      return false;
+    }
+
+    window.alert('You do not have access for this');
+    return false;
+  }
+}
 ```
 
-```javascript
-
+```typescript
+const routes: Routes = [
+  {
+    path: 'todo-edit/:id',
+    component: TodoEditComponent,
+    canActivate: [
+      MsalGuard,
+      GroupGuardService
+    ],
+    data: { 
+      expectedGroup: auth.groups.groupMember
+    }
+  },
+  {
+    path: 'todo-view',
+    component: TodoViewComponent,
+    canActivate: [
+      MsalGuard,
+      GroupGuardService
+    ],
+    data: { 
+      expectedGroup: auth.groups.groupMember
+    }
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [
+      MsalGuard,
+      GroupGuardService,
+    ],
+    data: { 
+      expectedGroup: auth.groups.groupAdmin
+    } 
+  },
+];
 ```
 
 #### .NET Core web API and how to handle the Overage Scenario
