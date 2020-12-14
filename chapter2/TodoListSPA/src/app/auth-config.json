@@ -1,7 +1,7 @@
 {
   "credentials": {
-    "clientId": "d472f179-2d03-4ec0-b6a3-d32869ab55bf",
-    "tenantId": "cbaf2168-de14-4c72-9d88-f5f05366dbef"
+    "clientId": "Enter the application ID (clientId) of the 'TodoListSPA' application copied from the Azure portal",
+    "tenantId": "Enter the ID of your Azure AD tenant copied from the Azure portal"
   },
   "configuration": {
     "redirectUri": "http://localhost:4200",
@@ -9,8 +9,8 @@
   },
   "resources": {
     "todoListApi": {
-      "resourceUri": "https://localhost:44351/api/todolist",
-      "resourceScopes": [ "api://88e113e8-0959-4caa-a1cd-2de9ef91b716/access_as_user" ]
+      "resourceUri": "Enter the endpoint for TodoListAPI, e.g. https://localhost:44351/api/todolist",
+      "resourceScopes": [ "Enter the API scopes as declared in the app registration 'Expose an API' blade, e.g. api://{clientId}/access_as_user" ]
     },
     "graphApi": {
       "resourceUri": "https://graph.microsoft.com/v1.0/me/memberOf",
@@ -18,7 +18,7 @@
     }
   },
   "groups": {
-    "groupAdmin": "2df638c0-8c92-4d52-b7a4-5bee2d9aa69e",
-    "groupMember": "831e0ef1-4786-4316-9ccb-dc1f1ed54282"
+    "groupAdmin": "Enter the objectID for GroupAdmin group copied from Azure Portal",
+    "groupMember": "Enter the objectID for GroupMember group copied from Azure Portal"
   }
 }

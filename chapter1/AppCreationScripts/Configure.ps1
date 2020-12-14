@@ -315,13 +315,13 @@ Function ConfigureApplications
    # Update config file for 'service'
    $configFile = $pwd.Path + "\..\TodoListAPI\appsettings.json"
    Write-Host "Updating the sample code ($configFile)"
-   $dictionary = @{ "Enter the domain of your Azure AD tenant, e.g. 'contoso.onmicrosoft.com'" = $tenantName;"Enter the ID of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the application ID (clientId) of the 'TodoListAPI' application copied from the Azure portal" = $serviceAadApplication.AppId };
+   $dictionary = @{ "Enter the domain of your Azure AD tenant, e.g. contoso.onmicrosoft.com" = $tenantName;"Enter the ID of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the application ID (clientId) of the 'TodoListAPI' application copied from the Azure portal" = $serviceAadApplication.AppId };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
 
    # Update config file for 'client'
    $configFile = $pwd.Path + "\..\TodoListSPA\src\app\app-config.json"
    Write-Host "Updating the sample code ($configFile)"
-   $dictionary = @{ "Enter the client ID (aka 'Application ID')" = $clientAadApplication.AppId;"Enter the tenant ID" = $tenantId;"Enter the endpoint for TodoList web API, e.g. https://localhost:44351/api/todolist" = $serviceAadApplication.HomePage;"Enter the API scopes as declared in the app registration 'Expose an API' blade, e.g. api://{clientId}/access_as_user" = ("api://"+$serviceAadApplication.AppId+"/access_as_user") };
+   $dictionary = @{ "Enter the application ID (clientId) of the 'TodoListSPA' application copied from the Azure portal" = $clientAadApplication.AppId;"Enter the ID of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the endpoint for TodoListAPI, e.g. https://localhost:44351/api/todolist" = $serviceAadApplication.HomePage;"Enter the API scopes as declared in the app registration 'Expose an API' blade, e.g. api://{clientId}/access_as_user" = ("api://"+$serviceAadApplication.AppId+"/access_as_user") };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
    Write-Host ""
    Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 

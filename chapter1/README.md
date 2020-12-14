@@ -15,11 +15,11 @@
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with the Microsoft identity platform. It implements **role-based access control** by using Azure AD **App Roles**; in the sample, a dashboard component allows signed-in users to see the tasks assigned to users is only accessible by users under a app role named **TaskAdmin** role.
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with the Microsoft identity platform. In doing so, it implements **role-based access control** by using Azure AD **App Roles**; in the sample, a dashboard component allows signed-in users to see the tasks assigned to users and is only accessible by users under an app role named **TaskAdmin**.
 
 ## Scenario
 
-- The **TodoListSPA** uses [MSAL.js](https://github.com/AzureAD/microsoft-authentication-library-for-js) and [MSAL-Angular](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user with the Microsoft identity platform.
+- The **TodoListSPA** uses [MSAL-Angular](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user with the Microsoft identity platform.
 - The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure Active Directory (Azure AD) on behalf of the authenticated user for the **TodoListAPI**.
 - The access token is then used by the **TodoListAPI** to authorize the user.
 - **TodoListAPI** uses [MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) and [Microsoft.Identity.Web](https://github.com/AzureAD/microsoft-identity-web) to protect its endpoint and accept only authorized calls.
@@ -222,7 +222,7 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 ### (Optional) Define Application Roles via App Manifest
 
-The following section provides instructions for defining application roles using the app manifest.
+The following section provides instructions for defining application roles using the app manifest. If you have already defined them feel free to skip this section.
 
 > :warning: You need to perform the steps below for both **TodoListAPI** and **TodoListSPA**. Keep in mind that App Roles definitions are exactly the same for both the  **TodoListAPI** and the **TodoListSPA** in this sample. But as a developer you can choose to implement app roles for just one of the apps or use different role names in your SPA app and the API, if your authorization requirements demand so.
 
