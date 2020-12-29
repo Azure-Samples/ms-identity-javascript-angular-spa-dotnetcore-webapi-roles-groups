@@ -78,7 +78,7 @@
       {
         "App": "client",
         "SettingKind": "Replace",
-        "SettingFile": "\\..\\TodoListSPA\\src\\app\\app-config.json",
+        "SettingFile": "\\..\\TodoListSPA\\src\\app\\auth-config.json",
         "Mappings": [
           {
             "key": "Enter the application ID (clientId) of the 'TodoListSPA' application copied from the Azure portal",

@@ -319,7 +319,7 @@ Function ConfigureApplications
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
 
    # Update config file for 'client'
-   $configFile = $pwd.Path + "\..\TodoListSPA\src\app\app-config.json"
+   $configFile = $pwd.Path + "\..\TodoListSPA\src\app\auth-config.json"
    Write-Host "Updating the sample code ($configFile)"
    $dictionary = @{ "Enter the application ID (clientId) of the 'TodoListSPA' application copied from the Azure portal" = $clientAadApplication.AppId;"Enter the ID of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the endpoint for TodoListAPI, e.g. https://localhost:44351/api/todolist" = $serviceAadApplication.HomePage;"Enter the API scopes as declared in the app registration 'Expose an API' blade, e.g. api://{clientId}/access_as_user" = ("api://"+$serviceAadApplication.AppId+"/access_as_user") };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
