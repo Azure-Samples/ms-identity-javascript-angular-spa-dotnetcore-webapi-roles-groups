@@ -50,11 +50,11 @@ export class GroupGuardService implements CanActivate {
         return false;
       }
 
-      window.alert('Token does not have groups claim');
+      window.alert('Token does not have groups claim.');
       return false;
     }
 
-    window.alert('You do not have access for this');
+    window.alert('You do not have access for this.');
     return false;
   }
 }

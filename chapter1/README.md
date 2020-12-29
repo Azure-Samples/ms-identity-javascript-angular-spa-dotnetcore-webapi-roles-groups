@@ -15,7 +15,7 @@
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with the Microsoft identity platform. In doing so, it implements **role-based access control** by using Azure AD **App Roles**; in the sample, a dashboard component allows signed-in users to see the tasks assigned to users and is only accessible by users under an app role named **TaskAdmin**.
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with the Microsoft identity platform. In doing so, it implements **role-based access control** by using Azure AD **App Roles**; in the sample, a **dashboard** component allows signed-in users to see the tasks assigned to users and is only accessible by users under an **app role** named **TaskAdmin**.
 
 ## Scenario
 
@@ -216,13 +216,13 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 1. Open the `TodoListSPA\src\app\app-config.json` file.
 1. Find the key `clientId` and replace the existing value with the application ID (clientId) of `TodoListSPA` app copied from the Azure portal.
-1. Find the key `tenantId` and replace the existing value with "https://login.microsoftonline.com/"+$tenantId.
-1. Find the key `resources.todoListApi.resourceUri` and replace the existing value with the base address of `TodoListAPI` (by default `https://localhost:44351/api/todolist`).
-1. Find the key `resources.todoListApi.resourceScopes` and replace the existing value with Scope.
+1. Find the key `tenantId` and replace the existing value with your Azure AD tenant ID copied from the Azure portal.
+1. Find the key `resources.todoListApi.resourceUri` and replace the existing value with the endpoint `TodoListAPI` (by default `https://localhost:44351/api/todolist`).
+1. Find the key `resources.todoListApi.resourceScopes` and replace the existing value with scope you created during the app registration of `TodoListAPI`.
 
 ### (Optional) Define Application Roles via App Manifest
 
-The following section provides instructions for defining application roles using the app manifest. If you have already defined them feel free to skip this section.
+The following section provides instructions for defining application roles using the **app manifest**. If you have already defined them feel free to **skip** this section.
 
 > :warning: You need to perform the steps below for both **TodoListAPI** and **TodoListSPA**. Keep in mind that App Roles definitions are exactly the same for both the  **TodoListAPI** and the **TodoListSPA** in this sample. But as a developer you can choose to implement app roles for just one of the apps or use different role names in your SPA app and the API, if your authorization requirements demand so.
 
@@ -269,10 +269,6 @@ The following section provides instructions for defining application roles using
    |-------------- |--------------------------------------------------------------------------|
    | `TaskAdmin` | Admins can read others' TodoLists but cannot add/remove todos.           |
    | `TaskUser`  | Users can read and modify their TodoList but cannot see others' lists.   |
-
-> :bulb: **Important security tip**
->
-> When you set **User assignment required?** to **Yes**, Azure AD will check that only users assigned to your application in the **Users and groups** blade are able to sign-in to your app. This ensures that the `roles` claim will always be available to your app after the suers sign-in. You can assign users directly to roles or assign security groups to app roles (requires Azure AD Premium).
 
 ## Running the sample
 
@@ -389,7 +385,7 @@ const routes: Routes = [
 ];
 ```
 
-However, it is important to be aware of that no content on the front-end application can be **truly** secure. That is, our **RoleGuard** component is primarily responsible for rendering the correct pages and other UI elements for a user in a particular role; in the example above, we allow only users in the `TaskAdmin` role to see the `Dashboard` component. In order to **truly** protect data and expose certain REST operations to a selected set of users, we enable **RBAC** on the back-end/web API as well in this sample.
+However, it is important to be aware of that no content on the front-end application can be **truly** secure. That is, our **RoleGuard** component is primarily responsible for rendering the correct pages and other UI elements for a user in a particular role; in the example above, we allow only users in the `TaskAdmin` role to see the `Dashboard` component. In order to **truly** protect data and expose certain REST operations to a selected set of users, we enable **RBAC** on the back-end/web API as well in this sample. This is shown next.
 
 ### Policy based Authorization for .NET Core web API
 

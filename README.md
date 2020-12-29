@@ -11,11 +11,11 @@ products:
 - ms-graph
 - microsoft-identity-web
 - azure-active-directory
-description: "Angular single-page application (SPA) calling .NET Core web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)"
+description: "Angular single-page application (SPA) calling .NET Core web API using App Roles and Security Groups to implement Role-Based Access Control (RBAC)"
 urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups"
 ---
 
-# Angular single-page application (SPA) calling .NET Core web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)
+# Angular single-page application (SPA) calling .NET Core web API using App Roles and Security Groups to implement Role-Based Access Control (RBAC)
 
 This chapterwise tutorial demonstrates how to use Azure AD **App Roles** and **Security Groups** features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in **ID** and **Access** tokens, how to protect restricted routes in your client app, and how to accept only authorized calls in your web API.
 
@@ -39,7 +39,7 @@ We recommend you to follow each chapter in a successive order, as the concepts u
   - [Angular single-page application calling a custom .NET Core web API](https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-aspnetcore-webapi)
 - Please take a moment to review [Azure RBAC documentation](https://docs.microsoft.com/azure/role-based-access-control/) in order to become familiar with App Roles and Security Groups. More specific documentation pointers can be found below under [More information](#more-information).
 
-> A Microsoft Identity Platform Office Hours session covered Azure AD App roles and security groups, featuring this scenario and this sample. A recording of the session is provided in this video [Implement Authorization in your Applications with Microsoft identity platform](https://www.youtube.com/watch?v=LRoc-na27l0)
+> A Microsoft identity platform Office Hours session covered Azure AD App roles and security groups, featuring this scenario and this sample. A recording of the session is provided in this video [Implement Authorization in your Applications with Microsoft identity platform](https://www.youtube.com/watch?v=LRoc-na27l0)
 
 Please refer to each chapter's sub-folder for sample-specific prerequisites.
 

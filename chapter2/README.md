@@ -15,15 +15,13 @@
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with **Azure Active Directory**. It also implements authorization for **role-based access control** using Azure AD **Security Groups**.
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with **Azure Active Directory**. It also implements authorization for **role-based access control** using Azure AD **Security Groups**. In the sample, a dashboard component allows signed-in users to see the tasks assigned to them or other users based on their memberships to one of the two security groups, **GroupAdmin** and **GroupMember**.
 
-In the sample, a dashboard component allows signed-in users to see the tasks assigned to them or other users based on their memberships to one of the two security groups, **GroupAdmin** and **GroupMember**.
-
-Authorization in Azure AD can also be done with **App Roles**, as shown in [chapter1](../chapter1\README.md). **Groups** and **App Roles** in Azure AD are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
+Authorization in Azure AD can also be done with **App Roles**, as shown in [chapter1](../chapter1/README.md). **Groups** and **App Roles** in Azure AD are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
 
 ## Scenario
 
-- **TodoListSPA** uses [MSAL.js](https://github.com/AzureAD/microsoft-authentication-library-for-js) and [MSAL-Angular](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user with the Microsoft identity platform.
+- **TodoListSPA** uses [MSAL Angular](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user with the Microsoft identity platform.
 - The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure AD on behalf of the authenticated user for the **TodoListAPI**.
 - The access token is then used by the **TodoListAPI** to authorize the user.
 - **TodoListAPI** uses [MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) and [Microsoft.Identity.Web](https://github.com/AzureAD/microsoft-identity-web) to protect its endpoint and accept authorized calls.
@@ -34,9 +32,9 @@ Authorization in Azure AD can also be done with **App Roles**, as shown in [chap
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-| `AppCreationScripts` | Contains Powershell scripts to automate app registrations. |
-| `TodoListAPI`     | Source code of the TodoList API.           |
-| `TodoListSPA`     | Source code of the TodoList client SPA.    |
+| `AppCreationScripts/` | Contains Powershell scripts to automate app registrations. |
+| `TodoListAPI/`     | Source code of the TodoList API.           |
+| `TodoListSPA/`     | Source code of the TodoList client SPA.    |
 | `CHANGELOG.md`    | List of changes to the sample.             |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
 | `LICENSE`         | The license for the sample.                |
@@ -173,17 +171,15 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 1. Select **Save** to save your changes.
 1. In the app's registration screen, select the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs.
    - Select the **Add a permission** button and then:
-
    - Ensure that the **My APIs** tab is selected.
-   - In the list of APIs, select the API `TodoListAPI`.
-   - In the **Delegated permissions** section, select the **Access 'TodoListAPI'** in the list. Use the search box if necessary.
-   - Select the **Add permissions** button at the bottom.
-   - Select the **Add a permission** button and then:
-
+       - In the list of APIs, select the API `TodoListAPI`.
+       - In the **Delegated permissions** section, select the **Access 'TodoListAPI'** in the list. Use the search box if necessary.
+       - Select the **Add permissions** button at the bottom.
+       - Select the **Add a permission** button and then:
    - Ensure that the **Microsoft APIs** tab is selected.
-   - In the *Commonly used Microsoft APIs* section, select **Microsoft Graph**
-   - In the **Delegated permissions** section, select the **User.Read**, **GroupMember.Read.All** in the list. Use the search box if necessary.
-   - Select the **Add permissions** button at the bottom.
+       - In the *Commonly used Microsoft APIs* section, select **Microsoft Graph**
+       - In the **Delegated permissions** section, select the **User.Read**, **GroupMember.Read.All** in the list. Use the search box if necessary.
+       - Select the **Add permissions** button at the bottom.
    - **GroupMember.Read.All** requires admin to consent. Select the **Grant/revoke admin consent for {tenant}** button, and then select **Yes** when you are asked if you want to grant consent for the requested permissions for all account in the tenant. You need to be an Azure AD tenant admin to do this.
 
 #### Configure the client app (TodoListSPA) to use your app registration
@@ -344,7 +340,7 @@ If a user is member of more groups than the overage limit (**150 for SAML tokens
 
 ##### Angular *group-guard* service
 
-Consider the `group-guard.service.ts`. Here, we are checking whether the token for the user has the `_claim_names` claim, which indicates that the user has too many group memberships. If so, we redirect the user to the `/overage` page. Then, we initiate a call to MS Graph API's `https://graph.microsoft.com/v1.0/me/memberOf` endpoint to query the full list of groups that the user belong to. Finally we check for the designated groupID among this list.
+Consider the `group-guard.service.ts`. Here, we are checking whether the token for the user has the `_claim_names` claim, which indicates that the user has too many group memberships. If so, we redirect the user to the `/overage` page. There, we initiate a call to MS Graph API's `https://graph.microsoft.com/v1.0/me/memberOf` endpoint to query the full list of groups that the user belongs to. Finally we check for the designated `groupID` among this list.
 
 ```typescript
 @Injectable({
@@ -383,6 +379,8 @@ export class GroupGuardService implements CanActivate {
   }
 }
 ```
+
+In `app-routing.module.ts`, we add **GroupGuardService** to routes we want to check for group membership:
 
 ```typescript
 const routes: Routes = [
@@ -491,7 +489,7 @@ User.IsInRole("Group-object-id"); // In methods
 
 ```
 
-> :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../issues) page.
+> :information_source: Did the sample not work for you as expected? Did you encounter issues trying this sample? Then please reach out to us using the [GitHub Issues](../../../issues) page.
 
 ## Debugging the sample
 

@@ -9,6 +9,11 @@ import { RoleGuardService } from './role-guard.service';
 
 import * as auth from './auth-config.json';
 
+/**
+ * MSAL Angular can protect routes in your application
+ * using MsalGuard. For more info, visit:
+ * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-angular/docs/v2-docs/initialization.md#secure-the-routes-in-your-application
+ */
 const routes: Routes = [
   {
     path: 'todo-edit/:id',
