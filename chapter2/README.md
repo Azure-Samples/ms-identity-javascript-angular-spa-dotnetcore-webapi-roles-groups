@@ -210,14 +210,16 @@ To achieve this, you need to add the **Application Id** of the client app, in th
 
 1. **Save** the changes to the manifest.
 
-### Configure Security Groups
+### Configure Security Groups (TodoListSPA and TodoListAPI)
 
-You have two different options available to you on how you can further configure your application to receive the `groups` claim.
+You have two different options available to you on how you can further configure your application(s) to receive the `groups` claim.
 
 1. [Receive **all the groups** that the signed-in user is assigned to in an Azure AD tenant, included nested groups](#configure-your-application-to-receive-all-the-groups-the-signed-in-user-is-assigned-to-including-nested-groups).
 2. [Receive the **groups** claim values from a **filtered set of groups** that your application is programmed to work with](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to) (Not available in the [Azure AD Free edition](https://azure.microsoft.com/pricing/details/active-directory/)).
 
 > To get the on-premise group's `samAccountName` or `On Premises Group Security Identifier` instead of Group ID, please refer to the document [Configure group claims for applications with Azure Active Directory](https://docs.microsoft.com/azure/active-directory/hybrid/how-to-connect-fed-group-claims#prerequisites-for-using-group-attributes-synchronized-from-active-directory).
+
+:warning: The token configuration steps below should be performed for **both** the **TodoListSPA** and the **TodoListAPI**.
 
 #### Configure your application to receive **all the groups** the signed-in user is assigned to, including nested groups
 
