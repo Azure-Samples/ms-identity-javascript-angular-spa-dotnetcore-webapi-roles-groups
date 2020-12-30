@@ -52,7 +52,7 @@
         },
         {
           "Types": [ "User" ],
-          "Name": "TaskUsers",
+          "Name": "TaskUser",
           "Description": "Users can read and modify their todo lists"
         }
       ],

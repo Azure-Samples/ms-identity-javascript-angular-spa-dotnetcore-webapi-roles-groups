@@ -204,9 +204,9 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
     - For **Value**, enter **TaskAdmin**.
     - For **Description**, enter **Admins can read any user's todo list**.
 1. Select **Create app role**:
-    - For **Display name**, enter a suitable name, for instance **TaskUsers**.
+    - For **Display name**, enter a suitable name, for instance **TaskUser**.
     - For **Allowed member types**, choose **User**.
-    - For **Value**, enter **TaskUsers**.
+    - For **Value**, enter **TaskUser**.
     - For **Description**, enter **Users can read and modify their todo lists**.
 1. Select **Apply** to save your changes.
 
@@ -231,7 +231,7 @@ The following section provides instructions for defining application roles using
 > :warning: You need to perform the steps below for both **TodoListAPI** and **TodoListSPA**. Keep in mind that App Roles definitions are exactly the same for both the  **TodoListAPI** and the **TodoListSPA** in this sample. But as a developer you can choose to implement app roles for just one of the apps or use different role names in your SPA app and the API, if your authorization requirements demand so.
 
 1. In the blade for your application on Azure Portal, click **Manifest**.
-1. Edit the manifest by locating the `appRoles` setting and adding the two Application Roles.  The role definitions are provided in the JSON code block below.  Leave the `allowedMemberTypes` to **User** only.  Each role definition in this manifest must have a different valid **Guid** for the "id" property. Note that the `"value"` property of each role is set to the exact strings **TaskAdmin** and **TaskUsers** (as these strings are used in the code in the application).
+1. Edit the manifest by locating the `appRoles` setting and adding the two Application Roles.  The role definitions are provided in the JSON code block below.  Leave the `allowedMemberTypes` to **User** only.  Each role definition in this manifest must have a different valid **Guid** for the "id" property. Note that the `"value"` property of each role is set to the exact strings **TaskAdmin** and **TaskUser** (as these strings are used in the code in the application).
 1. Save the manifest.
 
    The content of `appRoles` should be the following (the `id` should be a unique GUID -*you may use a GUID Generator tool for this*)
@@ -406,7 +406,7 @@ As mentioned before, in order to **truly** implement **RBAC** and secure data, t
          // Adding authorization policies that enforce authorization using Azure AD roles.
    services.AddAuthorization(options =>
    {
-         options.AddPolicy(AuthorizationPolicies.AssignmentToTaskUsersRoleRequired, policy => policy.RequireRole(AppRole.TaskUsers));
+         options.AddPolicy(AuthorizationPolicies.AssignmentToTaskUserRoleRequired, policy => policy.RequireRole(AppRole.TaskUser));
          options.AddPolicy(AuthorizationPolicies.AssignmentToTaskAdminRoleRequired, policy => policy.RequireRole(AppRole.TaskAdmin));
    });
 ```
@@ -416,12 +416,12 @@ We defined these roles in `AppRoles.cs` as follows:
 ```csharp
    public static class AppRole
    {
-      public const string TaskUsers = "TaskUsers";
+      public const string TaskUser = "TaskUser";
       public const string TaskAdmin = "TaskAdmin";
    }
    public static class AuthorizationPolicies
    {
-      public const string AssignmentToTaskUsersRoleRequired = "AssignmentToTaskUsersRoleRequired";
+      public const string AssignmentToTaskUserRoleRequired = "AssignmentToTaskUserRoleRequired";
       public const string AssignmentToTaskAdminRoleRequired = "AssignmentToTaskAdminRoleRequired";
    }
 ```
@@ -441,7 +441,7 @@ Finally, in `TodoListController.cs`, we decorate our routes with the appropriate
 
    // GET: api/todolist
    [HttpGet]
-   [Authorize(Policy = AuthorizationPolicies.AssignmentToTaskUsersRoleRequired)]
+   [Authorize(Policy = AuthorizationPolicies.AssignmentToTaskUserRoleRequired)]
    public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
    {
       HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
