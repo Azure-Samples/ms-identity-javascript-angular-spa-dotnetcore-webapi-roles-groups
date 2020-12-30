@@ -10,11 +10,20 @@ export class HomeComponent implements OnInit {
 
   constructor(private authService: MsalService) { }
 
+  loggedIn = false;
+
   ngOnInit(): void {
+    
+    this.checkAccount();
+
     this.authService.handleRedirectObservable().subscribe({
       next: (result) => console.log(result),
       error: (error) => console.log(error)
     });
+  }
+
+  checkAccount() {
+    this.loggedIn = this.authService.instance.getAllAccounts().length > 0;
   }
 
 }

@@ -145,7 +145,7 @@ The first thing that we need to do is to declare the unique [resource](https://d
 
 #### Define Application Roles
 
-1. Still on the same app registration, select the **App roles** blade to the right.
+1. Still on the same app registration, select the **App roles** blade to the left.
 1. Select **Create app role**:
     - For **Display name**, enter a suitable name, for instance **TaskAdmin**.
     - For **Allowed member types**, choose **User**.
@@ -157,6 +157,8 @@ The first thing that we need to do is to declare the unique [resource](https://d
     - For **Value**, enter **TaskUser**.
     - For **Description**, enter **Users can read and modify their todo lists**.
 1. Select **Apply** to save your changes.
+
+To add users to this app role, follow the guidelines here: [Assign users and groups to roles](https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps#assign-users-and-groups-to-roles).
 
 > :bulb: **Important security tip**
 >
@@ -195,7 +197,7 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 
 #### Define Application Roles
 
-1. Still on the same app registration, select the **App roles** blade to the right.
+1. Still on the same app registration, select the **App roles** blade to the left.
 1. Select **Create app role**:
     - For **Display name**, enter a suitable name, for instance **TaskAdmin**.
     - For **Allowed member types**, choose **User**.
@@ -207,6 +209,8 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
     - For **Value**, enter **TaskUsers**.
     - For **Description**, enter **Users can read and modify their todo lists**.
 1. Select **Apply** to save your changes.
+
+To add users to this app role, follow the guidelines here: [Assign users and groups to roles](https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps#assign-users-and-groups-to-roles).
 
 #### Configure the client app (TodoListSPA) to use your app registration
 

@@ -53,6 +53,11 @@ const routes: Routes = [
   },
   {
     // Needed for hash routing
+    path: 'error',
+    component: HomeComponent
+  },
+  {
+    // Needed for hash routing
     path: 'state',
     component: HomeComponent
   },
