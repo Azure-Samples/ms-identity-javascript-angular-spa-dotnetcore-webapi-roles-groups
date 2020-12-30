@@ -37,7 +37,7 @@ export class GroupGuardService implements CanActivate {
 
     this.graphService.user.displayName = account.idTokenClaims?.preferred_username!;
 
-    if (this.graphService.user.groupIDs.includes(expectedGroup)) {
+    if (account.idTokenClaims?.groups?.includes(expectedGroup) || this.graphService.user.groupIDs.includes(expectedGroup)) {
       return true;
     }
 
