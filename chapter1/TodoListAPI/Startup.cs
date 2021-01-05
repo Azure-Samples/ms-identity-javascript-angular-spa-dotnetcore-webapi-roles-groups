@@ -42,7 +42,7 @@ namespace TodoListAPI
                 options.TokenValidationParameters.RoleClaimType = "roles";
             });
 
-                // Adding authorization policies that enforce authorization using Azure AD roles.
+            // Adding authorization policies that enforce authorization using Azure AD roles.
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(AuthorizationPolicies.AssignmentToTaskUserRoleRequired, policy => policy.RequireRole(AppRole.TaskUser));

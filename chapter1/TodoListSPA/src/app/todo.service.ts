@@ -1,37 +1,37 @@
-import { Todo } from './todo';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import * as config from './app-config.json';
+import { Todo } from './todo';
+import * as auth from './auth-config.json';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TodoService {
-  apiUri = config.resources.todoListApi.resourceUri;
+  url = auth.resources.todoListApi.resourceUri;
 
   constructor(private http: HttpClient) { }
 
-  getAll() {
-    return this.http.get<string[]>(this.apiUri + '/' + 'getAll');
-  }
-
   getTodos() { 
-    return this.http.get<Todo[]>(this.apiUri);
+    return this.http.get<Todo[]>(this.url);
   }
 
-  getTodo(id) { 
-    return this.http.get<Todo>(this.apiUri + '/' +  id);
+  getTodo(id: number) { 
+    return this.http.get<Todo>(this.url + '/' +  id);
   }
   
-  postTodo(todo) { 
-    return this.http.post<Todo>(this.apiUri, todo);
+  postTodo(todo: Todo) { 
+    return this.http.post<Todo>(this.url, todo);
   }
 
-  deleteTodo(id) {
-    return this.http.delete(this.apiUri + '/' +  id);
+  deleteTodo(id: number) {
+    return this.http.delete(this.url + '/' + id);
   }
 
-  editTodo(todo) { 
-    return this.http.put<Todo>(this.apiUri + '/' +  todo.id, todo);
+  editTodo(todo: Todo) { 
+    return this.http.put<Todo>(this.url + '/' + todo.id, todo);
+  }
+
+  getAll() {
+    return this.http.get<Todo[]>(this.url + '/' + 'getAll');
   }
 }

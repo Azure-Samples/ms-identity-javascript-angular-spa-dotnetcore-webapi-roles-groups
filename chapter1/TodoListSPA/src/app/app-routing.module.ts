@@ -7,6 +7,13 @@ import { TodoEditComponent } from './todo-edit/todo-edit.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RoleGuardService } from './role-guard.service';
 
+import * as auth from './auth-config.json';
+
+/**
+ * MSAL Angular can protect routes in your application
+ * using MsalGuard. For more info, visit:
+ * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-angular/docs/v2-docs/initialization.md#secure-the-routes-in-your-application
+ */
 const routes: Routes = [
   {
     path: 'todo-edit/:id',
@@ -16,7 +23,7 @@ const routes: Routes = [
       RoleGuardService
     ],
     data: { 
-      expectedRole: 'TaskUser'
+      expectedRole: auth.roles.TaskUser
     } 
   },
   {
@@ -27,7 +34,7 @@ const routes: Routes = [
       RoleGuardService
     ],
     data: { 
-      expectedRole: 'TaskUser'
+      expectedRole: auth.roles.TaskUser
     } 
   },
   {
@@ -38,8 +45,23 @@ const routes: Routes = [
       RoleGuardService,
     ],
     data: { 
-      expectedRole: 'TaskAdmin'
+      expectedRole: auth.roles.TaskAdmin
     } 
+  },
+  {
+    // Needed for hash routing
+    path: 'state',
+    component: HomeComponent
+  },
+  {
+    // Needed for hash routing
+    path: 'code',
+    component: HomeComponent
+  },
+  {
+    // Needed for hash routing
+    path: 'error',
+    component: HomeComponent
   },
   {
     path: '',
@@ -47,8 +69,15 @@ const routes: Routes = [
   }
 ];
 
+const isIframe = window !== window.parent && !window.opener;
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: false })],
+  imports: [
+    RouterModule.forRoot(routes, {
+    useHash: true,
+    // Don't perform initial navigation in iframes
+    initialNavigation: !isIframe ? 'enabled' : 'disabled'
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
