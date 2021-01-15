@@ -55,6 +55,10 @@ Using a command line interface such as VS Code integrated terminal, follow the s
 ### Step 1. Install .NET Core API dependencies
 
 ```console
+   cd chapter2
+```
+
+```console
    cd TodoListAPI
    dotnet restore
 ```

@@ -1,4 +1,4 @@
-# Angular single-page application (SPA) calling .NET Core web API using Security Groups to implement Role-Based Access Control (RBAC)
+# An Angular single-page application (SPA) calling a protected Core web API and using Security Groups to implement Role-Based Access Control (RBAC)
 
  1. [Overview](#overview)
  1. [Scenario](#scenario)
@@ -15,7 +15,8 @@
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with **Azure Active Directory**. It also implements authorization for **role-based access control** using Azure AD **Security Groups**. In the sample, a dashboard component allows signed-in users to see the tasks assigned to them or other users based on their memberships to one of the two security groups, **GroupAdmin** and **GroupMember**.
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with **Azure Active Directory**. It also implements authorization for **role-based access control** using Azure AD **Security Groups**. 
+In the sample, a dashboard component allows signed-in users to see the tasks assigned to them or other users based on their memberships to one of the two security groups, **GroupAdmin** and **GroupMember**.
 
 Authorization in Azure AD can also be done with **App Roles**, as shown in [chapter1](../chapter1/README.md). **Groups** and **App Roles** in Azure AD are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
 
@@ -54,6 +55,10 @@ Authorization in Azure AD can also be done with **App Roles**, as shown in [chap
 Using a command line interface such as VS Code integrated terminal, follow the steps below:
 
 ### Step 1. Install .NET Core API dependencies
+
+```console
+   cd chapter2
+```
 
 ```console
    cd TodoListAPI
