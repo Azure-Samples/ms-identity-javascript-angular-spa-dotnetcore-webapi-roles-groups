@@ -15,17 +15,15 @@
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with **Azure Active Directory**. It also implements authorization for **role-based access control** using Azure AD **Security Groups**. 
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with **Azure Active Directory**. In [Chapter 1](../Chapter1) we learnt how to use **App Roles**. In this chapter, we learn about how to implement authorization for **role-based access control** using Azure AD **Security Groups**.
+
 In the sample, a dashboard component allows signed-in users to see the tasks assigned to them or other users based on their memberships to one of the two security groups, **GroupAdmin** and **GroupMember**.
 
 Authorization in Azure AD can also be done with **App Roles**, as shown in [chapter1](../chapter1/README.md). **Groups** and **App Roles** in Azure AD are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
 
 ## Scenario
 
-- **TodoListSPA** uses [MSAL Angular (Preview)](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user with the Microsoft identity platform.
-- The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure AD on behalf of the authenticated user for the **TodoListAPI**.
-- The access token is then used by the **TodoListAPI** to authorize the user.
-- **TodoListAPI** [Microsoft.Identity.Web](https://github.com/AzureAD/microsoft-identity-web) to protect its endpoint and accept authorized calls.
+- The scenario is similar to Chapter 1, except we'd use **Security Groups** instead of **App Roles**
 
 ![Topology](../ReadmeFiles/topology.png)
 
@@ -42,13 +40,7 @@ Authorization in Azure AD can also be done with **App Roles**, as shown in [chap
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/en/download/) must be installed to run this sample.
-- [Dotnet Core SDK](https://dotnet.microsoft.com/download) must be installed to run this sample.
-- An Azure Active Directory (Azure AD) tenant.
-- At least **two** user accounts in your Azure AD tenant.
-- A modern Browser. This sample uses **ES6** conventions and will not run on **Internet Explorer**.
 - Two security groups **GroupAdmin** and **GroupMember**, with users you want to test with assigned to them.
-- We recommend [VS Code](https://code.visualstudio.com/download) for running and debugging this cross-platform application.
 
 ## Setup
 

@@ -17,7 +17,7 @@ urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups"
 
 # An Angular single-page application (SPA) calling a protected Web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)
 
-This chapter-wise tutorial demonstrates how to use Azure AD **App Roles** and **Security Groups** features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in **ID** and **Access** tokens, how to protect restricted routes in your client app, and how to accept only authorized calls in your web API. To do so, it uses [Microsoft Authentication Library for Angular (Preview)](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular)  (MSAL Angular) obtain and manage tokens securely.
+This chapterwise tutorial demonstrates how to use Azure AD **App Roles** and **Security Groups** features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in [ID tokens](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) and [access tokens](https://docs.microsoft.com/azure/active-directory/develop/access-tokens), how to protect restricted routes in your client app, and how to accept only authorized calls in your web API. To do so, it uses [Microsoft Authentication Library for Angular (Preview)](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular)  (MSAL Angular) obtain and manage tokens securely.
 
 We recommend you to follow each chapter in a successive order, as the concepts used in later chapters are built on top of the previous ones and explanations may not be repeated. Before proceeding to **Chapter 1**, please review the [Prerequisites](#prerequisites) below.
 
@@ -33,6 +33,15 @@ We recommend you to follow each chapter in a successive order, as the concepts u
 | `LICENSE`         | The license for the sample.                |
 
 ## Prerequisites
+
+- [Node.js](https://nodejs.org/en/download/) must be installed to run this sample.
+- [Dotnet Core SDK](https://dotnet.microsoft.com/download) must be installed to run this sample.
+- An Azure Active Directory (Azure AD) tenant.
+- At least **two** user accounts in your Azure AD tenant.
+- A modern Browser. This sample uses **ES6** conventions and will not run on **Internet Explorer**.
+- We recommend [VS Code](https://code.visualstudio.com/download) for running and debugging this cross-platform application.
+
+Moreover:
 
 - We highly recommend you first getting familiar with the following *basic sign-in* examples and documents. This will help you easily grasp the various aspects that are presented here.
   - [Angular single-page application calling MS Graph API](https://github.com/Azure-Samples/ms-identity-javascript-angular-spa)

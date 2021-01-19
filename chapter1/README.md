@@ -41,12 +41,7 @@ In the sample, a **dashboard** component allows signed-in users to see the tasks
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/en/download/) must be installed to run this sample.
-- [Dotnet Core SDK](https://dotnet.microsoft.com/download) must be installed to run this sample.
-- An Azure Active Directory (Azure AD) tenant.
-- At least **two** user accounts in your Azure AD tenant.
-- A modern browser. This sample uses **ES6** conventions and will not run on **Internet Explorer**.
-- We recommend [VS Code](https://code.visualstudio.com/download) for running and debugging this cross-platform application.
+- No additional prerequisites
 
 ## Setup
 
