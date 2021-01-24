@@ -1,4 +1,4 @@
-# Angular single-page application (SPA) calling .NET Core web API using App Roles to implement Role-Based Access Control (RBAC)
+# An Angular single-page application (SPA) calling a protected web API and using App Roles to implement Role-Based Access Control (RBAC)
 
  1. [Overview](#overview)
  1. [Scenario](#scenario)
@@ -15,9 +15,11 @@
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with the Microsoft identity platform. In doing so, it implements **role-based access control** by using Azure AD **App Roles**; in the sample, a **dashboard** component allows signed-in users to see the tasks assigned to users and is only accessible by users under an **app role** named **TaskAdmin**.
+This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with the Microsoft identity platform. In doing so, it implements **role-based access control** by using Azure AD **App Roles**.
 
 ## Scenario
+
+In the sample, a **dashboard** component allows signed-in users to see the tasks assigned to users and is only accessible by users under an **app role** named **TaskAdmin**.
 
 - The **TodoListSPA** uses [MSAL Angular (Preview)](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular) to authenticate a user with the Microsoft identity platform.
 - The app then obtains an [access token](https://docs.microsoft.com/azure/active-directory/develop/access-tokens) from Azure Active Directory (Azure AD) on behalf of the authenticated user for the **TodoListAPI**.
@@ -39,18 +41,17 @@ This sample demonstrates a cross-platform application suite involving an Angular
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/en/download/) must be installed to run this sample.
-- [Dotnet Core SDK](https://dotnet.microsoft.com/download) must be installed to run this sample.
-- An Azure Active Directory (Azure AD) tenant.
-- At least **two** user accounts in your Azure AD tenant.
-- A modern browser. This sample uses **ES6** conventions and will not run on **Internet Explorer**.
-- We recommend [VS Code](https://code.visualstudio.com/download) for running and debugging this cross-platform application.
+- No additional prerequisites
 
 ## Setup
 
 Using a command line interface such as VS Code integrated terminal, follow the steps below:
 
 ### Step 1. Install .NET Core API dependencies
+
+```console
+   cd chapter2
+```
 
 ```console
    cd TodoListAPI
@@ -175,7 +176,7 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 1. Open the `TodoListAPI\appsettings.json` file.
 1. Find the key `Domain` and replace the existing value with your Azure AD tenant name.
 1. Find the key `TenantId` and replace the existing value with your Azure AD tenant ID.
-1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of `TodoListAPI` app copied from the Azure portal.
+1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of **TodoListAPI** app copied from the Azure portal.
 
 ### Register the client app (TodoListSPA)
 
@@ -219,51 +220,10 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListSPA\src\app\app-config.json` file.
-1. Find the key `clientId` and replace the existing value with the application ID (clientId) of `TodoListSPA` app copied from the Azure portal.
+1. Find the key `clientId` and replace the existing value with the application ID (clientId) of **TodoListSPA** app copied from the Azure portal.
 1. Find the key `tenantId` and replace the existing value with your Azure AD tenant ID copied from the Azure portal.
-1. Find the key `resources.todoListApi.resourceUri` and replace the existing value with the endpoint `TodoListAPI` (by default `https://localhost:44351/api/todolist`).
+1. Find the key `resources.todoListApi.resourceUri` and replace the existing value with the endpoint **TodoListAPI** (by default `https://localhost:44351/api/todolist`).
 1. Find the key `resources.todoListApi.resourceScopes` and replace the existing value with scope you created during the app registration of `TodoListAPI`.
-
-### (Optional) Define Application Roles via App Manifest
-
-The following section provides instructions for defining application roles using the **app manifest**. If you have already defined them feel free to **skip** this section.
-
-> :warning: You need to perform the steps below for both **TodoListAPI** and **TodoListSPA**. Keep in mind that App Roles definitions are exactly the same for both the  **TodoListAPI** and the **TodoListSPA** in this sample. But as a developer you can choose to implement app roles for just one of the apps or use different role names in your SPA app and the API, if your authorization requirements demand so.
-
-1. In the blade for your application on Azure Portal, click **Manifest**.
-1. Edit the manifest by locating the `appRoles` setting and adding the two Application Roles.  The role definitions are provided in the JSON code block below.  Leave the `allowedMemberTypes` to **User** only.  Each role definition in this manifest must have a different valid **Guid** for the "id" property. Note that the `"value"` property of each role is set to the exact strings **TaskAdmin** and **TaskUser** (as these strings are used in the code in the application).
-1. Save the manifest.
-
-   The content of `appRoles` should be the following (the `id` should be a unique GUID -*you may use a GUID Generator tool for this*)
-
-   ```json
-      "appRoles": [
-         {
-            "allowedMemberTypes": [
-               "User"
-            ],
-            "description": "Admins can read others' TodoLists but cannot add/remove todos",
-            "displayName": "TaskAdmin",
-            "id": "72ff9f52-8011-49e0-a4f4-cc1bb26206fa",
-            "isEnabled": true,
-            "lang": null,
-            "origin": "Application",
-            "value": "TaskAdmin"
-         },
-         {
-            "allowedMemberTypes": [
-               "User"
-            ],
-            "description": "Users can read and modify their TodoList but cannot see others' lists",
-            "displayName": "TaskUser",
-            "id": "a816142a-2e8e-46c4-9997-f984faccb625",
-            "isEnabled": true,
-            "lang": null,
-            "origin": "Application",
-            "value": "TaskUser"
-         }
-      ],
-   ```
 
 1. The number of **App Roles** that can be created for an app are limited by the [App Manifest limits](https://docs.microsoft.com/azure/active-directory/develop/reference-app-manifest#manifest-limits).
 

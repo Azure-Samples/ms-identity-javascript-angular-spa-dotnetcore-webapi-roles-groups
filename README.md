@@ -11,13 +11,13 @@ products:
 - ms-graph
 - microsoft-identity-web
 - azure-active-directory
-description: "Angular single-page application (SPA) calling .NET Core web API using App Roles and Security Groups to implement Role-Based Access Control (RBAC)"
+description: "An Angular single-page application (SPA) calling a protected Web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)"
 urlFragment: "ms-identity-javascript-angular-spa-dotnetcore-webapi-roles-groups"
 ---
 
-# Angular single-page application (SPA) calling .NET Core web API using App Roles and Security Groups to implement Role-Based Access Control (RBAC)
+# An Angular single-page application (SPA) calling a protected Web API and using App Roles and Security Groups to implement Role-Based Access Control (RBAC)
 
-This chapterwise tutorial demonstrates how to use Azure AD **App Roles** and **Security Groups** features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in **ID** and **Access** tokens, how to protect restricted routes in your client app, and how to accept only authorized calls in your web API. To do so, it uses [Microsoft Authentication Library for Angular (Preview)](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular)  (MSAL Angular) obtain and manage tokens securely.
+This chapterwise tutorial demonstrates how to use Azure AD **App Roles** and **Security Groups** features to implement **Role-Based Access Control** (RBAC) in your application. In doing so, it covers how to modify claims in [ID tokens](https://docs.microsoft.com/azure/active-directory/develop/id-tokens) and [access tokens](https://docs.microsoft.com/azure/active-directory/develop/access-tokens), how to protect restricted routes in your client app, and how to accept only authorized calls in your web API. To do so, it uses [Microsoft Authentication Library for Angular (Preview)](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-angular)  (MSAL Angular) obtain and manage tokens securely.
 
 We recommend you to follow each chapter in a successive order, as the concepts used in later chapters are built on top of the previous ones and explanations may not be repeated. Before proceeding to **Chapter 1**, please review the [Prerequisites](#prerequisites) below.
 
@@ -25,14 +25,23 @@ We recommend you to follow each chapter in a successive order, as the concepts u
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-| `Chapter1/`        | Angular SPA calling .NET Core web API and using App Roles. |
-| `Chapter2/`        | Angular SPA calling .NET Core web API and using Security Groups. |
-| `ReadmeFiles/`     | Contains screenshots and illustrations.    |
+| [`Chapter 1`](./chapter1) | Angular SPA calling .NET Core web API and using App Roles. |
+| [`Chapter 2`](./chapter2) | Angular SPA calling .NET Core web API and using Security Groups. |
+| [ReadmeFiles](./ReadmeFiles)     | Contains screenshots and illustrations.    |
 | `AppCreationScripts/`| Contains Powershell scripts for automating app registration. |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
 | `LICENSE`         | The license for the sample.                |
 
 ## Prerequisites
+
+- [Node.js](https://nodejs.org/en/download/) must be installed to run this sample.
+- [Dotnet Core SDK](https://dotnet.microsoft.com/download) must be installed to run this sample.
+- An Azure Active Directory (Azure AD) tenant.
+- At least **two** user accounts in your Azure AD tenant.
+- A modern Browser. This sample uses **ES6** conventions and will not run on **Internet Explorer**.
+- We recommend [VS Code](https://code.visualstudio.com/download) for running and debugging this cross-platform application.
+
+Moreover:
 
 - We highly recommend you first getting familiar with the following *basic sign-in* examples and documents. This will help you easily grasp the various aspects that are presented here.
   - [Angular single-page application calling MS Graph API](https://github.com/Azure-Samples/ms-identity-javascript-angular-spa)
@@ -57,14 +66,14 @@ git clone https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-do
 
 ### Step 2
 
-Now let's start with [Chapter 1](./Chapter1/README.md) where we'll learn about using App Roles first.
+Now let's start with [Chapter 1](./Chapter1/README.md) where we'll learn about using **App Roles** first.
 
 ## More information
 
 For more information, visit the following links:
 
-- Articles about the Microsoft identity platform are at [http://aka.ms/aaddevv2](http://aka.ms/aaddevv2), with a focus on:
-  - [Configure group claims for applications with Azure Active Directory (Public Preview)](https://docs.microsoft.com/azure/active-directory/hybrid/how-to-connect-fed-group-claims#configure-the-azure-ad-application-registration-for-group-attributes)
+- [What is the Microsoft identity platform?](http://aka.ms/aaddevv2)
+  - [Configure group claims for applications with Azure Active Directory](https://docs.microsoft.com/azure/active-directory/hybrid/how-to-connect-fed-group-claims#configure-the-azure-ad-application-registration-for-group-attributes)
   - [How to: Configure the role claim issued in the SAML token for enterprise applications](https://docs.microsoft.com/azure/active-directory/develop/active-directory-enterprise-app-role-management)
   - [Azure Active Directory app manifest](https://docs.microsoft.com/azure/active-directory/develop/reference-app-manifest)
   - [User: getMemberObjects function](https://docs.microsoft.com/graph/api/user-getmemberobjects?view=graph-rest-1.0)
