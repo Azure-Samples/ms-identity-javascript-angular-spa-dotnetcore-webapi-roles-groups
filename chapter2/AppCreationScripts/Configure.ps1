@@ -353,35 +353,50 @@ Function ConfigureApplications
    # Configure known client applications for service 
    Write-Host "Configure known client applications for the 'service'"
    $knowApplications = New-Object System.Collections.Generic.List[System.String]
-    $knowApplications.Add($clientAadApplication.AppId)
+   $knowApplications.Add($clientAadApplication.AppId)
    Set-AzureADApplication -ObjectId $serviceAadApplication.ObjectId -KnownClientApplications $knowApplications
    Write-Host "Configured."
 
+   if($null -eq (Get-AzureADGroup -SearchString "GroupAdmin")) {
+    Write-Host "Creating group"
+    $newsg = New-AzureADGroup -Description "GroupAdmin"  -DisplayName "GroupAdmin" -MailEnabled $false -SecurityEnabled $true -MailNickName "GroupAdmin"
+    Write-Host "Successfully created $($newsg.DisplayName)"
+   }
+
+   Write-Host $creds
+   if($null -eq (Get-AzureADGroup -SearchString "GroupMember")) {
+    Write-Host "Creating group"
+    $newsg = New-AzureADGroup -Description "GroupMember"  -DisplayName "GroupMember" -MailEnabled $false -SecurityEnabled $true -MailNickName "GroupMember"
+    Write-Host "Successfully created $($newsg.DisplayName)"
+   }
+
+   $groupAdmin = Get-AzureADGroup -SearchString "GroupAdmin"
+   $groupMember = Get-AzureADGroup -SearchString "GroupMember"
 
    # Update config file for 'service'
    $configFile = $pwd.Path + "\..\TodoListAPI\appsettings.json"
    Write-Host "Updating the sample code ($configFile)"
-   $dictionary = @{ "Enter the domain of your Azure AD tenant, e.g. contoso.onmicrosoft.com" = $tenantName;"Enter the ID of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the application ID (clientId) of the 'TodoListAPI' application copied from the Azure portal" = $serviceAadApplication.AppId;"Enter the Client Secret of the 'TodoListAPI' application copied from the Azure portal" = $serviceAppKey };
+   $dictionary = @{ "Enter the domain of your Azure AD tenant, e.g. contoso.onmicrosoft.com" = $tenantName;"Enter the ID of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the application ID (clientId) of the 'TodoListAPI' application copied from the Azure portal" = $serviceAadApplication.AppId;"Enter the Client Secret of the 'TodoListAPI' application copied from the Azure portal" = $serviceAppKey; "Enter the objectID for GroupAdmin group copied from Azure Portal" = $groupAdmin.objectId; "Enter the objectID for GroupMember group copied from Azure Portal" = $groupMember.objectId };
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
-
+   
    # Update config file for 'client'
    $configFile = $pwd.Path + "\..\TodoListSPA\src\app\auth-config.json"
    Write-Host "Updating the sample code ($configFile)"
-   $dictionary = @{ "Enter the application ID (clientId) of the 'TodoListSPA' application copied from the Azure portal" = $clientAadApplication.AppId;"Enter the ID of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the endpoint for TodoListAPI, e.g. https://localhost:44351/api/todolist" = $serviceAadApplication.HomePage;"Enter the API scopes as declared in the app registration 'Expose an API' blade, e.g. api://{clientId}/access_as_user" = ("api://"+$serviceAadApplication.AppId+"/access_as_user") };
+   $dictionary = @{ "Enter the application ID (clientId) of the 'TodoListSPA' application copied from the Azure portal" = $clientAadApplication.AppId;"Enter the ID of your Azure AD tenant copied from the Azure portal" = $tenantId;"Enter the endpoint for TodoListAPI, e.g. https://localhost:44351/api/todolist" = $serviceAadApplication.HomePage;"Enter the API scopes as declared in the app registration 'Expose an API' blade, e.g. api://{clientId}/access_as_user" = ("api://"+$serviceAadApplication.AppId+"/access_as_user"); "Enter the objectID for GroupAdmin group copied from Azure Portal" = $groupAdmin.objectId; "Enter the objectID for GroupMember group copied from Azure Portal" = $groupMember.objectId};
    ReplaceInTextFile -configFilePath $configFile -dictionary $dictionary
    Write-Host ""
    Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 
    Write-Host "IMPORTANT: Please follow the instructions below to complete a few manual step(s) in the Azure portal":
    Write-Host "- For 'service'"
    Write-Host "  - Navigate to '$servicePortalUrl'"
-   Write-Host "  - On Azure Portal, create a security group named GroupAdmin, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." -ForegroundColor Red 
-   Write-Host "  - On Azure Portal, create a security group named GroupMember, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." -ForegroundColor Red 
+   Write-Host "  - On Azure Portal, assign some users to security group named GroupAdmin" -ForegroundColor Red 
+   Write-Host "  - On Azure Portal, assign some users to security group named GroupMember" -ForegroundColor Red 
    Write-Host "- For 'client'"
    Write-Host "  - Navigate to '$clientPortalUrl'"
    Write-Host "  - Navigate to the portal and set the 'replyUrlsWithType' to 'Spa' in the application manifest" -ForegroundColor Red 
-   Write-Host "  - On Azure Portal, create a security group named GroupAdmin, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." -ForegroundColor Red 
-   Write-Host "  - On Azure Portal, create a security group named GroupMember, assign some users to it, and configure your ID and Access token to emit GroupID in your app registration." -ForegroundColor Red 
-
+   Write-Host "  - On Azure Portal, assign some users to security group named GroupAdmin" -ForegroundColor Red 
+   Write-Host "  - On Azure Portal, assign some users to security group named GroupMember" -ForegroundColor Red 
+   
    Write-Host -ForegroundColor Green "------------------------------------------------------------------------------------------------" 
      
    Add-Content -Value "</tbody></table></body></html>" -Path createdApps.html  

@@ -15,7 +15,7 @@
 
 ## Overview
 
-This sample demonstrates a cross-platform application suite involving an Angular SPA (*TodoListSPA*) calling an ASP.NET Core web API (*TodoListAPI*) secured with **Azure Active Directory**. In [Chapter 1](../Chapter1) we learnt how to use **App Roles**. In this chapter, we learn about how to implement authorization for **role-based access control** using Azure AD **Security Groups**.
+In [Chapter 1](../Chapter1) we learnt how to use **App Roles** for **role-based access control**. In this chapter, we learn about how to do the same with Azure AD **Security Groups**.
 
 In the sample, a dashboard component allows signed-in users to see the tasks assigned to them or other users based on their memberships to one of the two security groups, **GroupAdmin** and **GroupMember**.
 
@@ -168,11 +168,6 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 1. Select **Save** to save your changes.
 1. In the app's registration screen, select the **API permissions** blade in the left to open the page where we add access to the APIs that your application needs.
    - Select the **Add a permission** button and then:
-   - Ensure that the **My APIs** tab is selected.
-       - In the list of APIs, select the API `TodoListAPI`.
-       - In the **Delegated permissions** section, select the **Access 'TodoListAPI'** in the list. Use the search box if necessary.
-       - Select the **Add permissions** button at the bottom.
-       - Select the **Add a permission** button and then:
    - Ensure that the **Microsoft APIs** tab is selected.
        - In the *Commonly used Microsoft APIs* section, select **Microsoft Graph**
        - In the **Delegated permissions** section, select the **User.Read**, **GroupMember.Read.All** in the list. Use the search box if necessary.
@@ -186,8 +181,8 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListSPA\src\app\app-config.json` file.
-1. Find the app key `clientId` and replace the existing value with the application ID (clientId) of the `TodoListSPA` application copied from the Azure portal.
-1. Find the app key `todoListApi.resourceUri` and replace the existing value with the base address of the TodoListAPI project (by default `https://localhost:44351/api/todolist`).
+1. Find the app key `clientId` and replace the existing value with the application ID (clientId) of the **TodoListSPA** application copied from the Azure portal.
+1. Find the app key `todoListApi.resourceUri` and replace the existing value with the base address of the **TodoListAPI** project (by default `https://localhost:44351/api/todolist`).
 1. Find the app key `todoListApi.resourceScopes` and replace the existing value with *Scope* you created earlier `api://{clientId-of-service}/access_as_user`.
 
 #### Configure Known Client Applications for service (TodoListAPI)
@@ -229,7 +224,7 @@ You have two different options available to you on how you can further configure
 
 ##### Prerequisites, benefits and limitations of using this option
 
-1. This option is useful when your application is interested in a selected set of groups that a signing-in user may be assigned to and not every security group this user is assigned to in the tenant.  This option also saves your application from running into the [overage](#groups-overage-claim) issue.
+1. This option is useful when your application is interested in a selected set of groups that a signing-in user may be assigned to and not every security group this user is assigned to in the tenant. This option also saves your application from running into the [overage](#the-groups-overage-claim) issue.
 1. This feature is not available in the [Azure AD Free edition](https://azure.microsoft.com/pricing/details/active-directory/).
 1. **Nested group assignments** are not available when this option is utilized.
 
@@ -325,7 +320,7 @@ If a user is member of more groups than the overage limit (**150 for SAML tokens
 
 #### Create the Overage Scenario for testing
 
-1. You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. Remember to change the user's **objectId** provided in the `BulkCreateGroups.ps1` script.
+1. You can use the `BulkCreateGroups.ps1` provided in the [App Creation Scripts](./AppCreationScripts/) folder to create a large number of groups and assign users to them. This will help test overage scenarios during development. :warning: Remember to change the user's **objectId** provided in the `BulkCreateGroups.ps1` script.
 1. When you run this sample and an overage occurred, then you'd see the `_claim_names` in the home page after the user signs-in.
 1. We strongly advise you use the [group filtering feature](#configure-your-application-to-receive-the-groups-claim-values-from-a-filtered-set-of-groups-a-user-may-be-assigned-to) (if possible) to avoid running into group overages.
 1. In case you cannot avoid running into group overage, we suggest you use the following logic to process groups claim in your token.  

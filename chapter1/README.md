@@ -176,7 +176,7 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 1. Open the `TodoListAPI\appsettings.json` file.
 1. Find the key `Domain` and replace the existing value with your Azure AD tenant name.
 1. Find the key `TenantId` and replace the existing value with your Azure AD tenant ID.
-1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of `TodoListAPI` app copied from the Azure portal.
+1. Find the key `ClientId` and replace the existing value with the application ID (clientId) of **TodoListAPI** app copied from the Azure portal.
 
 ### Register the client app (TodoListSPA)
 
@@ -220,9 +220,9 @@ Open the project in your IDE (like Visual Studio or Visual Studio Code) to confi
 > In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 
 1. Open the `TodoListSPA\src\app\app-config.json` file.
-1. Find the key `clientId` and replace the existing value with the application ID (clientId) of `TodoListSPA` app copied from the Azure portal.
+1. Find the key `clientId` and replace the existing value with the application ID (clientId) of **TodoListSPA** app copied from the Azure portal.
 1. Find the key `tenantId` and replace the existing value with your Azure AD tenant ID copied from the Azure portal.
-1. Find the key `resources.todoListApi.resourceUri` and replace the existing value with the endpoint `TodoListAPI` (by default `https://localhost:44351/api/todolist`).
+1. Find the key `resources.todoListApi.resourceUri` and replace the existing value with the endpoint **TodoListAPI** (by default `https://localhost:44351/api/todolist`).
 1. Find the key `resources.todoListApi.resourceScopes` and replace the existing value with scope you created during the app registration of `TodoListAPI`.
 
 1. The number of **App Roles** that can be created for an app are limited by the [App Manifest limits](https://docs.microsoft.com/azure/active-directory/develop/reference-app-manifest#manifest-limits).

@@ -25,9 +25,9 @@ We recommend you to follow each chapter in a successive order, as the concepts u
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-| `Chapter1/`        | Angular SPA calling .NET Core web API and using App Roles. |
-| `Chapter2/`        | Angular SPA calling .NET Core web API and using Security Groups. |
-| `ReadmeFiles/`     | Contains screenshots and illustrations.    |
+| [`Chapter 1`](./chapter1) | Angular SPA calling .NET Core web API and using App Roles. |
+| [`Chapter 2`](./chapter2) | Angular SPA calling .NET Core web API and using Security Groups. |
+| [ReadmeFiles](./ReadmeFiles)     | Contains screenshots and illustrations.    |
 | `AppCreationScripts/`| Contains Powershell scripts for automating app registration. |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
 | `LICENSE`         | The license for the sample.                |
@@ -66,7 +66,7 @@ git clone https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-do
 
 ### Step 2
 
-Now let's start with [Chapter 1](./Chapter1/README.md) where we'll learn about using App Roles first.
+Now let's start with [Chapter 1](./Chapter1/README.md) where we'll learn about using **App Roles** first.
 
 ## More information
 
