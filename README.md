@@ -66,7 +66,7 @@ git clone https://github.com/Azure-Samples/ms-identity-javascript-angular-spa-do
 
 ### Step 2
 
-Now let's start with [Chapter 1](./Chapter1/README.md) where we'll learn about using **App Roles** first.
+Now let's start with [Chapter 1](./chapter1/README.md) where we'll learn about using **App Roles** first.
 
 ## More information
 
